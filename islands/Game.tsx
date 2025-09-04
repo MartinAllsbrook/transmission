@@ -4,21 +4,51 @@ import { Application, Assets, Container, Sprite } from 'pixi.js';
 export default class Game extends Component {
     private gameContainer?: HTMLDivElement;
     private app?: Application;
+    private spaceKeyPressed: boolean = false;
 
     override componentDidMount() {
         // Only run on client side
         if (typeof window !== 'undefined') {
+            document.addEventListener('keydown', this.keydownHandler);
+            document.addEventListener('keyup', this.keyupHandler);
             this.initPixiGame();
         }
     }
-
+    
     override componentWillUnmount() {
+        // Clean up event listener
+        if (this.keydownHandler) {
+            document.removeEventListener('keydown', this.keydownHandler);
+        }
+
+        if (this.keyupHandler) {
+            document.removeEventListener('keyup', this.keyupHandler);
+        }
+         
         // Clean up PixiJS application
         if (this.app) {
             this.app.destroy(true);
         }
     }
+    
+    // Create the keydown handler as a bound method
+    private keydownHandler: (e: KeyboardEvent) => void = (e: KeyboardEvent) => {
+        if (e.key === ' ' || e.code === 'Space') {
+            this.spaceKeyPressed = true;
+        }
+    };
 
+    // Create the keyup handler as a bound method
+    private keyupHandler: (e: KeyboardEvent) => void = (e: KeyboardEvent) => {
+        if (e.key === ' ' || e.code === 'Space') {
+            this.spaceKeyPressed = false;
+        }
+    }
+
+
+    /**
+     * Initialize the PixiJS game
+     */
     private async initPixiGame() {
         if (!this.gameContainer) return;
 
@@ -57,17 +87,18 @@ export default class Game extends Component {
         container.pivot.y = container.height / 2;
 
         // Listen for animate update
-        this.app.ticker.add((time) => {
+        this.app.ticker.add((ticker) => {
             // Continuously rotate the container!
             // * use delta to create frame-independent transform *
-            container.rotation -= 0.01 * time.deltaTime;
+            if (this.spaceKeyPressed) {
+                container.rotation += 0.01 * ticker.deltaTime;
+            }
         });
     }
 
     render() {
         return (
             <div>
-                <h1>Game</h1>
                 <div ref={(el) => this.gameContainer = el || undefined}></div>
             </div>
         );
