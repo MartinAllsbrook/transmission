@@ -1,3 +1,0 @@
-export GAME_SETTINGS = {
-    
-}

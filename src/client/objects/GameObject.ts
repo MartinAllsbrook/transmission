@@ -51,4 +51,8 @@ export abstract class GameObject {
     getContainer(): Container {
         return this.container;
     }
+
+    destroy(): void {
+        this.container.destroy({ children: true });
+    }
 }
