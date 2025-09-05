@@ -1,5 +1,4 @@
 import { BooleanInput } from "./BooleanInput.ts";
-import { Input } from "./Input.ts";
 import { ValueInput } from "./ValueInput.ts";
 
 export type InputType = 'boolean' | 'value' | 'vector';

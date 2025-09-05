@@ -20,14 +20,29 @@ export abstract class GameObject {
         this.rotation = rotation;
         this.scale = scale;
 
+        this.createSprite();
+
         parent.addChild(this.container);
+    }
+
+    protected createSprite() {
+        this.container.pivot.x = this.container.width / 2;
+        this.container.pivot.y = this.container.height / 2;
+
+        this.container.position.set(this.position.x, this.position.y);
+        this.container.rotation = this.rotation * (Math.PI / 180);
+        this.container.scale.set(this.scale.x, this.scale.y);
     }
 
     /**
      * Method to update the game object each frame. Called with the time delta since the last frame.
      * @param deltaTime Time in milliseconds since the last frame.
      */
-    abstract update(deltaTime: number): void;
+    public update(_deltaTime: number): void {
+        this.container.position.set(this.position.x, this.position.y);
+        this.container.rotation = this.rotation * (Math.PI / 180);
+        // this.container.scale.set(this.scale.x, this.scale.y);
+    }
 
     /**
      * Gets the game object's container for adding child display objects.

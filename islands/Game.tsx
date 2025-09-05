@@ -3,6 +3,7 @@ import { Application, Assets, Container, Sprite } from 'pixi.js';
 
 import { ValueInput } from "src/client/inputs/ValueInput.ts";
 import { Snowboarder } from "src/client/objects/Snowboarder.ts";
+import { World } from "src/client/objects/World.ts";
 
 export default class Game extends Component {
     private gameContainer?: HTMLDivElement;
@@ -47,22 +48,13 @@ export default class Game extends Component {
         // Append the application canvas to the game container
         this.gameContainer.appendChild(this.app.canvas);    
 
-        const worldContainer = new Container();
-        this.app.stage.addChild(worldContainer);
-
-        const treeTexture = await Assets.load('/obsticales/Tree.png');
-        treeTexture.source.scaleMode = 'nearest';
-        const treeSprite = new Sprite(treeTexture);
-        treeSprite.x = 100;
-        treeSprite.y = 100;
-        treeSprite.scale.set(2, 2);
-        worldContainer.addChild(treeSprite);
-
+        const world = new World(this.app.stage);
         const snowboarder = new Snowboarder(this.app.stage);
 
         // Listen for animate update
         this.app.ticker.add((ticker) => {
-            snowboarder.update(ticker.deltaTime * 16.67)
+            world.update(ticker.deltaTime)
+            snowboarder.update(ticker.deltaTime)
         });
     }
 
