@@ -17,6 +17,10 @@ export abstract class Input<T> {
         document.addEventListener('keydown', (event) => {
             this.onKeyDown(event.key);
         });
+
+        document.addEventListener('keyup', (event) => {
+            this.onKeyUp(event.key);
+        });
     }
 
     /**

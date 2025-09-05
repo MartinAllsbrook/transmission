@@ -16,8 +16,8 @@ export class InputManager {
         turn: new ValueInput('turn', ['ArrowRight', 'd'], ['ArrowLeft', 'a']),
     };
 
-    public static getInput<K extends keyof InputMap>(name: K): InputMap[K]['value'] {
-        return this.inputs[name].value;
+    public static getInput<K extends keyof InputMap>(name: K): InputMap[K] {
+        return this.inputs[name];
     }
 }
 
