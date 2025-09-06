@@ -1,7 +1,6 @@
 import { Component } from "preact";
-import { Application, Assets, Container, Sprite } from 'pixi.js';
+import { Application } from 'pixi.js';
 
-import { ValueInput } from "src/client/inputs/ValueInput.ts";
 import { Snowboarder } from "src/client/objects/Snowboarder.ts";
 import { World } from "src/client/objects/World.ts";
 
@@ -12,7 +11,7 @@ export default class Game extends Component {
 
     private turnInput: number = 0;
 
-    override async componentDidMount() {
+    override componentDidMount() {
         // Only run on client side
         if (typeof window !== 'undefined') {
             this.initPixiGame();
@@ -48,8 +47,8 @@ export default class Game extends Component {
         // Append the application canvas to the game container
         this.gameContainer.appendChild(this.app.canvas);    
 
-        const world = new World(this.app.stage);
-        const snowboarder = new Snowboarder(this.app.stage);
+        const world = new World(this.app);
+        const snowboarder = new Snowboarder(this.app);
 
         // Listen for animate update
         this.app.ticker.add((ticker) => {

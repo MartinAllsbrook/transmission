@@ -1,12 +1,12 @@
-import { Assets, Container, Point, Sprite } from "pixi.js";
-import { GameObject } from "./GameObject.ts";
+import { Assets, Point, Sprite } from "pixi.js";
+import { GameObject, Parent } from "./GameObject.ts";
 
 export class Snowboarder extends GameObject {
     private speed: number = 0;
     private turnInput: number = 0;
 
     constructor(
-        parent: Container,
+        parent: Parent,
     ) {
         super(parent, new Point(
             globalThis.window.innerWidth / 2, 

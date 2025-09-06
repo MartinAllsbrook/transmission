@@ -1,11 +1,13 @@
-import { Container, Point } from "pixi.js";
-import { GameObject } from "./GameObject.ts";
+import { Point } from "pixi.js";
+import { GameObject, Parent } from "./GameObject.ts";
 import { Obstacle } from "./Obstacle.ts";
 
 export class World extends GameObject {
-    private objects: GameObject[] = [];
 
-    constructor(parent: Container) {
+    private playerVelocity: Point = new Point(0, -1);
+    private originOffset: Point = new Point(0, 0);
+
+    constructor(parent: Parent) {
         super(parent, new Point(0, 0));
 
         // Create some random obstacles
@@ -19,14 +21,16 @@ export class World extends GameObject {
         console.log(globalThis.window.innerWidth);
         const y = Math.random() * globalThis.window.innerHeight;
         
-        const obstacle = new Obstacle(this.container, new Point(x, y));
-        this.objects.push(obstacle);
+        const obstacle = new Obstacle(this, new Point(x, y));
     }
 
     public override update(deltaTime: number): void {
-        console.log(this.position.x);
-        this.position.y -= (deltaTime);
-        
+        // Move world origin
+        this.originOffset.x += this.playerVelocity.x * deltaTime;
+        this.originOffset.y += this.playerVelocity.y * deltaTime;
+
+
+
         super.update(deltaTime);
     }
 }

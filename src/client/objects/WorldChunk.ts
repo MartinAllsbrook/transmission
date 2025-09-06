@@ -1,12 +1,12 @@
-import { Container, Point } from "pixi.js";
-import { GameObject } from "./GameObject.ts";
+import { Point } from "pixi.js";
+import { GameObject, Parent } from "./GameObject.ts";
 import { BezierSpline } from "./BezierSpline.ts";
 
 export class WorldChunk extends GameObject {
 
 
     constructor(
-        parent: Container,
+        parent: Parent,
         position: Point,
         size: Point = new Point(64, 64)
     ) {

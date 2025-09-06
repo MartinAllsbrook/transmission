@@ -1,9 +1,9 @@
-import { Assets, Container, Point, Sprite } from "pixi.js";
-import { GameObject } from "./GameObject.ts";
+import { Assets, Point, Sprite } from "pixi.js";
+import { GameObject, Parent } from "./GameObject.ts";
 
 export class Obstacle extends GameObject {
     constructor(
-        parent: Container,
+        parent: Parent,
         position: Point,
     ) {
         super(parent, position, 0, new Point(2, 2));

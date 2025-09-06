@@ -1,4 +1,6 @@
-import { Point, Container } from "pixi.js";
+import { Point, Container, Application } from "pixi.js";
+
+export type Parent = Application | GameObject;
 
 /**
  * Base class for all game objects in the game.
@@ -8,10 +10,11 @@ export abstract class GameObject {
     rotation: number;
     scale: Point;
 
+    children: GameObject[] = [];
     container: Container = new Container();
 
     constructor(
-        parent: Container,
+        parent: Parent,
         position: Point, 
         rotation: number = 0, 
         scale: Point = new Point(1, 1)
@@ -22,7 +25,13 @@ export abstract class GameObject {
 
         this.createSprite();
 
-        parent.addChild(this.container);
+        if (parent instanceof GameObject) {
+            parent.addChild(this);
+        } else if (parent instanceof Application) {
+            parent.stage.addChild(this.container);
+        } else {
+            throw new Error("Invalid parent type");
+        }
     }
 
     protected createSprite() {
@@ -48,8 +57,13 @@ export abstract class GameObject {
      * Gets the game object's container for adding child display objects.
      * @returns The PIXI.Container associated with this game object.
      */
-    getContainer(): Container {
+    private getContainer(): Container {
         return this.container;
+    }
+
+    public addChild(child: GameObject): void {
+        this.children.push(child);
+        this.container.addChild(child.getContainer());
     }
 
     destroy(): void {
