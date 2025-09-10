@@ -67,6 +67,7 @@ export abstract class GameObject {
     }
 
     destroy(): void {
+        console.log("Destroying GameObject and its children");
         this.container.destroy({ children: true });
     }
 }

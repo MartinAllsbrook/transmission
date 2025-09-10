@@ -6,7 +6,7 @@ export class Obstacle extends GameObject {
         parent: Parent,
         position: Point,
     ) {
-        super(parent, position, 0, new Point(2, 2));
+        super(parent, position, 0, new Point(1, 1));
 
         this.createSprite();
     }
