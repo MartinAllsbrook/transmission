@@ -47,8 +47,8 @@ export default class Game extends Component {
         // Append the application canvas to the game container
         this.gameContainer.appendChild(this.app.canvas);    
 
-        const world = new World(this.app);
         const snowboarder = new Snowboarder(this.app);
+        const world = new World(this.app, snowboarder);
 
         // Listen for animate update
         this.app.ticker.add((ticker) => {

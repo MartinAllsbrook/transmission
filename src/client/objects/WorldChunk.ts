@@ -7,13 +7,17 @@ export class WorldChunk extends GameObject {
 
     size: Point;
 
+    chunkPosition: Point;
+
     constructor(
         parent: Parent,
         position: Point,
-        size: Point = new Point(128, 128)
+        chunkPosition: Point,
+        size: Point,
     ) {
         super(parent, position);
     
+        this.chunkPosition = chunkPosition;
         this.size = size;
 
         this.createChunk();

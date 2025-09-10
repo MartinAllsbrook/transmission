@@ -10,6 +10,7 @@ export abstract class GameObject {
     rotation: number;
     scale: Point;
 
+    parent: GameObject | null = null;
     children: GameObject[] = [];
     container: Container = new Container();
 
@@ -27,6 +28,7 @@ export abstract class GameObject {
 
         if (parent instanceof GameObject) {
             parent.addChild(this);
+            this.parent = parent;
         } else if (parent instanceof Application) {
             parent.stage.addChild(this.container);
         } else {
@@ -48,7 +50,12 @@ export abstract class GameObject {
      * @param deltaTime Time in milliseconds since the last frame.
      */
     public update(_deltaTime: number): void {
-        this.container.position.set(this.position.x, this.position.y);
+        const screenCenter = new Point(
+            globalThis.window.innerWidth / 2, 
+            globalThis.window.innerHeight / 2
+        );
+
+        this.container.position.set(this.position.x + screenCenter.x, this.position.y + screenCenter.y);
         this.container.rotation = this.rotation * (Math.PI / 180);
         // this.container.scale.set(this.scale.x, this.scale.y);
     }
@@ -67,7 +74,13 @@ export abstract class GameObject {
     }
 
     destroy(): void {
-        console.log("Destroying GameObject and its children");
+        if (this.parent) {
+            const index = this.parent.children.indexOf(this);
+            if (index > -1) {
+                this.parent.children.splice(index, 1);
+            }
+        }
+
         this.container.destroy({ children: true });
     }
 }

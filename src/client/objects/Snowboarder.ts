@@ -5,13 +5,12 @@ export class Snowboarder extends GameObject {
     private speed: number = 0;
     private turnInput: number = 0;
 
+    worldPosition: Point = new Point(0, 0);
+
     constructor(
         parent: Parent,
     ) {
-        super(parent, new Point(
-            globalThis.window.innerWidth / 2, 
-            globalThis.window.innerHeight / 2
-        ), 0, new Point(2, 2));
+        super(parent, new Point(0, 0), 0, new Point(2, 2));
 
         this.setSpeed(1);
 
@@ -49,8 +48,8 @@ export class Snowboarder extends GameObject {
     public override update(deltaTime: number): void {
         // Update position based on speed and turn input
         const radians = (this.rotation) * (Math.PI / 180);
-        this.position.x += Math.cos(radians) * this.speed * (deltaTime);
-        this.position.y += Math.sin(radians) * this.speed * (deltaTime);
+        this.worldPosition.x += Math.cos(radians) * this.speed * (deltaTime);
+        this.worldPosition.y += Math.sin(radians) * this.speed * (deltaTime);
         this.rotation += this.turnInput * (deltaTime);
 
         super.update(deltaTime);
