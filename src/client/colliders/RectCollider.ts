@@ -76,8 +76,8 @@ export class RectCollider extends SATCollider {
         for (let i = 0; i < vertices.length; i++) {
             const p1 = vertices[i];
             const p2 = vertices[(i + 1) % vertices.length]; // Mod to wrap around to the first vertex
-            const edge = p2.subtract(p1);
-            const normal = new Point(-edge.y, edge.x).normalize();
+            const edge = SATCollider.subtractPoints(p2, p1);
+            const normal = SATCollider.normalizePoint(new Point(-edge.y, edge.x));
             axes.push(normal);
         }
         return axes;
@@ -86,11 +86,11 @@ export class RectCollider extends SATCollider {
     protected override projectOnAxis(axis: Point): Range {
         const vertices = this.getVertices();
         // Initialize max and min
-        let min = axis.dot(vertices[0]);
+        let min = SATCollider.dotProduct(axis, vertices[0]);
         let max = min;
 
         for (let i = 1; i < vertices.length; i++) {
-            const projection = axis.dot(vertices[i]);
+            const projection = SATCollider.dotProduct(axis, vertices[i]);
             if (projection < min) {
                 min = projection;
             }

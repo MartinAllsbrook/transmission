@@ -77,14 +77,33 @@ export abstract class SATCollider {
         return true; // No separating axis found, collision detected
     }
 
+    // Helper methods for Point operations since we can't use @pixi/math-extras in Deno
+    protected static normalizePoint(point: Point): Point {
+        const length = Math.sqrt(point.x * point.x + point.y * point.y);
+        if (length === 0) return new Point(0, 0);
+        return new Point(point.x / length, point.y / length);
+    }
+
+    protected static dotProduct(a: Point, b: Point): number {
+        return a.x * b.x + a.y * b.y;
+    }
+
+    protected static addPoints(a: Point, b: Point): Point {
+        return new Point(a.x + b.x, a.y + b.y);
+    }
+
+    protected static subtractPoints(a: Point, b: Point): Point {
+        return new Point(a.x - b.x, a.y - b.y);
+    }
+
     // Currently unused function
     private static projectVertices(axis: Point, vertices: Point[]): Range {
         // Initialize max and min
-        let min = axis.dot(vertices[0]);
+        let min = SATCollider.dotProduct(axis, vertices[0]);
         let max = min;  
 
         for (let i = 1; i < vertices.length; i++) {
-            const projection = axis.dot(vertices[i]);
+            const projection = SATCollider.dotProduct(axis, vertices[i]);
             if (projection < min) {
                 min = projection;
             }
@@ -98,9 +117,8 @@ export abstract class SATCollider {
 
     /** The world position of the collider */
     get Position(): Point {
-        console.log(this.host.Position)
-        console.log(this.relativePosition)
-        return this.relativePosition.add(this.host.Position);
+
+        return SATCollider.addPoints(this.relativePosition, this.host.Position);
     }
 
     public onCollision(other: SATCollider): void {

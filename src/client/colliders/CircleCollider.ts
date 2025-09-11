@@ -43,9 +43,9 @@ export class CircleCollider extends SATCollider {
 
         for (const vertex of otherVertexs) {
             // The axis is the vector from this circle's center to the other circle's center
-            const axis = this.Position
-                .subtract(vertex)
-                .normalize();
+            const axis = SATCollider.normalizePoint(
+                SATCollider.subtractPoints(this.Position, vertex)
+            );
 
             axes.push(axis);
         }
@@ -54,7 +54,7 @@ export class CircleCollider extends SATCollider {
 
     protected projectOnAxis(axis: Point): Range {
         // Project the center of the circle onto the axis
-        const centerProjection = this.Position.dot(axis);
+        const centerProjection = SATCollider.dotProduct(this.Position, axis);
         return {
             min: centerProjection - this.radius,
             max: centerProjection + this.radius,
