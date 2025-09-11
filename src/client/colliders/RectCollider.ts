@@ -1,0 +1,83 @@
+import { Graphics, Point } from "pixi.js";
+import { SATCollider, Range } from "./SATCollider.ts";
+import { GameObject } from "../objects/GameObject.ts";
+
+/**
+ * Simple collider class that uses SAT for square collision detection - May expand in the future
+ */
+export class RectCollider extends SATCollider {
+    /** The size of the collider */
+    size: Point;
+
+    /** The roatation of the collider */
+    rotation: number;
+
+    constructor(host: GameObject, position: Point, size: Point, rotation: number = 0, debugging: boolean = false) {
+        super(host, position, debugging);
+
+        this.rotation = rotation;
+        this.size = size;
+    }
+
+    protected drawDebugShape(): void {
+        const halfX = this.size.x / 2;
+        const halfY = this.size.y / 2;
+
+        const graphics = new Graphics()
+            .rect(
+                this.relativePosition.x - halfX, 
+                this.relativePosition.y - halfY, 
+                this.relativePosition.x + halfX,
+                this.relativePosition.y + halfY
+            )
+            .stroke({ width: 2, color: 0x00ff00 });
+
+        this.host.addVisual(graphics);
+    }
+
+    protected getVertices(): Point[] {
+        const halfWidth = this.size.x / 2;
+        const halfHeight = this.size.y / 2;
+        const cos = Math.cos(this.rotation);
+        const sin = Math.sin(this.rotation);
+        return [
+            new Point(this.Position.x + -halfWidth * cos - -halfHeight * sin, this.Position.y + -halfWidth * sin + -halfHeight * cos),
+            new Point(this.Position.x + halfWidth * cos - -halfHeight * sin, this.Position.y + halfWidth * sin + -halfHeight * cos),
+            new Point(this.Position.x + halfWidth * cos - halfHeight * sin, this.Position.y + halfWidth * sin + halfHeight * cos),
+            new Point(this.Position.x + -halfWidth * cos - halfHeight * sin, this.Position.y + -halfWidth * sin + halfHeight * cos)
+        ];
+    }
+
+    protected getAxes(_otherVertexes: Point[]): Point[] {
+        const vertices = this.getVertices();
+
+        const axes = [];
+        for (let i = 0; i < vertices.length; i++) {
+            const p1 = vertices[i];
+            const p2 = vertices[(i + 1) % vertices.length]; // Mod to wrap around to the first vertex
+            const edge = p2.subtract(p1);
+            const normal = new Point(-edge.y, edge.x).normalize();
+            axes.push(normal);
+        }
+        return axes;
+    }
+
+    protected override projectOnAxis(axis: Point): Range {
+        const vertices = this.getVertices();
+        // Initialize max and min
+        let min = axis.dot(vertices[0]);
+        let max = min;
+
+        for (let i = 1; i < vertices.length; i++) {
+            const projection = axis.dot(vertices[i]);
+            if (projection < min) {
+                min = projection;
+            }
+            if (projection > max) {
+                max = projection;
+            }
+        }
+
+        return { min, max };
+    }
+}

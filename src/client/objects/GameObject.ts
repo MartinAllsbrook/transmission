@@ -68,6 +68,13 @@ export abstract class GameObject {
         return this.container;
     }
 
+    /** 
+     * Adds visual elements (like sprites or graphics) directly to the game object's PIXI container.
+     */
+    public addVisual(child: Container): void {
+        this.container.addChild(child);
+    }
+
     public addChild(child: GameObject): void {
         this.children.push(child);
         this.container.addChild(child.getContainer());
