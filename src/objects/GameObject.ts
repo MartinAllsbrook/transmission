@@ -1,4 +1,5 @@
-import { Application, Container, Graphics, Point } from "pixi.js";
+import { Application, Container, Graphics } from "pixi.js";
+import { Vector2D } from "src/math/Vector2D.ts";
 
 export type Parent = Application | GameObject;
 
@@ -6,10 +7,10 @@ export type Parent = Application | GameObject;
  * Base class for all game objects in the game.
  */
 export abstract class GameObject {
-    private position: Point;
+    private position: Vector2D;
     rotation: number;
-    size: Point;
-    scale: Point;
+    size: Vector2D;
+    scale: Vector2D;
 
     parent: GameObject | null = null;
     children: GameObject[] = [];
@@ -19,10 +20,10 @@ export abstract class GameObject {
 
     constructor(
         parent: Parent,
-        position: Point,
-        size: Point,
+        position: Vector2D,
+        size: Vector2D,
         rotation: number = 0,
-        scale: Point = new Point(1, 1),
+        scale: Vector2D = new Vector2D(1, 1),
     ) {
         this.position = position;
         this.rotation = rotation;
@@ -58,7 +59,7 @@ export abstract class GameObject {
      * @param deltaTime Time in milliseconds since the last frame.
      */
     public update(_deltaTime: number): void {
-        const screenCenter = new Point(
+        const screenCenter = new Vector2D(
             globalThis.window.innerWidth / 2,
             globalThis.window.innerHeight / 2,
         );
@@ -103,7 +104,7 @@ export abstract class GameObject {
         this.container.destroy({ children: true });
     }
 
-    get Position(): Point {
+    get Position(): Vector2D {
         return this.position;
     }
 }

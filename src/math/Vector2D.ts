@@ -1,7 +1,7 @@
 /**
  * A class representing a 2D vector with x and y components.
  */
-export default class Vector2D {
+export class Vector2D {
     public x: number;
     public y: number;
 

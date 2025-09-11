@@ -1,5 +1,5 @@
-import { Point } from "pixi.js";
 import { BezierSpline } from "src/math/BezierSpline.ts";
+import { Vector2D } from "src/math/Vector2D.ts";
 
 /**
  * Simple tests for the BezierSpline class
@@ -10,8 +10,8 @@ export function testBezierSpline(): boolean {
     try {
         // Test 1: Linear interpolation (2 points)
         const linear = BezierSpline.createLinear(
-            new Point(0, 0),
-            new Point(10, 10),
+            new Vector2D(0, 0),
+            new Vector2D(10, 10),
         );
         const midPoint = linear.getPointAt(0.5);
 
@@ -25,9 +25,9 @@ export function testBezierSpline(): boolean {
 
         // Test 2: Quadratic curve endpoints
         const quad = BezierSpline.createQuadratic(
-            new Point(0, 0),
-            new Point(5, 10),
-            new Point(10, 0),
+            new Vector2D(0, 0),
+            new Vector2D(5, 10),
+            new Vector2D(10, 0),
         );
 
         const start = quad.getPointAt(0);
@@ -44,15 +44,15 @@ export function testBezierSpline(): boolean {
 
         // Test 3: Control point manipulation
         const spline = new BezierSpline();
-        spline.addControlPoint(new Point(0, 0));
-        spline.addControlPoint(new Point(10, 10));
+        spline.addControlPoint(new Vector2D(0, 0));
+        spline.addControlPoint(new Vector2D(10, 10));
 
         if (spline.getPointCount() !== 2) {
             console.error("Test 3 failed: Control point count incorrect");
             return false;
         }
 
-        spline.setControlPoint(0, new Point(5, 5));
+        spline.setControlPoint(0, new Vector2D(5, 5));
         const modified = spline.getControlPoint(0);
 
         if (
@@ -68,8 +68,8 @@ export function testBezierSpline(): boolean {
 
         // Test 4: Curve length calculation
         const line = BezierSpline.createLinear(
-            new Point(0, 0),
-            new Point(3, 4),
+            new Vector2D(0, 0),
+            new Vector2D(3, 4),
         );
         const length = line.getLength();
         const expectedLength = 5; // 3-4-5 triangle

@@ -1,20 +1,20 @@
-import { Point } from "pixi.js";
 import { GameObject, Parent } from "./GameObject.ts";
 import { WorldChunk } from "./WorldChunk.ts";
 import { Snowboarder } from "./Snowboarder.ts";
+import { Vector2D } from "src/math/Vector2D.ts";
 
 export class World extends GameObject {
-    private playerVelocity: Point = new Point(0, -1);
+    private playerVelocity: Vector2D = new Vector2D(0, -1);
 
-    private chunkActiveArea = new Point(3, 2);
-    private chunkSize = new Point(256, 256);
+    private chunkActiveArea = new Vector2D(3, 2);
+    private chunkSize = new Vector2D(256, 256);
 
-    private chunkPosition: Point = new Point(0, 0);
+    private chunkPosition: Vector2D = new Vector2D(0, 0);
 
     player: Snowboarder;
 
     constructor(parent: Parent, player: Snowboarder) {
-        super(parent, new Point(0, 0), new Point(0, 0));
+        super(parent, new Vector2D(0, 0), new Vector2D(0, 0));
 
         this.player = player;
     }
@@ -24,7 +24,7 @@ export class World extends GameObject {
         this.Position.x = -this.player.worldPosition.x;
         this.Position.y = -this.player.worldPosition.y;
 
-        this.chunkPosition = new Point(
+        this.chunkPosition = new Vector2D(
             Math.floor((this.Position.x / this.chunkSize.x) + 0.5),
             Math.floor((this.Position.y / this.chunkSize.y) + 0.5),
         );
@@ -45,7 +45,7 @@ export class World extends GameObject {
                 y <= this.chunkActiveArea.y;
                 y++
             ) {
-                const chunkCoord = new Point(
+                const chunkCoord = new Vector2D(
                     this.chunkPosition.x + x,
                     this.chunkPosition.y + y,
                 );
@@ -59,7 +59,7 @@ export class World extends GameObject {
                 });
 
                 if (!existingChunk) {
-                    const chunkWorldPosition = new Point(
+                    const chunkWorldPosition = new Vector2D(
                         chunkCoord.x * -this.chunkSize.x,
                         chunkCoord.y * -this.chunkSize.y,
                     );
@@ -75,7 +75,7 @@ export class World extends GameObject {
 
         for (const chunk of this.children) {
             if (chunk instanceof WorldChunk) {
-                const reativePosition = new Point(
+                const reativePosition = new Vector2D(
                     chunk.chunkPosition.x - this.chunkPosition.x,
                     chunk.chunkPosition.y - this.chunkPosition.y,
                 );

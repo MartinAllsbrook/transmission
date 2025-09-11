@@ -1,18 +1,18 @@
-import { Point } from "pixi.js";
 import { BezierSpline } from "../math/BezierSpline.ts";
+import { Vector2D } from "../math/Vector2D.ts";
 
 export class ChunkGrid {
     grid: number[][];
 
     startingPoint: number;
-    chunkSize: Point;
+    chunkSize: Vector2D;
     endingPoint: number;
 
     splinePath: BezierSpline;
 
     constructor(
         startingPoint: number,
-        size: Point = new Point(64, 64),
+        size: Vector2D = new Vector2D(64, 64),
         endingPoint: number = Math.floor(Math.random() * size.x),
     ) {
         this.startingPoint = startingPoint;
@@ -25,14 +25,14 @@ export class ChunkGrid {
         this.grid = Array.from({ length: rows }, () => Array(cols).fill(0));
 
         this.splinePath = new BezierSpline();
-        this.splinePath.addControlPoint(new Point(0, this.startingPoint));
+        this.splinePath.addControlPoint(new Vector2D(0, this.startingPoint));
         this.splinePath.addControlPoint(
-            new Point(size.x * 0.25, this.startingPoint),
+            new Vector2D(size.x * 0.25, this.startingPoint),
         );
         this.splinePath.addControlPoint(
-            new Point(size.x * 0.75, this.endingPoint),
+            new Vector2D(size.x * 0.75, this.endingPoint),
         );
-        this.splinePath.addControlPoint(new Point(size.x, this.endingPoint));
+        this.splinePath.addControlPoint(new Vector2D(size.x, this.endingPoint));
 
         this.drawPath();
     }
@@ -60,7 +60,7 @@ export class ChunkGrid {
     private drawPath(): void {
         for (let x = 0; x < this.chunkSize.x; x++) {
             for (let y = 0; y < this.chunkSize.y; y++) {
-                const position = new Point(x, y);
+                const position = new Vector2D(x, y);
 
                 const distance = this.splinePath.getDistanceToPoint(
                     position,

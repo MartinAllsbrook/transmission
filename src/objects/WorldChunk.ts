@@ -1,15 +1,16 @@
-import { Graphics, Point } from "pixi.js";
-import { GameObject, Parent } from "./GameObject.ts";
-import { Obstacle } from "./Obstacle.ts";
+import { Graphics } from "pixi.js";
+import { GameObject, Parent } from "src/objects/GameObject.ts";
+import { Obstacle } from "src/objects/Obstacle.ts";
+import { Vector2D } from "src/math/Vector2D.ts";
 
 export class WorldChunk extends GameObject {
-    chunkPosition: Point;
+    chunkPosition: Vector2D;
 
     constructor(
         parent: Parent,
-        position: Point,
-        chunkPosition: Point,
-        size: Point,
+        position: Vector2D,
+        chunkPosition: Vector2D,
+        size: Vector2D,
     ) {
         super(parent, position, size);
 
@@ -42,6 +43,6 @@ export class WorldChunk extends GameObject {
         const x = Math.random() * this.size.x;
         const y = Math.random() * this.size.y;
 
-        new Obstacle(this, new Point(x, y));
+        new Obstacle(this, new Vector2D(x, y));
     }
 }

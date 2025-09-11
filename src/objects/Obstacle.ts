@@ -1,13 +1,14 @@
-import { Assets, Point, Sprite } from "pixi.js";
-import { GameObject, Parent } from "./GameObject.ts";
-import { CircleCollider } from "../colliders/CircleCollider.ts";
+import { Assets, Sprite } from "pixi.js";
+import { GameObject, Parent } from "src/objects/GameObject.ts";
+import { CircleCollider } from "src/colliders/CircleCollider.ts";
+import { Vector2D } from "src/math/Vector2D.ts";
 
 export class Obstacle extends GameObject {
     constructor(
         parent: Parent,
-        position: Point,
+        position: Vector2D,
     ) {
-        super(parent, position, new Point(32, 32));
+        super(parent, position, new Vector2D(32, 32));
 
         this.createSprite();
     }
@@ -20,6 +21,6 @@ export class Obstacle extends GameObject {
 
         super.createSprite();
 
-        const collider = new CircleCollider(this, new Point(0, 12), 4, true);
+        const collider = new CircleCollider(this, new Vector2D(0, 12), 4, true);
     }
 }

@@ -1,17 +1,18 @@
-import { Assets, Point, Sprite } from "pixi.js";
+import { Assets, Sprite } from "pixi.js";
 import { GameObject, Parent } from "./GameObject.ts";
 import { RectCollider } from "../colliders/RectCollider.ts";
+import { Vector2D } from "../math/Vector2D.ts";
 
 export class Snowboarder extends GameObject {
     private speed: number = 0;
     private turnInput: number = 0;
 
-    worldPosition: Point = new Point(0, 0);
+    worldPosition: Vector2D = new Vector2D(0, 0);
 
     constructor(
         parent: Parent,
     ) {
-        super(parent, new Point(0, 0), new Point(32, 32), 0, new Point(1, 1));
+        super(parent, new Vector2D(0, 0), new Vector2D(32, 32), 0, new Vector2D(1, 1));
 
         this.setSpeed(1);
 
@@ -47,8 +48,8 @@ export class Snowboarder extends GameObject {
 
         const collider = new RectCollider(
             this,
-            new Point(0, 0),
-            new Point(32, 7),
+            new Vector2D(0, 0),
+            new Vector2D(32, 7),
             0,
             true,
         );

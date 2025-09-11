@@ -1,4 +1,4 @@
-import { Point } from "pixi.js";
+import { Vector2D } from "src/math/Vector2D.ts";
 import { BezierSpline } from "src/math/BezierSpline.ts";
 
 /**
@@ -9,9 +9,9 @@ export class BezierSplineExample {
      * Create a simple quadratic Bézier curve example
      */
     static createQuadraticExample(): BezierSpline {
-        const p0 = new Point(0, 0); // Start point
-        const p1 = new Point(50, 100); // Control point
-        const p2 = new Point(100, 0); // End point
+        const p0 = new Vector2D(0, 0); // Start point
+        const p1 = new Vector2D(50, 100); // Control point
+        const p2 = new Vector2D(100, 0); // End point
 
         return BezierSpline.createQuadratic(p0, p1, p2);
     }
@@ -20,10 +20,10 @@ export class BezierSplineExample {
      * Create a cubic Bézier curve example
      */
     static createCubicExample(): BezierSpline {
-        const p0 = new Point(0, 0); // Start point
-        const p1 = new Point(25, 75); // First control point
-        const p2 = new Point(75, 75); // Second control point
-        const p3 = new Point(100, 0); // End point
+        const p0 = new Vector2D(0, 0); // Start point
+        const p1 = new Vector2D(25, 75); // First control point
+        const p2 = new Vector2D(75, 75); // Second control point
+        const p3 = new Vector2D(100, 0); // End point
 
         return BezierSpline.createCubic(p0, p1, p2, p3);
     }
@@ -34,12 +34,12 @@ export class BezierSplineExample {
     static createComplexExample(): BezierSpline {
         const spline = new BezierSpline();
 
-        spline.addControlPoint(new Point(0, 50));
-        spline.addControlPoint(new Point(20, 100));
-        spline.addControlPoint(new Point(40, 0));
-        spline.addControlPoint(new Point(60, 80));
-        spline.addControlPoint(new Point(80, 20));
-        spline.addControlPoint(new Point(100, 50));
+        spline.addControlPoint(new Vector2D(0, 50));
+        spline.addControlPoint(new Vector2D(20, 100));
+        spline.addControlPoint(new Vector2D(40, 0));
+        spline.addControlPoint(new Vector2D(60, 80));
+        spline.addControlPoint(new Vector2D(80, 20));
+        spline.addControlPoint(new Vector2D(100, 50));
 
         return spline;
     }
@@ -81,7 +81,7 @@ export class BezierSplineExample {
         }
 
         // Find closest point to a target
-        const target = new Point(50, 40);
+        const target = new Vector2D(50, 40);
         const closest = spline.getClosestPoint(target);
         console.log(`Closest point to (${target.x}, ${target.y}):`);
         console.log(
@@ -99,19 +99,19 @@ export class BezierSplineExample {
         const spline = new BezierSpline();
 
         // Start with a simple line
-        spline.addControlPoint(new Point(0, 0));
-        spline.addControlPoint(new Point(100, 100));
+        spline.addControlPoint(new Vector2D(0, 0));
+        spline.addControlPoint(new Vector2D(100, 100));
 
         console.log("Initial line from (0,0) to (100,100)");
         console.log(`Length: ${spline.getLength().toFixed(2)}`);
 
         // Add control points to make it curved
-        spline.addControlPoint(new Point(200, 50));
+        spline.addControlPoint(new Vector2D(200, 50));
         console.log("Added third control point at (200,50)");
         console.log(`New length: ${spline.getLength().toFixed(2)}`);
 
         // Modify an existing control point
-        spline.setControlPoint(1, new Point(50, 150));
+        spline.setControlPoint(1, new Vector2D(50, 150));
         console.log("Modified second control point to (50,150)");
         console.log(`Final length: ${spline.getLength().toFixed(2)}`);
 
