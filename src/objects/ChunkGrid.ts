@@ -1,5 +1,5 @@
 import { Point } from "pixi.js";
-import { BezierSpline } from "./BezierSpline.ts";
+import { BezierSpline } from "../math/BezierSpline.ts";
 
 export class ChunkGrid {
     grid: number[][];

@@ -1,5 +1,5 @@
 import { Point } from "pixi.js";
-import { BezierSpline } from "src/objects/BezierSpline.ts";
+import { BezierSpline } from "src/math/BezierSpline.ts";
 
 /**
  * Example usage of the BezierSpline class
