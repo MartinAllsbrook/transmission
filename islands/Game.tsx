@@ -1,9 +1,9 @@
 import { Component } from "preact";
 import { Application } from "pixi.js";
 
-import { Snowboarder } from "src/client/objects/Snowboarder.ts";
-import { World } from "src/client/objects/World.ts";
-import { CollisionManager } from "src/client/colliders/CollisionManager.ts";
+import { Snowboarder } from "src/objects/Snowboarder.ts";
+import { World } from "src/objects/World.ts";
+import { CollisionManager } from "src/colliders/CollisionManager.ts";
 
 export default class Game extends Component {
     private gameContainer?: HTMLDivElement;

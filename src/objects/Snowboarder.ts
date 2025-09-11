@@ -19,7 +19,7 @@ export class Snowboarder extends GameObject {
     }
 
     private async setupInputs() {
-        const { InputManager } = await import("client/inputs/InputManager.ts");
+        const { InputManager } = await import("src/inputs/InputManager.ts");
 
         InputManager.getInput("turn").subscribe((newValue) => {
             this.turnInput = newValue;
