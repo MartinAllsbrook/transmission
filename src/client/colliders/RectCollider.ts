@@ -1,5 +1,5 @@
 import { Graphics, Point } from "pixi.js";
-import { SATCollider, Range } from "./SATCollider.ts";
+import { Range, SATCollider } from "./SATCollider.ts";
 import { GameObject } from "../objects/GameObject.ts";
 
 /**
@@ -12,11 +12,21 @@ export class RectCollider extends SATCollider {
     /** The roatation of the collider */
     rotation: number;
 
-    constructor(host: GameObject, position: Point, size: Point, rotation: number = 0, debugging: boolean = false) {
+    constructor(
+        host: GameObject,
+        position: Point,
+        size: Point,
+        rotation: number = 0,
+        debugging: boolean = false,
+    ) {
         super(host, position, debugging);
 
         this.rotation = rotation;
         this.size = size;
+
+        if (this.debugging) {
+            this.drawDebugShape();
+        }
     }
 
     protected drawDebugShape(): void {
@@ -24,13 +34,12 @@ export class RectCollider extends SATCollider {
         const halfY = this.size.y / 2;
 
         const graphics = new Graphics()
-            .rect(
-                this.relativePosition.x - halfX, 
-                this.relativePosition.y - halfY, 
-                this.relativePosition.x + halfX,
-                this.relativePosition.y + halfY
-            )
-            .stroke({ width: 2, color: 0x00ff00 });
+            .rect(0, 0, this.size.x, this.size.y)
+            .stroke({ width: 1, color: 0x00ff00 });
+
+        graphics.pivot.x = halfX;
+        graphics.pivot.y = halfY;
+        graphics.rotation = this.rotation;
 
         this.host.addVisual(graphics);
     }
@@ -41,10 +50,22 @@ export class RectCollider extends SATCollider {
         const cos = Math.cos(this.rotation);
         const sin = Math.sin(this.rotation);
         return [
-            new Point(this.Position.x + -halfWidth * cos - -halfHeight * sin, this.Position.y + -halfWidth * sin + -halfHeight * cos),
-            new Point(this.Position.x + halfWidth * cos - -halfHeight * sin, this.Position.y + halfWidth * sin + -halfHeight * cos),
-            new Point(this.Position.x + halfWidth * cos - halfHeight * sin, this.Position.y + halfWidth * sin + halfHeight * cos),
-            new Point(this.Position.x + -halfWidth * cos - halfHeight * sin, this.Position.y + -halfWidth * sin + halfHeight * cos)
+            new Point(
+                this.Position.x + -halfWidth * cos - -halfHeight * sin,
+                this.Position.y + -halfWidth * sin + -halfHeight * cos,
+            ),
+            new Point(
+                this.Position.x + halfWidth * cos - -halfHeight * sin,
+                this.Position.y + halfWidth * sin + -halfHeight * cos,
+            ),
+            new Point(
+                this.Position.x + halfWidth * cos - halfHeight * sin,
+                this.Position.y + halfWidth * sin + halfHeight * cos,
+            ),
+            new Point(
+                this.Position.x + -halfWidth * cos - halfHeight * sin,
+                this.Position.y + -halfWidth * sin + halfHeight * cos,
+            ),
         ];
     }
 

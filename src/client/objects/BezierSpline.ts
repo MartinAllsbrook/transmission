@@ -42,7 +42,10 @@ export class BezierSpline {
      */
     getControlPoint(index: number): Point | null {
         if (index >= 0 && index < this.controlPoints.length) {
-            return new Point(this.controlPoints[index].x, this.controlPoints[index].y);
+            return new Point(
+                this.controlPoints[index].x,
+                this.controlPoints[index].y,
+            );
         }
         return null;
     }
@@ -67,7 +70,7 @@ export class BezierSpline {
      * @returns An array of copies of all control points
      */
     getControlPoints(): Point[] {
-        return this.controlPoints.map(p => new Point(p.x, p.y));
+        return this.controlPoints.map((p) => new Point(p.x, p.y));
     }
 
     /**
@@ -75,7 +78,7 @@ export class BezierSpline {
      * @param points An array of Points to use as the new control points
      */
     setControlPoints(points: Point[]): void {
-        this.controlPoints = points.map(p => new Point(p.x, p.y));
+        this.controlPoints = points.map((p) => new Point(p.x, p.y));
     }
 
     /**
@@ -105,8 +108,8 @@ export class BezierSpline {
         t = Math.max(0, Math.min(1, t));
 
         // De Casteljau's algorithm
-        const points = this.controlPoints.map(p => new Point(p.x, p.y));
-        
+        const points = this.controlPoints.map((p) => new Point(p.x, p.y));
+
         for (let level = 1; level < this.controlPoints.length; level++) {
             for (let i = 0; i < this.controlPoints.length - level; i++) {
                 points[i].x = (1 - t) * points[i].x + t * points[i + 1].x;
@@ -135,14 +138,16 @@ export class BezierSpline {
         const n = this.controlPoints.length - 1;
 
         for (let i = 0; i < n; i++) {
-            const dx = n * (this.controlPoints[i + 1].x - this.controlPoints[i].x);
-            const dy = n * (this.controlPoints[i + 1].y - this.controlPoints[i].y);
+            const dx = n *
+                (this.controlPoints[i + 1].x - this.controlPoints[i].x);
+            const dy = n *
+                (this.controlPoints[i + 1].y - this.controlPoints[i].y);
             derivativePoints.push(new Point(dx, dy));
         }
 
         // Calculate point on derivative curve
         const points = derivativePoints;
-        
+
         for (let level = 1; level < derivativePoints.length; level++) {
             for (let i = 0; i < derivativePoints.length - level; i++) {
                 points[i].x = (1 - t) * points[i].x + t * points[i + 1].x;
@@ -160,14 +165,14 @@ export class BezierSpline {
      */
     getPoints(numPoints: number = 100): Point[] {
         if (numPoints < 2) numPoints = 2;
-        
+
         const points: Point[] = [];
-        
+
         for (let i = 0; i < numPoints; i++) {
             const t = i / (numPoints - 1);
             points.push(this.getPointAt(t));
         }
-        
+
         return points;
     }
 
@@ -185,11 +190,11 @@ export class BezierSpline {
         for (let i = 1; i <= segments; i++) {
             const t = i / segments;
             const currentPoint = this.getPointAt(t);
-            
+
             const dx = currentPoint.x - previousPoint.x;
             const dy = currentPoint.y - previousPoint.y;
             length += Math.sqrt(dx * dx + dy * dy);
-            
+
             previousPoint = currentPoint;
         }
 
@@ -202,7 +207,10 @@ export class BezierSpline {
      * @param precision The number of sample points to check along the curve (higher = more accurate)
      * @returns An object containing the closest point on the curve and its parameter t value
      */
-    getClosestPoint(targetPoint: Point, precision: number = 100): { point: Point; t: number } {
+    getClosestPoint(
+        targetPoint: Point,
+        precision: number = 100,
+    ): { point: Point; t: number } {
         let closestPoint = new Point(0, 0);
         let closestT = 0;
         let minDistance = Infinity;
@@ -210,7 +218,7 @@ export class BezierSpline {
         for (let i = 0; i <= precision; i++) {
             const t = i / precision;
             const point = this.getPointAt(t);
-            
+
             const dx = point.x - targetPoint.x;
             const dy = point.y - targetPoint.y;
             const distance = dx * dx + dy * dy;
@@ -246,7 +254,12 @@ export class BezierSpline {
      * @param p3 The ending point of the curve
      * @returns A new BezierSpline instance with the specified cubic curve
      */
-    static createCubic(p0: Point, p1: Point, p2: Point, p3: Point): BezierSpline {
+    static createCubic(
+        p0: Point,
+        p1: Point,
+        p2: Point,
+        p3: Point,
+    ): BezierSpline {
         return new BezierSpline([p0, p1, p2, p3]);
     }
 

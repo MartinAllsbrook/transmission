@@ -1,8 +1,9 @@
 import { Component } from "preact";
-import { Application } from 'pixi.js';
+import { Application } from "pixi.js";
 
 import { Snowboarder } from "src/client/objects/Snowboarder.ts";
 import { World } from "src/client/objects/World.ts";
+import { CollisionManager } from "src/client/colliders/CollisionManager.ts";
 
 export default class Game extends Component {
     private gameContainer?: HTMLDivElement;
@@ -13,20 +14,17 @@ export default class Game extends Component {
 
     override componentDidMount() {
         // Only run on client side
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
             this.initPixiGame();
         }
     }
-    
-    override componentWillUnmount() {
 
-         
+    override componentWillUnmount() {
         // Clean up PixiJS application
         if (this.app) {
             this.app.destroy(true);
         }
     }
-
 
     /**
      * Initialize the PixiJS game
@@ -42,18 +40,22 @@ export default class Game extends Component {
         (globalThis as any).__PIXI_APP__ = this.app;
 
         // Initialize the application
-        await this.app.init({ background: '#1099bb', resizeTo: globalThis.window });
+        await this.app.init({
+            background: "#1099bb",
+            resizeTo: globalThis.window,
+        });
 
         // Append the application canvas to the game container
-        this.gameContainer.appendChild(this.app.canvas);    
+        this.gameContainer.appendChild(this.app.canvas);
 
         const snowboarder = new Snowboarder(this.app);
         const world = new World(this.app, snowboarder);
 
         // Listen for animate update
         this.app.ticker.add((ticker) => {
-            world.update(ticker.deltaTime)
-            snowboarder.update(ticker.deltaTime)
+            world.update(ticker.deltaTime);
+            snowboarder.update(ticker.deltaTime);
+            CollisionManager.checkCollisions();
         });
     }
 

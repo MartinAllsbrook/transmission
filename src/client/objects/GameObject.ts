@@ -1,4 +1,4 @@
-import { Point, Container, Application } from "pixi.js";
+import { Application, Container, Graphics, Point } from "pixi.js";
 
 export type Parent = Application | GameObject;
 
@@ -6,22 +6,27 @@ export type Parent = Application | GameObject;
  * Base class for all game objects in the game.
  */
 export abstract class GameObject {
-    position: Point;
+    private position: Point;
     rotation: number;
+    size: Point;
     scale: Point;
 
     parent: GameObject | null = null;
     children: GameObject[] = [];
     container: Container = new Container();
 
+    onSpriteLoaded: (() => void)[] = [];
+
     constructor(
         parent: Parent,
-        position: Point, 
-        rotation: number = 0, 
-        scale: Point = new Point(1, 1)
+        position: Point,
+        size: Point,
+        rotation: number = 0,
+        scale: Point = new Point(1, 1),
     ) {
         this.position = position;
         this.rotation = rotation;
+        this.size = size;
         this.scale = scale;
 
         this.createSprite();
@@ -42,7 +47,10 @@ export abstract class GameObject {
 
         this.container.position.set(this.position.x, this.position.y);
         this.container.rotation = this.rotation * (Math.PI / 180);
+
         this.container.scale.set(this.scale.x, this.scale.y);
+
+        this.onSpriteLoaded.forEach((callback) => callback());
     }
 
     /**
@@ -51,11 +59,14 @@ export abstract class GameObject {
      */
     public update(_deltaTime: number): void {
         const screenCenter = new Point(
-            globalThis.window.innerWidth / 2, 
-            globalThis.window.innerHeight / 2
+            globalThis.window.innerWidth / 2,
+            globalThis.window.innerHeight / 2,
         );
 
-        this.container.position.set(this.position.x + screenCenter.x, this.position.y + screenCenter.y);
+        this.container.position.set(
+            this.position.x + screenCenter.x,
+            this.position.y + screenCenter.y,
+        );
         this.container.rotation = this.rotation * (Math.PI / 180);
         // this.container.scale.set(this.scale.x, this.scale.y);
     }
@@ -68,11 +79,12 @@ export abstract class GameObject {
         return this.container;
     }
 
-    /** 
+    /**
      * Adds visual elements (like sprites or graphics) directly to the game object's PIXI container.
      */
     public addVisual(child: Container): void {
         this.container.addChild(child);
+        child.position.set(this.container.pivot.x, this.container.pivot.y);
     }
 
     public addChild(child: GameObject): void {
@@ -89,5 +101,9 @@ export abstract class GameObject {
         }
 
         this.container.destroy({ children: true });
+    }
+
+    get Position(): Point {
+        return this.position;
     }
 }

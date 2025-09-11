@@ -1,7 +1,7 @@
 import { BooleanInput } from "./BooleanInput.ts";
 import { ValueInput } from "./ValueInput.ts";
 
-export type InputType = 'boolean' | 'value' | 'vector';
+export type InputType = "boolean" | "value" | "vector";
 
 type InputMap = {
     jump: BooleanInput;
@@ -11,12 +11,11 @@ type InputMap = {
 
 export class InputManager {
     private static inputs: { [K in keyof InputMap]: InputMap[K] } = {
-        jump: new BooleanInput('jump', [' ', 'w', 'ArrowUp']),
-        turn: new ValueInput('turn', ['ArrowRight', 'd'], ['ArrowLeft', 'a']),
+        jump: new BooleanInput("jump", [" ", "w", "ArrowUp"]),
+        turn: new ValueInput("turn", ["ArrowRight", "d"], ["ArrowLeft", "a"]),
     };
 
     public static getInput<K extends keyof InputMap>(name: K): InputMap[K] {
         return this.inputs[name];
     }
 }
-

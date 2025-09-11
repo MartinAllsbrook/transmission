@@ -14,11 +14,11 @@ export abstract class Input<T> {
         this.type = type;
         this.value = defaultValue;
 
-        document.addEventListener('keydown', (event) => {
+        document.addEventListener("keydown", (event) => {
             this.onKeyDown(event.key);
         });
 
-        document.addEventListener('keyup', (event) => {
+        document.addEventListener("keyup", (event) => {
             this.onKeyUp(event.key);
         });
     }
@@ -28,7 +28,6 @@ export abstract class Input<T> {
      * @param key The key that was pressed.
      */
     abstract onKeyDown(key: string): void;
-
 
     /**
      * Function to be called when a key is released. Implementations should update the input's value accordingly.
@@ -63,7 +62,7 @@ export abstract class Input<T> {
         this.listeners.push(listener);
         // Return unsubscribe function
         return () => {
-            this.listeners = this.listeners.filter(l => l !== listener);
+            this.listeners = this.listeners.filter((l) => l !== listener);
         };
     }
 

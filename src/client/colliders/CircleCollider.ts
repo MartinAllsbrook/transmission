@@ -1,22 +1,34 @@
 import { Graphics, Point } from "pixi.js";
-import { SATCollider, Range } from "./SATCollider.ts";
+import { Range, SATCollider } from "./SATCollider.ts";
 import { GameObject } from "../objects/GameObject.ts";
 
 export class CircleCollider extends SATCollider {
-
     /** The radius of the collider */
     radius: number;
 
-    constructor(host: GameObject, position: Point, radius: number, debugging: boolean = false) {
+    constructor(
+        host: GameObject,
+        position: Point,
+        radius: number,
+        debugging: boolean = false,
+    ) {
         super(host, position, debugging);
 
         this.radius = radius;
+
+        if (this.debugging) {
+            this.drawDebugShape();
+        }
     }
 
     protected drawDebugShape(): void {
         const graphics = new Graphics()
-            .circle(this.relativePosition.x, this.relativePosition.y, this.radius)
-            .stroke({ width: 2, color: 0x00ff00 })
+            .circle(
+                this.relativePosition.x,
+                this.relativePosition.y,
+                this.radius,
+            )
+            .stroke({ width: 1, color: 0x00ff00 });
 
         this.host.addVisual(graphics);
     }
@@ -28,7 +40,7 @@ export class CircleCollider extends SATCollider {
 
     protected getAxes(otherVertexs: Point[]): Point[] {
         const axes: Point[] = [];
-        
+
         for (const vertex of otherVertexs) {
             // The axis is the vector from this circle's center to the other circle's center
             const axis = this.Position
@@ -45,7 +57,7 @@ export class CircleCollider extends SATCollider {
         const centerProjection = this.Position.dot(axis);
         return {
             min: centerProjection - this.radius,
-            max: centerProjection + this.radius
+            max: centerProjection + this.radius,
         };
     }
 }

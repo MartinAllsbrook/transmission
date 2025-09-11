@@ -1,12 +1,8 @@
-import { Point, Graphics } from "pixi.js";
+import { Graphics, Point } from "pixi.js";
 import { GameObject, Parent } from "./GameObject.ts";
-import { BezierSpline } from "./BezierSpline.ts";
 import { Obstacle } from "./Obstacle.ts";
 
 export class WorldChunk extends GameObject {
-
-    size: Point;
-
     chunkPosition: Point;
 
     constructor(
@@ -15,8 +11,8 @@ export class WorldChunk extends GameObject {
         chunkPosition: Point,
         size: Point,
     ) {
-        super(parent, position);
-    
+        super(parent, position, size);
+
         this.chunkPosition = chunkPosition;
         this.size = size;
 
@@ -31,12 +27,13 @@ export class WorldChunk extends GameObject {
         const height = this.size?.y ?? 64;
 
         const graphics = new Graphics()
-        .rect(0, 0, width, height)
-        .stroke({ width: 2, color: 0x000000 })
+            .rect(0, 0, width, height)
+            .stroke({ width: 2, color: 0x000000 });
         this.container.addChild(graphics);
 
-        for (let i = 0; i < 5; i++)
+        for (let i = 0; i < 5; i++) {
             this.createRandomObstacle();
+        }
 
         super.createSprite();
     }
@@ -44,7 +41,7 @@ export class WorldChunk extends GameObject {
     private createRandomObstacle() {
         const x = Math.random() * this.size.x;
         const y = Math.random() * this.size.y;
-        
+
         new Obstacle(this, new Point(x, y));
     }
 }

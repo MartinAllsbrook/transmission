@@ -1,11 +1,11 @@
-import { Input } from './Input.ts';
+import { Input } from "./Input.ts";
 
 export class BooleanInput extends Input<boolean> {
     keys: string[];
     pressedKeys: Set<string> = new Set();
 
     constructor(name: string, keys: string[]) {
-        super(name, 'boolean', false);
+        super(name, "boolean", false);
         this.keys = keys;
     }
 
@@ -22,8 +22,9 @@ export class BooleanInput extends Input<boolean> {
             this.pressedKeys.delete(key);
 
             // Only set to false if no keys are pressed
-            if (this.pressedKeys.size === 0)
+            if (this.pressedKeys.size === 0) {
                 this.setValue(false);
+            }
         }
     }
 }

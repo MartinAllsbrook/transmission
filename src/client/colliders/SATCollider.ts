@@ -1,5 +1,6 @@
 import { Point } from "pixi.js";
 import { GameObject } from "../objects/GameObject.ts";
+import { CollisionManager } from "./CollisionManager.ts";
 
 export interface Range {
     min: number;
@@ -16,14 +17,16 @@ export abstract class SATCollider {
     /** Weather to draw the debugging shape of this collider */
     debugging: boolean;
 
-    constructor(host: GameObject, relativePosition: Point, debugging: boolean = false) {
+    constructor(
+        host: GameObject,
+        relativePosition: Point,
+        debugging: boolean = false,
+    ) {
         this.relativePosition = relativePosition;
         this.host = host;
         this.debugging = debugging;
 
-        if (this.debugging) {
-            this.drawDebugShape();
-        }
+        CollisionManager.addCollider(this);
     }
 
     /**
@@ -55,7 +58,7 @@ export abstract class SATCollider {
      * @param other - The other collider to check against
      * @returns - True if colliding, false otherwise
      */
-    public isCollidingWith(other: SATCollider): boolean {
+    public checkCollision(other: SATCollider): boolean {
         const axesA = this.getAxes(other.getVertices());
         const axesB = other.getAxes(this.getVertices());
 
@@ -95,6 +98,12 @@ export abstract class SATCollider {
 
     /** The world position of the collider */
     get Position(): Point {
-        return this.host.position.add(this.relativePosition);
+        console.log(this.host.Position)
+        console.log(this.relativePosition)
+        return this.relativePosition.add(this.host.Position);
+    }
+
+    public onCollision(other: SATCollider): void {
+        console.log("Collision detected between", this, "and", other);
     }
 }
