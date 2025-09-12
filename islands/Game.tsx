@@ -5,15 +5,25 @@ import { Snowboarder } from "src/objects/Snowboarder.ts";
 import { World } from "src/objects/World.ts";
 import { CollisionManager } from "src/colliders/CollisionManager.ts";
 import { OffsetContainer } from "src/objects/OffsetContainer.ts";
+import { StatDisplay } from "../components/StatDisplay.tsx";
+import { Signal } from "@preact/signals";
 
 export default class Game extends Component {
-    private gameContainer?: HTMLDivElement;
-    private app?: Application;
-    private spaceKeyPressed: boolean = false;
-
-    private turnInput: number = 0;
-
+    /** Global acess to the pixi app for debugging draw calls */
     public static app?: Application;
+    
+    /** Reference to the game container div */
+    private gameContainer?: HTMLDivElement;
+
+    /** PixiJS application instance */
+    private app?: Application;
+
+    /** Set of signals to extract info from the player */
+    private stats = {
+        speed: new Signal(0),
+        distance: new Signal(0),
+        score: new Signal(0),
+    };
 
     override componentDidMount() {
         // Only run on client side
@@ -66,7 +76,14 @@ export default class Game extends Component {
     render() {
         return (
             <div>
-                <div ref={(el) => this.gameContainer = el || undefined}></div>
+                <div class="w-screen h-screen">
+                    <div>
+                        <StatDisplay name="Speed" value={0} highest={0} />
+                        <StatDisplay name="Distance" value={0} highest={0} />
+                        <StatDisplay name="Score" value={0} highest={0} />
+                    </div>
+                </div>
+                {/* <div ref={(el) => this.gameContainer = el || undefined}></div> */}
             </div>
         );
     }
