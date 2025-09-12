@@ -14,24 +14,25 @@ export class World extends GameObject {
     player: Snowboarder;
 
     constructor(parent: Parent, player: Snowboarder) {
-        super(parent, new Vector2D(0, 0), new Vector2D(0, 0));
+        const chunkSize = new Vector2D(256, 256);
+
+        super(parent, new Vector2D(0,0), new Vector2D(0, 0));
 
         this.player = player;
     }
 
     public override update(deltaTime: number): void {
         // Move world origin
-        this.Position.x = -this.player.worldPosition.x;
-        this.Position.y = -this.player.worldPosition.y;
+        this.position.x = -(this.player.worldPosition.x + this.chunkSize.x / 2);
+        this.position.y = -(this.player.worldPosition.y + this.chunkSize.y / 2);
 
         this.chunkPosition = new Vector2D(
-            Math.floor((this.Position.x / this.chunkSize.x) + 0.5),
-            Math.floor((this.Position.y / this.chunkSize.y) + 0.5),
+            Math.floor((this.position.x / this.chunkSize.x) + 1),
+            Math.floor((this.position.y / this.chunkSize.y) + 1),
         );
 
-        this.updateChunks();
-
         super.update(deltaTime);
+        this.updateChunks();
     }
 
     private updateChunks() {

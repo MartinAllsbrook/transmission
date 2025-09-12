@@ -21,23 +21,23 @@ export class WorldChunk extends GameObject {
     }
 
     private createChunk(): void {
+        super.createSprite();
         
         for (let i = 0; i < 5; i++) {
             this.createRandomObstacle();
         }
 
-        // // Use actual chunk size
-        // const width = this.size?.x ?? 64;
-        // const height = this.size?.y ?? 64;
+        // Use actual chunk size
+        const width = this.size?.x ?? 64;
+        const height = this.size?.y ?? 64;
 
-        // const graphics = new Graphics()
-        //     .rect(0, 0, width, height)
-        //     .stroke({ width: 2, color: 0x000000 });
+        const graphics = new Graphics()
+            .rect(0, 0, width, height)
+            .stroke({ width: 2, color: 0x000000 });
         
-        // this.container.addChild(graphics);
+        this.container.addChild(graphics);
 
 
-        super.createSprite();
     }
 
     private createRandomObstacle() {

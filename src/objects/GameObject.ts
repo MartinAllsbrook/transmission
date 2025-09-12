@@ -7,7 +7,7 @@ export type Parent = Application | GameObject;
  * Base class for all game objects in the game.
  */
 export abstract class GameObject {
-    private position: Vector2D;
+    protected position: Vector2D;
     rotation: number;
     size: Vector2D;
     scale: Vector2D;
@@ -59,17 +59,14 @@ export abstract class GameObject {
      * @param deltaTime Time in milliseconds since the last frame.
      */
     public update(_deltaTime: number): void {
-        const screenCenter = new Vector2D(
-            globalThis.window.innerWidth / 2,
-            globalThis.window.innerHeight / 2,
-        );
-
         this.container.position.set(
-            this.position.x + screenCenter.x,
-            this.position.y + screenCenter.y,
+            this.position.x,
+            this.position.y,
         );
         this.container.rotation = this.rotation * (Math.PI / 180);
         // this.container.scale.set(this.scale.x, this.scale.y);
+
+        this.children.forEach((child) => child.update(_deltaTime));
     }
 
     /**

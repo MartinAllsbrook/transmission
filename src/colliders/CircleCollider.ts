@@ -37,13 +37,9 @@ export class CircleCollider extends SATCollider {
 
     public override updateDebugShape(): void {
         if (this.debugShape) {
-            const screenCenter = new Vector2D(
-                globalThis.window.innerWidth / 2,
-                globalThis.window.innerHeight / 2,
-            );
             this.debugShape.position.set(
-                this.Position.x + screenCenter.x,
-                this.Position.y + screenCenter.y
+                this.Position.x,
+                this.Position.y
             );
         }
     }    

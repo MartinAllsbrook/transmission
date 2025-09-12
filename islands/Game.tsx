@@ -4,6 +4,7 @@ import { Application } from "pixi.js";
 import { Snowboarder } from "src/objects/Snowboarder.ts";
 import { World } from "src/objects/World.ts";
 import { CollisionManager } from "src/colliders/CollisionManager.ts";
+import { OffsetContainer } from "src/objects/OffsetContainer.ts";
 
 export default class Game extends Component {
     private gameContainer?: HTMLDivElement;
@@ -37,7 +38,7 @@ export default class Game extends Component {
         // Create a new application
         this.app = new Application();
         Game.app = this.app;
-        
+
         // Declare the property on globalThis to avoid type error
         // deno-lint-ignore no-explicit-any
         (globalThis as any).__PIXI_APP__ = this.app;
@@ -51,13 +52,15 @@ export default class Game extends Component {
         // Append the application canvas to the game container
         this.gameContainer.appendChild(this.app.canvas);
 
-        const snowboarder = new Snowboarder(this.app);
-        const world = new World(this.app, snowboarder);
+        const worldContainer = new OffsetContainer(this.app);
+        const snowboarder = new Snowboarder(worldContainer);
+        const world = new World(worldContainer, snowboarder);
+
 
         // Listen for animate update
         this.app.ticker.add((ticker) => {
-            world.update(ticker.deltaTime);
-            snowboarder.update(ticker.deltaTime);
+
+            worldContainer.update(ticker.deltaTime);
             CollisionManager.checkCollisions();
         });
     }
