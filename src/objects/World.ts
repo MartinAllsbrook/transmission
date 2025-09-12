@@ -14,8 +14,6 @@ export class World extends GameObject {
     player: Snowboarder;
 
     constructor(parent: Parent, player: Snowboarder) {
-        const chunkSize = new Vector2D(256, 256);
-
         super(parent, new Vector2D(0, 0), new Vector2D(0, 0));
 
         this.player = player;

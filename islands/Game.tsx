@@ -54,7 +54,7 @@ export default class Game extends Component {
 
         const worldContainer = new OffsetContainer(this.app);
         const snowboarder = new Snowboarder(worldContainer);
-        const world = new World(worldContainer, snowboarder);
+        new World(worldContainer, snowboarder);
 
         // Listen for animate update
         this.app.ticker.add((ticker) => {
