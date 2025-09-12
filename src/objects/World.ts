@@ -2,6 +2,7 @@ import { GameObject, Parent } from "./GameObject.ts";
 import { WorldChunk } from "./WorldChunk.ts";
 import { Snowboarder } from "./Snowboarder.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
+import { SnowboarderTrail } from "./SnowbarderTrail.ts";
 
 export class World extends GameObject {
     private playerVelocity: Vector2D = new Vector2D(0, -1);
@@ -17,12 +18,14 @@ export class World extends GameObject {
         super(parent, new Vector2D(0, 0), new Vector2D(0, 0));
 
         this.player = player;
+        new SnowboarderTrail(this);
+        this.container.label = "World";
     }
 
     public override update(deltaTime: number): void {
         // Move world origin
-        this.position.x = -(this.player.worldPosition.x + this.chunkSize.x / 2);
-        this.position.y = -(this.player.worldPosition.y + this.chunkSize.y / 2);
+        this.position.x = -(this.player.worldPosition.x);
+        this.position.y = -(this.player.worldPosition.y);
 
         this.chunkPosition = new Vector2D(
             Math.floor((this.position.x / this.chunkSize.x) + 1),

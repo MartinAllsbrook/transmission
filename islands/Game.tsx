@@ -5,13 +5,12 @@ import { Snowboarder } from "src/objects/Snowboarder.ts";
 import { World } from "src/objects/World.ts";
 import { CollisionManager } from "src/colliders/CollisionManager.ts";
 import { OffsetContainer } from "src/objects/OffsetContainer.ts";
-import { StatDisplay } from "../components/StatDisplay.tsx";
 import { Signal } from "@preact/signals";
 
 export default class Game extends Component {
     /** Global acess to the pixi app for debugging draw calls */
     public static app?: Application;
-    
+
     /** Reference to the game container div */
     private gameContainer?: HTMLDivElement;
 
@@ -76,11 +75,13 @@ export default class Game extends Component {
     render() {
         return (
             <div>
-                {/* <div class="absolute top-0 left-0 z-10 flex flex-col gap-2 p-2">
+                {
+                    /* <div class="absolute top-0 left-0 z-10 flex flex-col gap-2 p-2">
                     <StatDisplay name="Speed" value={this.stats.speed.value} highest={0} />
                     <StatDisplay name="Distance" value={this.stats.distance.value} highest={0} />
                     <StatDisplay name="Score" value={this.stats.score.value} highest={0} />
-                </div> */}
+                </div> */
+                }
                 <div ref={(el) => this.gameContainer = el || undefined}></div>
             </div>
         );

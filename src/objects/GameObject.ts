@@ -23,8 +23,8 @@ export abstract class GameObject {
 
     constructor(
         parent: Parent,
-        position: Vector2D,
-        size: Vector2D,
+        position: Vector2D = new Vector2D(0, 0),
+        size: Vector2D = new Vector2D(0, 0),
         rotation: number = 0,
         scale: Vector2D = new Vector2D(1, 1),
     ) {
@@ -72,13 +72,13 @@ export abstract class GameObject {
         this.children.forEach((child) => child.update(_deltaTime));
     }
 
-    /**
-     * Adds visual elements (like sprites or graphics) directly to the game object's PIXI container.
-     */
-    public addVisual(child: Container): void {
-        this.container.addChild(child);
-        child.position.set(this.container.pivot.x, this.container.pivot.y);
-    }
+    // /**
+    //  * Adds visual elements (like sprites or graphics) directly to the game object's PIXI container.
+    //  */
+    // public addVisual(child: Container): void {
+    //     this.container.addChild(child);
+    //     child.position.set(this.container.pivot.x, this.container.pivot.y);
+    // }
 
     /**
      * Adds a child game object to this game object.
