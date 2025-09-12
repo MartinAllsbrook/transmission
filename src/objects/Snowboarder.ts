@@ -5,9 +5,6 @@ import { Vector2D } from "../math/Vector2D.ts";
 import { Signal } from "@preact/signals";
 
 export class Snowboarder extends GameObject {
-    /** Current speed of the player */
-    private speed: number = 0;
-
     /** Input value for turning, from -1 to 1 */
     private turnInput: number = 0;
 
@@ -20,6 +17,9 @@ export class Snowboarder extends GameObject {
         distance: Signal<number>;
         score: Signal<number>;
     };
+
+    /** The current velocity of the player */
+    private velocity: Vector2D = new Vector2D(0, 0);
 
     constructor(
         parent: Parent,
@@ -38,8 +38,6 @@ export class Snowboarder extends GameObject {
         );
 
         this.stats = stats;
-
-        this.setSpeed(1);
 
         this.setupInputs();
     }
@@ -85,11 +83,7 @@ export class Snowboarder extends GameObject {
     }
 
     public override update(deltaTime: number): void {
-        // Update position based on speed and turn input
-        const radians = (this.rotation) * (Math.PI / 180);
-        this.worldPosition.x += Math.cos(radians) * this.speed * deltaTime;
-        this.worldPosition.y += Math.sin(radians) * this.speed * deltaTime;
-        this.rotation += this.turnInput * deltaTime;
+        this.updatePhysics(deltaTime);
 
         this.updateStats();
 
@@ -97,14 +91,40 @@ export class Snowboarder extends GameObject {
     }
 
     private updateStats() {
-        this.stats.speed.value = this.speed;
+        this.stats.speed.value = this.velocity.magnitude();
         this.stats.distance.value = this.worldPosition.y;
         this.stats.score.value = Math.floor(this.worldPosition.y / 10);
     }
 
-    setSpeed(speed: number) {
-        this.speed = speed;
+    private updatePhysics(deltaTime: number) {
+        const frictionStrength = 0.001;
+        const gravityStrength = 0.075;
+        const slipStrength = 1.1;
+        const turnStrength = 3;
+        
+        
+        // Apply gravity
+        this.velocity.y += gravityStrength * deltaTime;
+        
+        // Rotate
+        const radians = (this.rotation) * (Math.PI / 180);
+        this.rotation += this.turnInput * deltaTime * turnStrength;
+        
+        // Normal force
+        const slip = 1 / (1 + slipStrength * this.velocity.magnitude());
+        const forward = Vector2D.fromAngle(radians - Math.PI / 2);
+        const projectedVelocity = this.velocity.projectOnto(forward);
+        const normalForce = projectedVelocity.subtract(this.velocity).multiply(slip);
+
+        this.velocity = this.velocity.add(normalForce.multiply(deltaTime));
+
+        // Friction
+        this.velocity = this.velocity.multiply(1 - frictionStrength * deltaTime);
+
+        // Update position
+        this.worldPosition.set(this.worldPosition.add(this.velocity.multiply(deltaTime)))
     }
+
     setTurnInput(turn: number) {
         this.turnInput = turn;
     }

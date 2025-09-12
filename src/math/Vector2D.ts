@@ -147,6 +147,13 @@ export class Vector2D {
         return Math.atan2(this.y, this.x);
     }
 
+    /**
+     * Returns a vector that is perpendicular to the current vector. (Clockwise)
+     */
+    public perpendicular(): Vector2D {
+        return new Vector2D(this.y, -this.x);
+    }
+
     // #endregion
 
     // #region Additional Methods
