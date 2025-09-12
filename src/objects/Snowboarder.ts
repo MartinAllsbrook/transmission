@@ -50,7 +50,6 @@ export class Snowboarder extends GameObject {
             this,
             new Vector2D(0, 0),
             new Vector2D(32, 7),
-            0,
             true,
             "player",
         );

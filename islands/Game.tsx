@@ -12,6 +12,8 @@ export default class Game extends Component {
 
     private turnInput: number = 0;
 
+    public static app?: Application;
+
     override componentDidMount() {
         // Only run on client side
         if (typeof window !== "undefined") {
@@ -34,7 +36,8 @@ export default class Game extends Component {
 
         // Create a new application
         this.app = new Application();
-
+        Game.app = this.app;
+        
         // Declare the property on globalThis to avoid type error
         // deno-lint-ignore no-explicit-any
         (globalThis as any).__PIXI_APP__ = this.app;

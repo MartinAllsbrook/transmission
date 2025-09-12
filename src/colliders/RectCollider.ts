@@ -3,6 +3,7 @@ import { Range, SATCollider } from "./SATCollider.ts";
 import { CollisionLayer } from "./CollisionManager.ts";
 import { GameObject } from "../objects/GameObject.ts";
 import { Vector2D } from "../math/Vector2D.ts";
+import Game from "../../islands/Game.tsx";
 
 /**
  * Simple collider class that uses SAT for square collision detection - May expand in the future
@@ -11,47 +12,53 @@ export class RectCollider extends SATCollider {
     /** The size of the collider */
     size: Vector2D;
 
-    /** The roatation of the collider */
-    rotation: number;
 
     constructor(
         host: GameObject,
         position: Vector2D,
         size: Vector2D,
-        rotation: number = 0,
         debugging: boolean = false,
         layer: CollisionLayer = "default",
     ) {
         super(host, position, debugging, layer);
 
-        this.rotation = rotation;
         this.size = size;
 
         if (this.debugging) {
-            this.drawDebugShape();
+            this.createDebugShape();
         }
     }
 
-    protected drawDebugShape(): void {
+    protected createDebugShape(): void {
         const halfX = this.size.x / 2;
         const halfY = this.size.y / 2;
 
-        const graphics = new Graphics()
+        this.debugShape = new Graphics()
             .rect(0, 0, this.size.x, this.size.y)
             .stroke({ width: 1, color: 0x00ff00 });
 
-        graphics.pivot.x = halfX;
-        graphics.pivot.y = halfY;
-        graphics.rotation = this.rotation;
+        this.debugShape.pivot.x = halfX;
+        this.debugShape.pivot.y = halfY;
+        this.debugShape.rotation = this.Rotation;
 
-        this.host.addVisual(graphics);
+        Game.app?.stage.addChild(this.debugShape);
+        if (!Game.app?.stage) console.error("No stage found in Game.app");
+
+        this.debugShape.position.set(this.Position.x, this.Position.y);
+    }
+
+    public override updateDebugShape(): void {
+        if (this.debugShape) {
+            this.debugShape.position.set(this.Position.x, this.Position.y);
+            this.debugShape.rotation = this.Rotation;
+        }
     }
 
     protected getVertices(): Vector2D[] {
         const halfWidth = this.size.x / 2;
         const halfHeight = this.size.y / 2;
-        const cos = Math.cos(this.rotation);
-        const sin = Math.sin(this.rotation);
+        const cos = Math.cos(this.Rotation);
+        const sin = Math.sin(this.Rotation);
         return [
             new Vector2D(
                 this.Position.x + -halfWidth * cos - -halfHeight * sin,
@@ -103,5 +110,9 @@ export class RectCollider extends SATCollider {
         }
 
         return { min, max };
+    }
+
+    protected get Rotation(): number {
+        return this.host.rotation * (Math.PI / 180);
     }
 }
