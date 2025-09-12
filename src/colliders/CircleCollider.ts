@@ -2,6 +2,7 @@ import { Graphics } from "pixi.js";
 import { Range, SATCollider } from "./SATCollider.ts";
 import { GameObject } from "src/objects/GameObject.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
+import { CollisionLayer } from "./CollisionManager.ts";
 
 export class CircleCollider extends SATCollider {
     /** The radius of the collider */
@@ -12,8 +13,9 @@ export class CircleCollider extends SATCollider {
         position: Vector2D,
         radius: number,
         debugging: boolean = false,
+        layer: CollisionLayer = "default",
     ) {
-        super(host, position, debugging);
+        super(host, position, debugging, layer);
 
         this.radius = radius;
 

@@ -46,12 +46,13 @@ export class Snowboarder extends GameObject {
 
         super.createSprite();
 
-        const collider = new RectCollider(
+        const _collider = new RectCollider(
             this,
             new Vector2D(0, 0),
             new Vector2D(32, 7),
             0,
             true,
+            "player",
         );
 
         console.log(

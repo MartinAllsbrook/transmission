@@ -1,5 +1,5 @@
 import { GameObject } from "src/objects/GameObject.ts";
-import { CollisionManager } from "src/colliders/CollisionManager.ts";
+import { CollisionManager, CollisionLayer } from "src/colliders/CollisionManager.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 
 export interface Range {
@@ -17,14 +17,19 @@ export abstract class SATCollider {
     /** Weather to draw the debugging shape of this collider */
     debugging: boolean;
 
+    /** Named collision layer for filter-based checks */
+    public readonly layer: CollisionLayer;
+
     constructor(
         host: GameObject,
         relativePosition: Vector2D,
         debugging: boolean = false,
+        layer: CollisionLayer = "default",
     ) {
         this.relativePosition = relativePosition;
         this.host = host;
         this.debugging = debugging;
+        this.layer = layer;
 
         CollisionManager.addCollider(this);
     }
@@ -98,7 +103,7 @@ export abstract class SATCollider {
 
     /** The world position of the collider */
     get Position(): Vector2D {
-        return this.relativePosition.add(this.host.Position);
+        return this.relativePosition.add(this.host.WorldPosition);
     }
 
     public onCollision(other: SATCollider): void {

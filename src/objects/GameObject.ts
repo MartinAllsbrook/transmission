@@ -107,4 +107,12 @@ export abstract class GameObject {
     get Position(): Vector2D {
         return this.position;
     }
+
+    get WorldPosition(): Vector2D {
+        if (this.parent) {
+            return this.parent.WorldPosition.add(this.position);
+        } else {
+            return this.position;
+        }
+    }
 }

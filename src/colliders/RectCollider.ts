@@ -1,5 +1,6 @@
 import { Graphics } from "pixi.js";
 import { Range, SATCollider } from "./SATCollider.ts";
+import { CollisionLayer } from "./CollisionManager.ts";
 import { GameObject } from "../objects/GameObject.ts";
 import { Vector2D } from "../math/Vector2D.ts";
 
@@ -19,8 +20,9 @@ export class RectCollider extends SATCollider {
         size: Vector2D,
         rotation: number = 0,
         debugging: boolean = false,
+        layer: CollisionLayer = "default",
     ) {
-        super(host, position, debugging);
+        super(host, position, debugging, layer);
 
         this.rotation = rotation;
         this.size = size;
