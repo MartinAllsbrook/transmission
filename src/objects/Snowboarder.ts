@@ -2,15 +2,32 @@ import { Assets, Sprite } from "pixi.js";
 import { GameObject, Parent } from "./GameObject.ts";
 import { RectCollider } from "../colliders/RectCollider.ts";
 import { Vector2D } from "../math/Vector2D.ts";
+import { Signal } from "@preact/signals";
 
 export class Snowboarder extends GameObject {
+    /** Current speed of the player */
     private speed: number = 0;
+
+    /** Input value for turning, from -1 to 1 */
     private turnInput: number = 0;
 
-    worldPosition: Vector2D = new Vector2D(0, 0);
+    /** The position of the player in the world, used for world scrolling */
+    public worldPosition: Vector2D = new Vector2D(0, 0);
+
+    /** A set of stats to be acessed by the game UI */
+    private stats: {
+        speed: Signal<number>;
+        distance: Signal<number>;
+        score: Signal<number>;
+    };
 
     constructor(
         parent: Parent,
+        stats: {
+            speed: Signal<number>;
+            distance: Signal<number>;
+            score: Signal<number>;
+        }
     ) {
         super(
             parent,
@@ -19,6 +36,8 @@ export class Snowboarder extends GameObject {
             0,
             new Vector2D(1, 1),
         );
+
+        this.stats = stats;
 
         this.setSpeed(1);
 
@@ -72,7 +91,15 @@ export class Snowboarder extends GameObject {
         this.worldPosition.y += Math.sin(radians) * this.speed * deltaTime;
         this.rotation += this.turnInput * deltaTime;
 
+        this.updateStats();
+
         super.update(deltaTime);
+    }
+
+    private updateStats() {
+        this.stats.speed.value = this.speed;
+        this.stats.distance.value = this.worldPosition.y;
+        this.stats.score.value = Math.floor(this.worldPosition.y / 10);
     }
 
     setSpeed(speed: number) {

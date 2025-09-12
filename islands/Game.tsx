@@ -63,7 +63,7 @@ export default class Game extends Component {
         this.gameContainer.appendChild(this.app.canvas);
 
         const worldContainer = new OffsetContainer(this.app);
-        const snowboarder = new Snowboarder(worldContainer);
+        const snowboarder = new Snowboarder(worldContainer, this.stats);
         new World(worldContainer, snowboarder);
 
         // Listen for animate update
@@ -76,12 +76,10 @@ export default class Game extends Component {
     render() {
         return (
             <div>
-                <div class="w-screen h-screen">
-                    <div>
-                        <StatDisplay name="Speed" value={0} highest={0} />
-                        <StatDisplay name="Distance" value={0} highest={0} />
-                        <StatDisplay name="Score" value={0} highest={0} />
-                    </div>
+                <div class="absolute top-0 left-0 z-10 flex flex-col gap-2 p-2">
+                    <StatDisplay name="Speed" value={this.stats.speed.value} highest={0} />
+                    <StatDisplay name="Distance" value={this.stats.distance.value} highest={0} />
+                    <StatDisplay name="Score" value={this.stats.score.value} highest={0} />
                 </div>
                 {/* <div ref={(el) => this.gameContainer = el || undefined}></div> */}
             </div>
