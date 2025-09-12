@@ -1,10 +1,10 @@
 import { SATCollider } from "./SATCollider.ts";
 
 export class CollisionManager {
-    static colliders: SATCollider[] = [];
+    static colliders: SATCollider[][] = [];
 
-    static addCollider(collider: SATCollider) {
-        this.colliders.push(collider);
+    static addCollider(collider: SATCollider, layer: number = 0) {
+        this.colliders[layer].push(collider);
     }
 
     static removeCollider(collider: SATCollider) {
