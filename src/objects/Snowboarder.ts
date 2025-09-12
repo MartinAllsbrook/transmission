@@ -14,7 +14,7 @@ export class Snowboarder extends GameObject {
     ) {
         super(parent, new Vector2D(0, 0), new Vector2D(32, 32), 0, new Vector2D(1, 1));
 
-        this.setSpeed(1);
+        this.setSpeed(0);
 
         this.setupInputs();
     }

@@ -21,6 +21,6 @@ export class Obstacle extends GameObject {
 
         super.createSprite();
 
-        const _collider = new CircleCollider(this, new Vector2D(0, 12), 4, true, "obstacle");
+        const _collider = new CircleCollider(this, new Vector2D(0, 0), 4, true, "obstacle");
     }
 }

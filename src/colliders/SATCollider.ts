@@ -91,25 +91,6 @@ export abstract class SATCollider {
         return true; // No separating axis found, collision detected
     }
 
-    // Currently unused function
-    private static projectVertices(axis: Vector2D, vertices: Vector2D[]): Range {
-        // Initialize max and min
-        let min = axis.dot(vertices[0]);
-        let max = min;  
-
-        for (let i = 1; i < vertices.length; i++) {
-            const projection = axis.dot(vertices[i]);
-            if (projection < min) {
-                min = projection;
-            }
-            if (projection > max) {
-                max = projection;
-            }
-        }
-
-        return { min, max };
-    }
-
     /** The world position of the collider */
     get Position(): Vector2D {
         return this.relativePosition.add(this.host.WorldPosition);

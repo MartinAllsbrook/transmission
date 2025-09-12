@@ -30,26 +30,26 @@ export class RectCollider extends SATCollider {
     }
 
     protected createDebugShape(): void {
-        const halfX = this.size.x / 2;
-        const halfY = this.size.y / 2;
-
         this.debugShape = new Graphics()
-            .rect(0, 0, this.size.x, this.size.y)
+            .rect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y)
             .stroke({ width: 1, color: 0x00ff00 });
-
-        this.debugShape.pivot.x = halfX;
-        this.debugShape.pivot.y = halfY;
-        this.debugShape.rotation = this.Rotation;
 
         Game.app?.stage.addChild(this.debugShape);
         if (!Game.app?.stage) console.error("No stage found in Game.app");
 
-        this.debugShape.position.set(this.Position.x, this.Position.y);
+        this.updateDebugShape();
     }
 
     public override updateDebugShape(): void {
         if (this.debugShape) {
-            this.debugShape.position.set(this.Position.x, this.Position.y);
+            const screenCenter = new Vector2D(
+                globalThis.window.innerWidth / 2,
+                globalThis.window.innerHeight / 2,
+            );
+            this.debugShape.position.set(
+                this.Position.x + screenCenter.x,
+                this.Position.y + screenCenter.y
+            );
             this.debugShape.rotation = this.Rotation;
         }
     }

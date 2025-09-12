@@ -27,21 +27,24 @@ export class CircleCollider extends SATCollider {
 
     protected createDebugShape(): void {
         this.debugShape = new Graphics()
-            .circle(
-                this.relativePosition.x,
-                this.relativePosition.y,
-                this.radius,
-            )
+            .circle(0, 0, this.radius)
             .stroke({ width: 1, color: 0x00ff00 });
 
         Game.app?.stage.addChild(this.debugShape);
         
-        this.debugShape.position.set(this.Position.x, this.Position.y);
+        this.updateDebugShape();
     }
 
     public override updateDebugShape(): void {
         if (this.debugShape) {
-            this.debugShape.position.set(this.Position.x, this.Position.y);
+            const screenCenter = new Vector2D(
+                globalThis.window.innerWidth / 2,
+                globalThis.window.innerHeight / 2,
+            );
+            this.debugShape.position.set(
+                this.Position.x + screenCenter.x,
+                this.Position.y + screenCenter.y
+            );
         }
     }    
 
