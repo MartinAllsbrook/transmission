@@ -1,5 +1,6 @@
-import { Application, Container, Graphics } from "pixi.js";
+import { Application, Container } from "pixi.js";
 import { Vector2D } from "src/math/Vector2D.ts";
+import { SATCollider } from "../colliders/SATCollider.ts";
 
 export type Parent = Application | GameObject;
 
@@ -17,6 +18,8 @@ export abstract class GameObject {
     container: Container = new Container();
 
     onSpriteLoaded: (() => void)[] = [];
+
+    private colliders: SATCollider[] = [];
 
     constructor(
         parent: Parent,
@@ -90,14 +93,25 @@ export abstract class GameObject {
         this.container.addChild(child.getContainer());
     }
 
-    destroy(): void {
-        if (this.parent) {
+    public addCollider(collider: SATCollider): void {
+        this.colliders.push(collider);
+    }
+
+    destroy(autoRemoveFromParent: boolean = true): void {
+        // TODO: Rework this so that we dont need autoRemoveFromParent
+        if (this.parent && autoRemoveFromParent) {
             const index = this.parent.children.indexOf(this);
             if (index > -1) {
                 this.parent.children.splice(index, 1);
             }
         }
 
+        this.children.forEach((child) => child.destroy(false));
+        this.children = [];
+
+        this.colliders.forEach((collider) => collider.destroy());
+        this.colliders = [];
+        
         this.container.destroy({ children: true });
     }
 

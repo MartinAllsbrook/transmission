@@ -34,6 +34,8 @@ export abstract class SATCollider {
         this.debugging = debugging;
         this.layer = layer;
 
+        host.addCollider(this);
+
         CollisionManager.addCollider(this);
     }
 
@@ -98,5 +100,13 @@ export abstract class SATCollider {
 
     public onCollision(other: SATCollider): void {
         console.log("Collision detected between", this, "and", other);
+    }
+
+    destroy(): void {
+        CollisionManager.removeCollider(this);
+        if (this.debugShape) {
+            this.debugShape.destroy();
+            this.debugShape = null;
+        }
     }
 }
