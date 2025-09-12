@@ -43,7 +43,8 @@ export class Vector2D {
      * @returns True if the vectors are equal, false otherwise.
      */
     public equals(vector: Vector2D, epsilon = 0.001): boolean {
-        return Math.abs(this.x - vector.x) < epsilon && Math.abs(this.y - vector.y) < epsilon;
+        return Math.abs(this.x - vector.x) < epsilon &&
+            Math.abs(this.y - vector.y) < epsilon;
     }
 
     /**
@@ -90,7 +91,7 @@ export class Vector2D {
         const magnitude = this.magnitude();
 
         if (magnitude === 0) {
-            return new Vector2D(0, 0);            
+            return new Vector2D(0, 0);
         }
 
         const x = this.x / magnitude;
@@ -104,7 +105,9 @@ export class Vector2D {
      * @returns The magnitude of the vector.
      */
     public magnitude(): number {
-        return Math.sqrt((Math.pow(Math.abs(this.x), 2)) + (Math.pow(Math.abs(this.y), 2)));
+        return Math.sqrt(
+            (Math.pow(Math.abs(this.x), 2)) + (Math.pow(Math.abs(this.y), 2)),
+        );
     }
 
     /**
@@ -212,7 +215,8 @@ export class Vector2D {
      * @returns A new Vector2D instance with random x and y values.
      */
     public static random(): Vector2D {
-        return new Vector2D(Math.random() - 0.5, Math.random() - 0.5).normalize();
+        return new Vector2D(Math.random() - 0.5, Math.random() - 0.5)
+            .normalize();
     }
 
     // #endregion

@@ -1,5 +1,8 @@
 import { GameObject } from "src/objects/GameObject.ts";
-import { CollisionManager, CollisionLayer } from "src/colliders/CollisionManager.ts";
+import {
+    CollisionLayer,
+    CollisionManager,
+} from "src/colliders/CollisionManager.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { Graphics } from "pixi.js";
 
@@ -13,7 +16,7 @@ export abstract class SATCollider {
     protected relativePosition: Vector2D;
 
     /** The gameobject this collider is attached to */
-    protected host: GameObject; 
+    protected host: GameObject;
 
     /** Weather to draw the debugging shape of this collider */
     debugging: boolean;
@@ -44,7 +47,6 @@ export abstract class SATCollider {
      */
     protected abstract createDebugShape(): void;
 
-
     /**
      * Updates the debugging shape's position based on the host gameobject's position
      */
@@ -58,9 +60,9 @@ export abstract class SATCollider {
     /**
      * Returns the axes to test for collision
      * @param otherPosition - The position of the other collider (useful for circles)
-     * @return - An array of axes (as Points) to test against 
+     * @return - An array of axes (as Points) to test against
      */
-    protected abstract getAxes(otherVertexs: Vector2D[]): Vector2D[]; 
+    protected abstract getAxes(otherVertexs: Vector2D[]): Vector2D[];
 
     /**
      * Projects this collider onto the given axis and returns the min and max values
@@ -89,7 +91,7 @@ export abstract class SATCollider {
                 return false; // Found a separating axis, no collision
             }
         }
-     
+
         return true; // No separating axis found, collision detected
     }
 

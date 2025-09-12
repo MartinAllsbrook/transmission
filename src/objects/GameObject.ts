@@ -73,14 +73,6 @@ export abstract class GameObject {
     }
 
     /**
-     * Gets the game object's container for adding child display objects.
-     * @returns The PIXI.Container associated with this game object.
-     */
-    private getContainer(): Container {
-        return this.container;
-    }
-
-    /**
      * Adds visual elements (like sprites or graphics) directly to the game object's PIXI container.
      */
     public addVisual(child: Container): void {
@@ -88,37 +80,56 @@ export abstract class GameObject {
         child.position.set(this.container.pivot.x, this.container.pivot.y);
     }
 
+    /**
+     * Adds a child game object to this game object.
+     * @param child The child game object to add.
+     */
     public addChild(child: GameObject): void {
         this.children.push(child);
-        this.container.addChild(child.getContainer());
+        this.container.addChild(child.container);
     }
 
+    /**
+     * Adds a collider to this game object.
+     * @param collider The collider to add to this game object.
+     */
     public addCollider(collider: SATCollider): void {
         this.colliders.push(collider);
     }
 
-    destroy(autoRemoveFromParent: boolean = true): void {
-        // TODO: Rework this so that we dont need autoRemoveFromParent
-        if (this.parent && autoRemoveFromParent) {
+    /**
+     * Destroys the game object, its children, and associated resources.
+     */
+    public destroy(): void {
+        // Remove from parent's children array
+        if (this.parent) {
             const index = this.parent.children.indexOf(this);
             if (index > -1) {
                 this.parent.children.splice(index, 1);
             }
         }
 
-        this.children.forEach((child) => child.destroy(false));
-        this.children = [];
+        // Destroy all children
+        const childrenCopy = [...this.children];
+        childrenCopy.forEach((child) => child.destroy());
 
+        // Destroy all colliders
         this.colliders.forEach((collider) => collider.destroy());
         this.colliders = [];
-        
+
+        // Destroy graphics container
         this.container.destroy({ children: true });
     }
-
+    /**
+     * This object's position relative to its parent.
+     */
     get Position(): Vector2D {
         return this.position;
     }
 
+    /**
+     * This object's position in world coordinates.
+     */
     get WorldPosition(): Vector2D {
         if (this.parent) {
             return this.parent.WorldPosition.add(this.position);

@@ -31,7 +31,7 @@ export class CircleCollider extends SATCollider {
             .stroke({ width: 1, color: 0x00ff00 });
 
         Game.app?.stage.addChild(this.debugShape);
-        
+
         this.updateDebugShape();
     }
 
@@ -39,10 +39,10 @@ export class CircleCollider extends SATCollider {
         if (this.debugShape) {
             this.debugShape.position.set(
                 this.Position.x,
-                this.Position.y
+                this.Position.y,
             );
         }
-    }    
+    }
 
     protected getVertices(): Vector2D[] {
         // Circles don't have vertices, but we can return the center as a single "vertex"

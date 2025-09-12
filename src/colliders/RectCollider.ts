@@ -12,7 +12,6 @@ export class RectCollider extends SATCollider {
     /** The size of the collider */
     size: Vector2D;
 
-
     constructor(
         host: GameObject,
         position: Vector2D,
@@ -44,7 +43,7 @@ export class RectCollider extends SATCollider {
         if (this.debugShape) {
             this.debugShape.position.set(
                 this.Position.x,
-                this.Position.y
+                this.Position.y,
             );
             this.debugShape.rotation = this.Rotation;
         }

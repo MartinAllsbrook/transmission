@@ -22,7 +22,7 @@ export class WorldChunk extends GameObject {
 
     private createChunk(): void {
         super.createSprite();
-        
+
         for (let i = 0; i < 5; i++) {
             this.createRandomObstacle();
         }
@@ -34,10 +34,8 @@ export class WorldChunk extends GameObject {
         const graphics = new Graphics()
             .rect(0, 0, width, height)
             .stroke({ width: 2, color: 0x000000 });
-        
+
         this.container.addChild(graphics);
-
-
     }
 
     private createRandomObstacle() {

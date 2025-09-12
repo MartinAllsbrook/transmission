@@ -101,7 +101,10 @@ export class BezierSpline {
         }
 
         if (this.controlPoints.length === 1) {
-            return new Vector2D(this.controlPoints[0].x, this.controlPoints[0].y);
+            return new Vector2D(
+                this.controlPoints[0].x,
+                this.controlPoints[0].y,
+            );
         }
 
         // Clamp t to [0, 1]
@@ -270,7 +273,11 @@ export class BezierSpline {
      * @param p2 The ending point of the curve
      * @returns A new BezierSpline instance with the specified quadratic curve
      */
-    static createQuadratic(p0: Vector2D, p1: Vector2D, p2: Vector2D): BezierSpline {
+    static createQuadratic(
+        p0: Vector2D,
+        p1: Vector2D,
+        p2: Vector2D,
+    ): BezierSpline {
         return new BezierSpline([p0, p1, p2]);
     }
 
