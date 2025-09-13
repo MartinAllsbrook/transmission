@@ -34,17 +34,46 @@ export class SnowboarderTrail extends GameObject {
             const distance = position.distanceTo(
                 this.priviousTrailPoint.position,
             );
-            const directionChange = 1 -
-                direction.dot(this.priviousTrailPoint.direction);
-            console.log(directionChange);
-            if (distance >= 2.5 || directionChange >= 0.025) { // Minimum distance to add a new segment
+
+            const segmentSpacing = 5; // Distance between trail segments
+
+            if (distance > segmentSpacing) {
+                // Calculate how many segments we need to place
+                const numSegments = Math.floor(distance / segmentSpacing);
+
+                // Interpolate between the previous point and current point
+                for (let i = 1; i <= numSegments; i++) {
+                    const t = i / Math.ceil(distance / segmentSpacing);
+                    const interpolatedPosition = Vector2D.lerp(
+                        this.priviousTrailPoint.position,
+                        position,
+                        t,
+                    );
+                    const interpolatedDirection = Vector2D.lerp(
+                        this.priviousTrailPoint.direction,
+                        direction,
+                        t,
+                    ).normalize(); // Normalize to maintain unit direction
+
+                    this.addTrailSegment(
+                        interpolatedPosition,
+                        interpolatedDirection,
+                    );
+                }
+                // Add the final segment at the exact current position
                 this.addTrailSegment(position, direction);
-                this.priviousTrailPoint = {
-                    position: position.clone(),
-                    direction: direction.clone(),
-                };
+            } else {
+                // If distance is small, just add the current segment
+                this.addTrailSegment(position, direction);
             }
+
+            // Always update the previous trail point to the current position
+            this.priviousTrailPoint = {
+                position: position.clone(),
+                direction: direction.clone(),
+            };
         } else {
+            // First trail point
             this.addTrailSegment(position, direction);
             this.priviousTrailPoint = {
                 position: position.clone(),
@@ -65,7 +94,7 @@ export class SnowboarderTrail extends GameObject {
         // Draw right circle
         graphics.circle(length / 2, 0, width / 2);
         // Draw capsule: two circles at ends, connected by a rectangle
-        graphics.fill({ color: 0xaaaaaa, alpha: 1 });
+        graphics.fill({ color: 0xdddddd, alpha: 1 });
 
         // Align the capsule with the direction vector
         const angle = Math.atan2(direction.y, direction.x);
