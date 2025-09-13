@@ -20,6 +20,12 @@ export class World extends GameObject {
         this.player = player;
         new SnowboarderTrail(this);
         this.container.label = "World";
+
+        // Move world origin
+        this.position.x = -(this.player.worldPosition.x);
+        this.position.y = -(this.player.worldPosition.y);
+
+        // this.updateChunks();
     }
 
     public override update(deltaTime: number): void {
@@ -65,12 +71,13 @@ export class World extends GameObject {
                         chunkCoord.x * -this.chunkSize.x,
                         chunkCoord.y * -this.chunkSize.y,
                     );
-                    new WorldChunk(
+                    const chunk = new WorldChunk(
                         this,
                         chunkWorldPosition,
                         chunkCoord,
                         this.chunkSize,
                     );
+                    chunk.createSprite();
                 }
             }
         }

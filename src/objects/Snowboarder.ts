@@ -43,7 +43,7 @@ export class Snowboarder extends GameObject {
         });
     }
 
-    protected override async createSprite() {
+    public override async createSprite() {
         const headTexture = await Assets.load("/snowboarder/Head.png");
         headTexture.source.scaleMode = "nearest";
         const headSprite = new Sprite(headTexture);
@@ -60,7 +60,7 @@ export class Snowboarder extends GameObject {
         this.container.addChild(bodySprite);
         this.container.addChild(headSprite);
 
-        super.createSprite();
+        await super.createSprite();
         this.setupCollider();
     }
 
@@ -120,13 +120,6 @@ export class Snowboarder extends GameObject {
         this.rotation += this.turnInput * deltaTime * turnStrength;
 
         // Normal force
-        // const right = forward.perpendicular();
-        
-        // if (this.velocity.dot(right) > 0) {
-            //     right.negate();
-            // }
-            // 
-            
         const forward = Vector2D.fromAngle(radians - Math.PI / 2);
         const direction = this.velocity.normalize();
         const projected = direction.projectOnto(forward);
@@ -134,8 +127,6 @@ export class Snowboarder extends GameObject {
 
         const strength = Math.pow((1 - normal.magnitude()), 2) * 0.25 + 1;
         const normalDirection = projected.subtract(direction).normalize().multiply(strength);
-
-        console.log(strength);
 
         this.velocity = this.velocity.add(normalDirection.multiply(deltaTime * slipStrength));
 

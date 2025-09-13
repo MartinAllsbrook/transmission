@@ -56,6 +56,10 @@ export default class Game extends Component {
 
         // Create a new application
         Game.app = new Application();
+        // deno-lint-ignore no-explicit-any
+        (globalThis as any).__PIXI_APP__ = Game.app;
+
+        
 
         // Initialize the application
         await Game.app.init({
@@ -86,7 +90,9 @@ export default class Game extends Component {
      * Marches though the gameobject tree and calls createVisuals on each object
      */
     private async createVisuals() {
+        if (!Game.rootObject) throw new Error("Root game object not initialized");
 
+        await Game.rootObject.createSprite(); // This will also call createSprite on all child gameobjects
     }
 
     /**

@@ -33,8 +33,6 @@ export abstract class GameObject {
         this.size = size;
         this.scale = scale;
 
-        this.createSprite();
-
         if (parent instanceof GameObject) {
             parent.addChild(this);
             this.parent = parent;
@@ -43,9 +41,13 @@ export abstract class GameObject {
         } else {
             throw new Error("Invalid parent type");
         }
+
+        this.syncTransform();
     }
 
-    protected createSprite() {
+    public async createSprite() {
+        await Promise.resolve(); // Ensure async context
+
         this.container.pivot.x = this.container.width / 2;
         this.container.pivot.y = this.container.height / 2;
 
@@ -53,6 +55,13 @@ export abstract class GameObject {
         this.container.rotation = this.rotation * (Math.PI / 180);
 
         this.container.scale.set(this.scale.x, this.scale.y);
+
+        console.log("Sprite created for ", this.constructor.name, " Position:", this.position, " Container Position:", this.container.position);
+        for (const child of this.children) {
+            // console.log("Creating sprite for child of ", this.constructor.name, "-->", child.constructor.name);
+            await child.createSprite();
+        }
+
 
         this.onSpriteLoaded.forEach((callback) => callback());
     }
@@ -62,23 +71,18 @@ export abstract class GameObject {
      * @param deltaTime Time in milliseconds since the last frame.
      */
     public update(_deltaTime: number): void {
-        this.container.position.set(
-            this.position.x,
-            this.position.y,
-        );
-        this.container.rotation = this.rotation * (Math.PI / 180);
-        // this.container.scale.set(this.scale.x, this.scale.y);
-
+        this.syncTransform();
         this.children.forEach((child) => child.update(_deltaTime));
     }
 
-    // /**
-    //  * Adds visual elements (like sprites or graphics) directly to the game object's PIXI container.
-    //  */
-    // public addVisual(child: Container): void {
-    //     this.container.addChild(child);
-    //     child.position.set(this.container.pivot.x, this.container.pivot.y);
-    // }
+    /**
+     * Updates the container's position, rotation, and scale to match the game object's properties.
+     */
+    private syncTransform() {
+        this.container.position.set(this.position.x, this.position.y);
+        this.container.rotation = this.rotation * (Math.PI / 180);
+        // this.container.scale.set(this.scale.x, this.scale.y);
+    }
 
     /**
      * Adds a child game object to this game object.

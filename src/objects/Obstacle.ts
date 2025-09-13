@@ -9,17 +9,15 @@ export class Obstacle extends GameObject {
         position: Vector2D,
     ) {
         super(parent, position, new Vector2D(32, 32));
-
-        this.createSprite();
     }
 
-    protected override async createSprite() {
+    public override async createSprite() {
         const treeTexture = await Assets.load("/obsticales/Tree.png");
         treeTexture.source.scaleMode = "nearest";
         const treeSprite = new Sprite(treeTexture);
         this.container.addChild(treeSprite);
 
-        super.createSprite();
+        await super.createSprite();
 
         const _collider = new CircleCollider(
             this,

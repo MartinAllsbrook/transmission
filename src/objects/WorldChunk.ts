@@ -21,11 +21,21 @@ export class WorldChunk extends GameObject {
     }
 
     private createChunk(): void {
-        super.createSprite();
 
         for (let i = 0; i < 3; i++) {
             this.createRandomObstacle();
         }
+    }
+
+    private createRandomObstacle() {
+        const x = Math.random() * this.size.x;
+        const y = Math.random() * this.size.y;
+
+        new Obstacle(this, new Vector2D(x, y));
+    }
+
+    public override async createSprite() {
+        await super.createSprite();
 
         // Use actual chunk size
         const width = this.size?.x ?? 64;
@@ -36,12 +46,5 @@ export class WorldChunk extends GameObject {
             .stroke({ width: 2, color: 0x000000, alpha: 0.05 });
 
         this.container.addChild(graphics);
-    }
-
-    private createRandomObstacle() {
-        const x = Math.random() * this.size.x;
-        const y = Math.random() * this.size.y;
-
-        new Obstacle(this, new Vector2D(x, y));
     }
 }
