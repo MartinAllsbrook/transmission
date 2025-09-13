@@ -6,10 +6,14 @@ import { World } from "src/objects/World.ts";
 import { CollisionManager } from "src/colliders/CollisionManager.ts";
 import { OffsetContainer } from "src/objects/OffsetContainer.ts";
 import { Signal } from "@preact/signals";
+import { GameOverScreen } from "./GameOverScreen.tsx";
+import { StatDisplay } from "../components/StatDisplay.tsx";
 
 export default class Game extends Component {
     /** Global acess to the pixi app for debugging draw calls */
     public static app?: Application;
+
+    public gameOver: boolean = false;
 
     /** Reference to the game container div */
     private gameContainer?: HTMLDivElement;
@@ -72,16 +76,50 @@ export default class Game extends Component {
         });
     }
 
+    div() {
+        return <div></div>;
+    }
+
     render() {
         return (
             <div>
-                {
-                    /* <div class="absolute top-0 left-0 z-10 flex flex-col gap-2 p-2">
-                    <StatDisplay name="Speed" value={this.stats.speed.value} highest={0} />
-                    <StatDisplay name="Distance" value={this.stats.distance.value} highest={0} />
-                    <StatDisplay name="Score" value={this.stats.score.value} highest={0} />
-                </div> */
-                }
+                {this.gameOver
+                    ? (
+                        <div>
+                            <GameOverScreen
+                                score={this.stats.score.value}
+                                maxScore={0}
+                                distace={this.stats.distance.value}
+                                maxDistance={0}
+                                fastestSpeed={this.stats.speed.value}
+                                maxFastestSpeed={0}
+                                onRestart={() => {
+                                    console.log("Restart game");
+                                    // Restart game logic here
+                                }}
+                            />
+                        </div>
+                    )
+                    : (
+                        <div class="absolute top-0 left-0 z-10 flex flex-col gap-2 p-2">
+                            <StatDisplay
+                                name="Speed"
+                                value={this.stats.speed.value}
+                                highest={0}
+                            />
+                            <StatDisplay
+                                name="Distance"
+                                value={this.stats.distance.value}
+                                highest={0}
+                            />
+                            <StatDisplay
+                                name="Score"
+                                value={this.stats.score.value}
+                                highest={0}
+                            />
+                        </div>
+                    )}
+
                 <div ref={(el) => this.gameContainer = el || undefined}></div>
             </div>
         );

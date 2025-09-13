@@ -20,7 +20,7 @@ export class SnowboarderTrail extends GameObject {
 
     private priviousTrailPoint: TrailPoint | null = null;
 
-    public maxPoints: number = 100;
+    public maxPoints: number = 250;
 
     constructor(parent: GameObject) {
         super(parent);

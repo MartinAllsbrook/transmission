@@ -23,7 +23,7 @@ export class WorldChunk extends GameObject {
     private createChunk(): void {
         super.createSprite();
 
-        for (let i = 0; i < 0; i++) {
+        for (let i = 0; i < 3; i++) {
             this.createRandomObstacle();
         }
 

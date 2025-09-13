@@ -7,7 +7,7 @@ import { SnowboarderTrail } from "./SnowbarderTrail.ts";
 export class World extends GameObject {
     private playerVelocity: Vector2D = new Vector2D(0, -1);
 
-    private chunkActiveArea = new Vector2D(1, 1);
+    private chunkActiveArea = new Vector2D(3, 2);
     private chunkSize = new Vector2D(256, 256);
 
     private chunkPosition: Vector2D = new Vector2D(0, 0);
