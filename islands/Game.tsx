@@ -8,20 +8,21 @@ import { OffsetContainer } from "src/objects/OffsetContainer.ts";
 import { Signal } from "@preact/signals";
 import { GameOverScreen } from "./GameOverScreen.tsx";
 import { StatDisplay } from "../components/StatDisplay.tsx";
-import { textChangeRangeIsUnchanged } from "https://deno.land/x/ts_morph@21.0.1/common/typescript.d.ts";
 
 export default class Game extends Component {
-    /** Global acess to the pixi app for debugging draw calls */
-    public static app?: Application;
-
-    private static gameOver: boolean = false;
-
     /** Reference to the game container div */
     private gameContainer?: HTMLDivElement;
 
-    /** PixiJS application instance */
-    private app?: Application;
+    /** Global acess to the pixi app for debugging draw calls */
+    public static app?: Application;
 
+    /** Global acess to the game over state */
+    private static gameOver: boolean = false;
+
+    /** The the root container of the game, also used to center the game on the screen */
+    private static rootObject?: OffsetContainer;
+
+    /** The main player object */
     private static player?: Snowboarder;
 
     /** Set of signals to extract info from the player */
@@ -40,11 +41,13 @@ export default class Game extends Component {
 
     override componentWillUnmount() {
         // Clean up PixiJS application
-        if (this.app) {
-            this.app.destroy(true);
+        if (Game.app) {
+            Game.app.destroy(true);
         }
     }
 
+    // #region Game Initialization
+    
     /**
      * Initialize the PixiJS game
      */
@@ -52,32 +55,66 @@ export default class Game extends Component {
         if (!this.gameContainer) return;
 
         // Create a new application
-        this.app = new Application();
-        Game.app = this.app;
-
-        // Declare the property on globalThis to avoid type error
-        // deno-lint-ignore no-explicit-any
-        (globalThis as any).__PIXI_APP__ = this.app;
+        Game.app = new Application();
 
         // Initialize the application
-        await this.app.init({
+        await Game.app.init({
             background: "#ffffff",
             resizeTo: globalThis.window,
         });
 
         // Append the application canvas to the game container
-        this.gameContainer.appendChild(this.app.canvas);
+        this.gameContainer.appendChild(Game.app.canvas);
 
-        const worldContainer = new OffsetContainer(this.app);
-        Game.player = new Snowboarder(worldContainer, this.stats);
-        new World(worldContainer, Game.player);
-
-        // Listen for animate update
-        this.app.ticker.add((ticker) => {
-            worldContainer.update(ticker.deltaTime);
-            CollisionManager.checkCollisions();
-        });
+        this.setupGame();
+        await this.createVisuals();
+        this.startGameLoop();
     }
+
+    /**
+     * Create the game objects (pre-visuals)
+     */
+    private setupGame() {
+        if (!Game.app) throw new Error("PixiJS application not initialized");
+
+        Game.rootObject = new OffsetContainer(Game.app);
+        Game.player = new Snowboarder(Game.rootObject, this.stats);
+        new World(Game.rootObject, Game.player);
+    }
+
+    /**
+     * Marches though the gameobject tree and calls createVisuals on each object
+     */
+    private async createVisuals() {
+
+    }
+
+    /**
+     * Starts the game loop
+     */
+    private startGameLoop() {
+        if (!Game.app) throw new Error("PixiJS application not initialized");
+        
+        // Start the game loop
+        Game.app.ticker.add((ticker) => {this.gameLoop(ticker.deltaMS);});
+    }
+
+    /**
+     * The main game loop, called every frame
+     * @param deltaMS Time since last frame in milliseconds
+     */
+    private gameLoop(deltaMS: number) {
+        const deltaTime = deltaMS / 1000; // Convert ms to s
+
+        if (!Game.app || !Game.rootObject || !Game.player) throw new Error("Game not properly initialized");
+
+        Game.rootObject.update(deltaTime); // This will also update all child gameobjects
+        CollisionManager.checkCollisions();
+    }
+
+    // #endregion
+
+    // #region Game State Management
 
     public static endGame() {
         Game.gameOver = true;
@@ -94,6 +131,10 @@ export default class Game extends Component {
 
         this.player?.reset();
     }
+
+    // #endregion
+
+    // #region Rendering
 
     render() {
         return (
@@ -138,4 +179,6 @@ export default class Game extends Component {
             </div>
         );
     }
+
+    // #endregion
 }

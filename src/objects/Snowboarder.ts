@@ -80,10 +80,7 @@ export class Snowboarder extends GameObject {
                 }
                 
                 this.velocity = this.velocity.multiply(-0.5);
-                
-
             }
-
         });
     }
 
@@ -110,10 +107,10 @@ export class Snowboarder extends GameObject {
     }
 
     private updatePhysics(deltaTime: number) {
-        const frictionStrength = 0.001;
-        const gravityStrength = 0.075;
-        const slipStrength = 1.1;
-        const turnStrength = 3;
+        const frictionStrength = 0.1; // Raising this lowers top speed (max 1)
+        const gravityStrength = 140; // Raising this value makes the game feel faster
+        const slipStrength = 325; // Raising this value makes turning more responsive
+        const turnStrength = 200;
 
         // Apply gravity
         this.velocity.y += gravityStrength * deltaTime;
@@ -123,14 +120,24 @@ export class Snowboarder extends GameObject {
         this.rotation += this.turnInput * deltaTime * turnStrength;
 
         // Normal force
-        const slip = 1 / (1 + slipStrength * this.velocity.magnitude());
+        // const right = forward.perpendicular();
+        
+        // if (this.velocity.dot(right) > 0) {
+            //     right.negate();
+            // }
+            // 
+            
         const forward = Vector2D.fromAngle(radians - Math.PI / 2);
-        const projectedVelocity = this.velocity.projectOnto(forward);
-        const normalForce = projectedVelocity.subtract(this.velocity).multiply(
-            slip,
-        );
+        const direction = this.velocity.normalize();
+        const projected = direction.projectOnto(forward);
+        const normal = projected.subtract(direction);
 
-        this.velocity = this.velocity.add(normalForce.multiply(deltaTime));
+        const strength = Math.pow((1 - normal.magnitude()), 2) * 0.25 + 1;
+        const normalDirection = projected.subtract(direction).normalize().multiply(strength);
+
+        console.log(strength);
+
+        this.velocity = this.velocity.add(normalDirection.multiply(deltaTime * slipStrength));
 
         // Friction
         this.velocity = this.velocity.multiply(
