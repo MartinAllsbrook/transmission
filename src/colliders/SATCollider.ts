@@ -17,13 +17,17 @@ export abstract class SATCollider {
 
     /** The gameobject this collider is attached to */
     protected host: GameObject;
-
+    
+    /** Named collision layer for filter-based checks */
+    public readonly layer: CollisionLayer;
+    
+    /** Callbacks to be called when this collider collides with another */
+    private onCollisionCallbacks: ((other: SATCollider) => void)[] = [];
+    
     /** Weather to draw the debugging shape of this collider */
     debugging: boolean;
 
-    /** Named collision layer for filter-based checks */
-    public readonly layer: CollisionLayer;
-
+    /** The debugging shape of the collider */
     protected debugShape: Graphics | null = null;
 
     constructor(
@@ -41,6 +45,8 @@ export abstract class SATCollider {
 
         CollisionManager.addCollider(this);
     }
+
+    // #region Abstract Methods
 
     /**
      * Draws the debugging shape of the collider and adds it to the host gameobject
@@ -71,6 +77,8 @@ export abstract class SATCollider {
      */
     protected abstract projectOnAxis(axis: Vector2D): Range;
 
+    // #endregion
+
     /**
      * Checks if this collider is colliding with another collider using the SAT algorithm
      * @param other - The other collider to check against
@@ -100,9 +108,19 @@ export abstract class SATCollider {
         return this.relativePosition.add(this.host.WorldPosition);
     }
 
+    // #region Event System
+
     public onCollision(other: SATCollider): void {
-        console.log("Collision detected between", this, "and", other);
+        for (const callback of this.onCollisionCallbacks) {
+            callback(other);
+        }
     }
+
+    public addOnCollisionCallback(callback: (other: SATCollider) => void): void {
+        this.onCollisionCallbacks.push(callback);
+    }
+
+    // #endregion
 
     destroy(): void {
         CollisionManager.removeCollider(this);

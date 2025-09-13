@@ -4,6 +4,7 @@ import { RectCollider } from "../colliders/RectCollider.ts";
 import { Vector2D } from "../math/Vector2D.ts";
 import { Signal } from "@preact/signals";
 import { SnowboarderTrail } from "./SnowbarderTrail.ts";
+import Game from "islands/Game.tsx";
 
 export class Snowboarder extends GameObject {
     /** Input value for turning, from -1 to 1 */
@@ -60,8 +61,11 @@ export class Snowboarder extends GameObject {
         this.container.addChild(headSprite);
 
         super.createSprite();
+        this.setupCollider();
+    }
 
-        const _collider = new RectCollider(
+    private setupCollider() {
+        const collider = new RectCollider(
             this,
             new Vector2D(0, 0),
             new Vector2D(32, 7),
@@ -69,9 +73,18 @@ export class Snowboarder extends GameObject {
             "player",
         );
 
-        console.log(
-            `Snowboarder size \n: Width: ${this.container.width}, Height: ${this.container.height}`,
-        );
+        collider.addOnCollisionCallback((other) => {
+            if (other.layer === "obstacle") {
+                if (this.velocity.magnitude() > 10) {
+                    Game.endGame();
+                }
+                
+                this.velocity = this.velocity.multiply(-0.5);
+                
+
+            }
+
+        });
     }
 
     public override update(deltaTime: number): void {
@@ -132,5 +145,11 @@ export class Snowboarder extends GameObject {
 
     setTurnInput(turn: number) {
         this.turnInput = turn;
+    }
+
+    public reset() {
+        this.worldPosition.set(new Vector2D(128, 128));
+        this.velocity.set(new Vector2D(0, 0));
+        this.rotation = 0;
     }
 }

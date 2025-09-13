@@ -8,18 +8,21 @@ import { OffsetContainer } from "src/objects/OffsetContainer.ts";
 import { Signal } from "@preact/signals";
 import { GameOverScreen } from "./GameOverScreen.tsx";
 import { StatDisplay } from "../components/StatDisplay.tsx";
+import { textChangeRangeIsUnchanged } from "https://deno.land/x/ts_morph@21.0.1/common/typescript.d.ts";
 
 export default class Game extends Component {
     /** Global acess to the pixi app for debugging draw calls */
     public static app?: Application;
 
-    public gameOver: boolean = false;
+    private static gameOver: boolean = false;
 
     /** Reference to the game container div */
     private gameContainer?: HTMLDivElement;
 
     /** PixiJS application instance */
     private app?: Application;
+
+    private static player?: Snowboarder;
 
     /** Set of signals to extract info from the player */
     private stats = {
@@ -66,8 +69,8 @@ export default class Game extends Component {
         this.gameContainer.appendChild(this.app.canvas);
 
         const worldContainer = new OffsetContainer(this.app);
-        const snowboarder = new Snowboarder(worldContainer, this.stats);
-        new World(worldContainer, snowboarder);
+        Game.player = new Snowboarder(worldContainer, this.stats);
+        new World(worldContainer, Game.player);
 
         // Listen for animate update
         this.app.ticker.add((ticker) => {
@@ -76,14 +79,26 @@ export default class Game extends Component {
         });
     }
 
-    div() {
-        return <div></div>;
+    public static endGame() {
+        Game.gameOver = true;
+        this.app?.ticker.stop();
+    }
+
+    public static get Over() {
+        return Game.gameOver;
+    }
+
+    public static resetGame() {
+        Game.gameOver = false;
+        this.app?.ticker.start();
+
+        this.player?.reset();
     }
 
     render() {
         return (
             <div>
-                {this.gameOver
+                {Game.gameOver
                     ? (
                         <div>
                             <GameOverScreen
@@ -94,8 +109,7 @@ export default class Game extends Component {
                                 fastestSpeed={this.stats.speed.value}
                                 maxFastestSpeed={0}
                                 onRestart={() => {
-                                    console.log("Restart game");
-                                    // Restart game logic here
+                                    Game.resetGame();
                                 }}
                             />
                         </div>

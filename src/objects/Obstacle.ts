@@ -23,7 +23,7 @@ export class Obstacle extends GameObject {
 
         const _collider = new CircleCollider(
             this,
-            new Vector2D(0, 0),
+            new Vector2D(0, 12),
             4,
             true,
             "obstacle",
