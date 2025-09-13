@@ -1,6 +1,7 @@
 import { Vector2D } from "src/math/Vector2D.ts";
 import { GameObject } from "src/objects/GameObject.ts";
 import { Container, Graphics } from "pixi.js";
+import { LayerManager } from "../rendering/LayerManager.ts";
 
 interface TrailSegment {
     position: Vector2D;
@@ -27,6 +28,8 @@ export class SnowboarderTrail extends GameObject {
 
         SnowboarderTrail.instance = this;
         this.container.label = "SnowboarderTrail";
+
+        LayerManager.getLayer("background")?.attach(this.container);
     }
 
     public addTrailPoint(position: Vector2D, direction: Vector2D) {

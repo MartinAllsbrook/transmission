@@ -8,6 +8,7 @@ import { OffsetContainer } from "src/objects/OffsetContainer.ts";
 import { Signal } from "@preact/signals";
 import { GameOverScreen } from "./GameOverScreen.tsx";
 import { StatDisplay } from "../components/StatDisplay.tsx";
+import { LayerManager } from "src/rendering/LayerManager.ts";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -80,6 +81,8 @@ export default class Game extends Component {
      */
     private setupGame() {
         if (!Game.app) throw new Error("PixiJS application not initialized");
+
+        LayerManager.initialize(Game.app);
 
         Game.rootObject = new OffsetContainer(Game.app);
         Game.player = new Snowboarder(Game.rootObject, this.stats);

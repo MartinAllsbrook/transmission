@@ -56,12 +56,9 @@ export abstract class GameObject {
 
         this.container.scale.set(this.scale.x, this.scale.y);
 
-        console.log("Sprite created for ", this.constructor.name, " Position:", this.position, " Container Position:", this.container.position);
         for (const child of this.children) {
-            // console.log("Creating sprite for child of ", this.constructor.name, "-->", child.constructor.name);
             await child.createSprite();
         }
-
 
         this.onSpriteLoaded.forEach((callback) => callback());
     }

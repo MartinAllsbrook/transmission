@@ -5,6 +5,7 @@ import { Vector2D } from "../math/Vector2D.ts";
 import { Signal } from "@preact/signals";
 import { SnowboarderTrail } from "./SnowbarderTrail.ts";
 import Game from "islands/Game.tsx";
+import { LayerManager } from "../rendering/LayerManager.ts";
 
 export class Snowboarder extends GameObject {
     /** Input value for turning, from -1 to 1 */
@@ -33,6 +34,8 @@ export class Snowboarder extends GameObject {
         this.stats = stats;
 
         this.setupInputs();
+
+        LayerManager.getLayer("foreground")?.attach(this.container);
     }
 
     private async setupInputs() {
