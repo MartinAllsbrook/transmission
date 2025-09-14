@@ -15,15 +15,16 @@ export class Obstacle extends GameObject {
         const treeTexture = await Assets.load("/obsticales/Tree.png");
         treeTexture.source.scaleMode = "nearest";
         const treeSprite = new Sprite(treeTexture);
+        treeSprite.scale = 1.75;
         this.container.addChild(treeSprite);
 
         await super.createSprite();
 
         const _collider = new CircleCollider(
             this,
-            new Vector2D(0, 12),
-            4,
-            true,
+            new Vector2D(0, 22),
+            6,
+            false,
             "obstacle",
         );
     }

@@ -12,23 +12,33 @@ export interface Range {
 }
 
 export abstract class SATCollider {
+    /** Named collision layer for filter-based checks */
+    public readonly layer: CollisionLayer;
+
     /** The center of the collider relative to it's parent gameobject */
     protected relativePosition: Vector2D;
 
     /** The gameobject this collider is attached to */
     protected host: GameObject;
     
-    /** Named collision layer for filter-based checks */
-    public readonly layer: CollisionLayer;
-    
+    /** Set of colliders this collider is currently colliding with */
+    private currentlyColliding: Set<SATCollider> = new Set();
+
     /** Callbacks to be called when this collider collides with another */
-    private onCollisionCallbacks: ((other: SATCollider) => void)[] = [];
+    private onStartCallbacks: ((other: SATCollider) => void)[] = [];
     
+    /** Callbacks to be called while this collider is colliding with another */
+    private whileCallbacks: ((other: SATCollider) => void)[] = [];
+
+    /** Callbacks to be called when this collider stops colliding with another */
+    private onEndCallbacks: ((other: SATCollider) => void)[] = [];
+
     /** Weather to draw the debugging shape of this collider */
-    debugging: boolean;
+    public debugging: boolean;
 
     /** The debugging shape of the collider */
     protected debugShape: Graphics | null = null;
+
 
     constructor(
         host: GameObject,
@@ -110,14 +120,38 @@ export abstract class SATCollider {
 
     // #region Event System
 
-    public onCollision(other: SATCollider): void {
-        for (const callback of this.onCollisionCallbacks) {
-            callback(other);
+    public colliding(other: SATCollider): void {
+        if (!this.currentlyColliding.has(other)) {
+            this.currentlyColliding.add(other);
+            for (const callback of this.onStartCallbacks) {
+                callback(other);
+            }
+        } else {
+            for (const callback of this.whileCallbacks) {
+                callback(other);
+            }
         }
     }
 
-    public addOnCollisionCallback(callback: (other: SATCollider) => void): void {
-        this.onCollisionCallbacks.push(callback);
+    public notColliding(other: SATCollider): void {
+        if (this.currentlyColliding.has(other)) {
+            this.currentlyColliding.delete(other);
+            for (const callback of this.onEndCallbacks) {
+                callback(other);
+            }
+        }
+    }
+
+    public onCollisionStart(callback: (other: SATCollider) => void): void {
+        this.onStartCallbacks.push(callback);
+    }
+
+    public onCollisionWhile(callback: (other: SATCollider) => void): void {
+        this.whileCallbacks.push(callback);
+    }
+
+    public onCollisionEnd(callback: (other: SATCollider) => void): void {
+        this.onEndCallbacks.push(callback);
     }
 
     // #endregion

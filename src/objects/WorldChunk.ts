@@ -2,6 +2,7 @@ import { Graphics } from "pixi.js";
 import { GameObject, Parent } from "src/objects/GameObject.ts";
 import { Obstacle } from "src/objects/Obstacle.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
+import { Jump } from "./Jump.ts";
 
 export class WorldChunk extends GameObject {
     chunkPosition: Vector2D;
@@ -22,9 +23,14 @@ export class WorldChunk extends GameObject {
 
     private createChunk(): void {
 
-        for (let i = 0; i < 3; i++) {
+        if (Math.random() < 0.1) {
+            this.createRandomJump();
+        }
+
+        for (let i = 0; i < 1; i++) {
             this.createRandomObstacle();
         }
+
     }
 
     private createRandomObstacle() {
@@ -34,17 +40,24 @@ export class WorldChunk extends GameObject {
         new Obstacle(this, new Vector2D(x, y));
     }
 
+    private createRandomJump() {
+        const x = Math.random() * this.size.x;
+        const y = Math.random() * this.size.y;
+
+        new Jump(this, new Vector2D(x, y));
+    }
+
     public override async createSprite() {
         await super.createSprite();
 
-        // Use actual chunk size
-        const width = this.size?.x ?? 64;
-        const height = this.size?.y ?? 64;
+        // // Use actual chunk size
+        // const width = this.size?.x ?? 64;
+        // const height = this.size?.y ?? 64;
 
-        const graphics = new Graphics()
-            .rect(0, 0, width, height)
-            .stroke({ width: 2, color: 0x000000, alpha: 0.05 });
+        // const graphics = new Graphics()
+        //     .rect(0, 0, width, height)
+        //     .stroke({ width: 2, color: 0x000000, alpha: 0.05 });
 
-        this.container.addChild(graphics);
+        // this.container.addChild(graphics);
     }
 }

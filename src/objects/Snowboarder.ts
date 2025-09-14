@@ -8,8 +8,8 @@ import Game from "islands/Game.tsx";
 import { LayerManager } from "../rendering/LayerManager.ts";
 
 export class Snowboarder extends GameObject {
-    /** Input value for turning, from -1 to 1 */
     private turnInput: number = 0;
+    private jumpInput: boolean = false;
 
     /** The position of the player in the world, used for world scrolling */
     public worldPosition: Vector2D = new Vector2D(128, 128);
@@ -23,6 +23,11 @@ export class Snowboarder extends GameObject {
 
     /** The current velocity of the player */
     private velocity: Vector2D = new Vector2D(0, 0);
+
+    private rotationRate: number = 0;
+
+    private inAir = false;
+    private height: number = 0;
 
     constructor(parent: Parent, stats: {
         speed: Signal<number>;
@@ -43,6 +48,10 @@ export class Snowboarder extends GameObject {
 
         InputManager.getInput("turn").subscribe((newValue) => {
             this.turnInput = newValue;
+        });
+
+        InputManager.getInput("jump").subscribe((newValue) => {
+            this.jumpInput = newValue;
         });
     }
 
@@ -72,11 +81,11 @@ export class Snowboarder extends GameObject {
             this,
             new Vector2D(0, 0),
             new Vector2D(32, 7),
-            true,
+            false,
             "player",
         );
 
-        collider.addOnCollisionCallback((other) => {
+        collider.onCollisionStart((other) => {
             if (other.layer === "obstacle") {
                 if (this.velocity.magnitude() > 10) {
                     Game.endGame();
@@ -84,10 +93,25 @@ export class Snowboarder extends GameObject {
                 
                 this.velocity = this.velocity.multiply(-0.5);
             }
+            if (other.layer === "jump" && !this.inAir) {
+                this.height += 1;
+            }
+        });
+
+        collider.onCollisionEnd((other) => {
+            if (other.layer === "jump" && !this.inAir) {
+                this.inAir = true;
+            }
         });
     }
 
     public override update(deltaTime: number): void {
+
+        if (this.jumpInput && !this.inAir) {
+            this.height += 0.5;
+            this.inAir = true;
+        };
+
         this.updatePhysics(deltaTime);
 
         this.updateStats();
@@ -97,6 +121,8 @@ export class Snowboarder extends GameObject {
     }
 
     private updateTrail() {
+        if (this.inAir) return;
+
         SnowboarderTrail.instance?.addTrailPoint(
             this.worldPosition,
             Vector2D.fromAngle(this.rotation * (Math.PI / 180) - Math.PI / 2),
@@ -110,33 +136,45 @@ export class Snowboarder extends GameObject {
     }
 
     private updatePhysics(deltaTime: number) {
-        const frictionStrength = 0.1; // Raising this lowers top speed (max 1)
-        const gravityStrength = 140; // Raising this value makes the game feel faster
-        const slipStrength = 325; // Raising this value makes turning more responsive
-        const turnStrength = 200;
+        const turnStrength = 250;
 
-        // Apply gravity
-        this.velocity.y += gravityStrength * deltaTime;
+        if (this.inAir) {
+            this.height -= deltaTime;
+            if (this.height <= 0) {
+                this.height = 0;
+                this.inAir = false;
+            }
+        } else {
+            const frictionStrength = 0.1; // Raising this lowers top speed (max 1)
+            const gravityStrength = 140; // Raising this value makes the game feel faster
+            const slipStrength = 325; // Raising this value makes turning more responsive
+    
+            // Apply gravity
+            this.velocity.y += gravityStrength * deltaTime;
+    
+            // Rotate
+            this.rotationRate += (this.turnInput - this.rotationRate) * deltaTime * 10;
+            
+            const radians = (this.rotation) * (Math.PI / 180);
+    
+            // Normal force
+            const forward = Vector2D.fromAngle(radians - Math.PI / 2);
+            const direction = this.velocity.normalize();
+            const projected = direction.projectOnto(forward);
+            const normal = projected.subtract(direction);
+    
+            const strength = Math.pow((1 - normal.magnitude()), 2) * 0.25 + 1;
+            const normalDirection = projected.subtract(direction).normalize().multiply(strength);
+    
+            this.velocity = this.velocity.add(normalDirection.multiply(deltaTime * slipStrength));
+    
+            // Friction
+            this.velocity = this.velocity.multiply(
+                1 - frictionStrength * deltaTime,
+            );
+        }
 
-        // Rotate
-        const radians = (this.rotation) * (Math.PI / 180);
-        this.rotation += this.turnInput * deltaTime * turnStrength;
-
-        // Normal force
-        const forward = Vector2D.fromAngle(radians - Math.PI / 2);
-        const direction = this.velocity.normalize();
-        const projected = direction.projectOnto(forward);
-        const normal = projected.subtract(direction);
-
-        const strength = Math.pow((1 - normal.magnitude()), 2) * 0.25 + 1;
-        const normalDirection = projected.subtract(direction).normalize().multiply(strength);
-
-        this.velocity = this.velocity.add(normalDirection.multiply(deltaTime * slipStrength));
-
-        // Friction
-        this.velocity = this.velocity.multiply(
-            1 - frictionStrength * deltaTime,
-        );
+        this.rotation += this.rotationRate * deltaTime * turnStrength;
 
         // Update position
         this.worldPosition.set(

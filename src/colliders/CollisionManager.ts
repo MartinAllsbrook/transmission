@@ -1,12 +1,12 @@
 import { SATCollider } from "./SATCollider.ts";
 
-export type CollisionLayer = "default" | "player" | "obstacle" | "feature";
+export type CollisionLayer = "default" | "player" | "obstacle" | "jump";
 
 export const LAYERS: CollisionLayer[] = [
     "default",
     "player",
     "obstacle",
-    "feature",
+    "jump",
 ];
 
 // Developer-defined collision matrix. Columns correspond to LAYERS by index.
@@ -61,16 +61,15 @@ export class CollisionManager {
             for (let j = i + 1; j < this.colliders.length; j++) {
                 const colliderA = this.colliders[i];
                 const colliderB = this.colliders[j];
-                if (
-                    colliderA !== colliderB &&
-                    this.shouldLayersCollide(
-                        colliderA.layer,
-                        colliderB.layer,
-                    ) &&
+                if (colliderA !== colliderB &&
+                    this.shouldLayersCollide(colliderA.layer, colliderB.layer) &&
                     colliderA.checkCollision(colliderB)
                 ) {
-                    colliderA.onCollision(colliderB);
-                    colliderB.onCollision(colliderA);
+                    colliderA.colliding(colliderB);
+                    colliderB.colliding(colliderA);
+                } else {
+                    colliderA.notColliding(colliderB);
+                    colliderB.notColliding(colliderA);
                 }
             }
         }
