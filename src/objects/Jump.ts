@@ -8,7 +8,7 @@ export class Jump extends GameObject {
         super(parent, position);
         this.container.label = "Jump";
 
-        new RectCollider(this, new Vector2D(0, 0), new Vector2D(48, 32), false, "jump");
+        new RectCollider(this, new Vector2D(0, 0), new Vector2D(48, 32), true, "jump");
     } 
 
     public override async createSprite() {

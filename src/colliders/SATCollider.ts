@@ -115,7 +115,7 @@ export abstract class SATCollider {
 
     /** The world position of the collider */
     get Position(): Vector2D {
-        return this.relativePosition.add(this.host.WorldPosition);
+        return this.relativePosition.add(this.host.ScreenPosition);
     }
 
     // #region Event System

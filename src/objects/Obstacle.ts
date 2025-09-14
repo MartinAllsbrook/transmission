@@ -24,7 +24,7 @@ export class Obstacle extends GameObject {
             this,
             new Vector2D(0, 22),
             6,
-            false,
+            true,
             "obstacle",
         );
     }

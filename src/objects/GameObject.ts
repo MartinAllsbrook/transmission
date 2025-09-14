@@ -21,6 +21,8 @@ export abstract class GameObject {
 
     private colliders: SATCollider[] = [];
 
+    private autoCenter: boolean = true;
+
     constructor(
         parent: Parent,
         position: Vector2D = new Vector2D(0, 0),
@@ -45,11 +47,17 @@ export abstract class GameObject {
         this.syncTransform();
     }
 
+    public set AutoCenter(value: boolean) {
+        this.autoCenter = value;
+    }
+
     public async createSprite() {
         await Promise.resolve(); // Ensure async context
 
-        this.container.pivot.x = this.container.width / 2;
-        this.container.pivot.y = this.container.height / 2;
+        if (this.autoCenter) {
+            this.container.pivot.x = this.container.width / 2;
+            this.container.pivot.y = this.container.height / 2;
+        }
 
         this.container.position.set(this.position.x, this.position.y);
         this.container.rotation = this.rotation * (Math.PI / 180);
@@ -134,6 +142,17 @@ export abstract class GameObject {
     get WorldPosition(): Vector2D {
         if (this.parent) {
             return this.parent.WorldPosition.add(this.position);
+        } else {
+            return this.position;
+        }
+    }
+
+    /**
+     * This object's position in world coordinates.
+     */
+    get ScreenPosition(): Vector2D {
+        if (this.parent) {
+            return this.parent.ScreenPosition.add(this.position);
         } else {
             return this.position;
         }

@@ -23,6 +23,9 @@ export default class Game extends Component {
     /** The the root container of the game, also used to center the game on the screen */
     private static rootObject?: OffsetContainer;
 
+    /** The main world object, moves the scene */
+    private static world?: World;
+
     /** The main player object */
     private static player?: Snowboarder;
 
@@ -190,4 +193,24 @@ export default class Game extends Component {
     }
 
     // #endregion
+
+    // /**
+    //  * ### Debugging use only
+    //  * Returns the root game object (the one that centers the game on the screen)
+    //  */
+    // public static get RootObject() {
+    //     if (!this.rootObject) throw new Error("Root object not initialized");
+        
+    //     return this.rootObject;
+    // }
+
+    // /**
+    //  * ### Debugging use only
+    //  * Returns the world game object (the one that moves the scene)
+    //  */
+    // public static get World() {
+    //     if (!this.world) throw new Error("World object not initialized");
+
+    //     return this.world;
+    // }
 }

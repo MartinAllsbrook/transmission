@@ -81,7 +81,7 @@ export class Snowboarder extends GameObject {
             this,
             new Vector2D(0, 0),
             new Vector2D(32, 7),
-            false,
+            true,
             "player",
         );
 
@@ -106,6 +106,14 @@ export class Snowboarder extends GameObject {
     }
 
     public override update(deltaTime: number): void {
+
+        // TODOs:
+            // - Snowboarder scaling on jump
+            // - Gain height the longer you're on a jump
+            // - Add shifties to control air rotation
+            // - Add points
+            // - Add some momentum upwards when hitting a jump at speed
+
 
         if (this.jumpInput && !this.inAir) {
             this.height += 0.5;

@@ -3,18 +3,22 @@ import { GameObject, Parent } from "src/objects/GameObject.ts";
 import { Obstacle } from "src/objects/Obstacle.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { Jump } from "./Jump.ts";
+import { World } from "./World.ts";
 
 export class WorldChunk extends GameObject {
     chunkPosition: Vector2D;
 
+    private world: World
+
     constructor(
-        parent: Parent,
+        world: World,
         position: Vector2D,
         chunkPosition: Vector2D,
         size: Vector2D,
     ) {
-        super(parent, position, size);
+        super(world, position, size);
 
+        this.world = world;
         this.chunkPosition = chunkPosition;
         this.size = size;
 
@@ -27,7 +31,7 @@ export class WorldChunk extends GameObject {
             this.createRandomJump();
         }
 
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < 3; i++) {
             this.createRandomObstacle();
         }
 
@@ -36,6 +40,15 @@ export class WorldChunk extends GameObject {
     private createRandomObstacle() {
         const x = Math.random() * this.size.x;
         const y = Math.random() * this.size.y;
+
+        const worldPosition = this.WorldPosition.add(new Vector2D(x, y));
+        console.log("World Pos:", this.WorldPosition);
+
+        if (this.world.getDistanceToNearestRun(worldPosition) < 128) {
+            console.log("Dist to run:", this.world.getDistanceToNearestRun(worldPosition));
+            return;
+        }
+
 
         new Obstacle(this, new Vector2D(x, y));
     }
@@ -50,14 +63,14 @@ export class WorldChunk extends GameObject {
     public override async createSprite() {
         await super.createSprite();
 
-        // // Use actual chunk size
-        // const width = this.size?.x ?? 64;
-        // const height = this.size?.y ?? 64;
+        // Use actual chunk size
+        const width = this.size?.x ?? 64;
+        const height = this.size?.y ?? 64;
 
-        // const graphics = new Graphics()
-        //     .rect(0, 0, width, height)
-        //     .stroke({ width: 2, color: 0x000000, alpha: 0.05 });
+        const graphics = new Graphics()
+            .rect(0, 0, width, height)
+            .stroke({ width: 2, color: 0x000000, alpha: 0.05 });
 
-        // this.container.addChild(graphics);
+        this.container.addChild(graphics);
     }
 }

@@ -3,29 +3,88 @@ import { WorldChunk } from "./WorldChunk.ts";
 import { Snowboarder } from "./Snowboarder.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { SnowboarderTrail } from "./SnowbarderTrail.ts";
+import { BezierSpline } from "../math/BezierSpline.ts";
+import { Container, Graphics } from "pixi.js";
+
+interface SkiRunSpline {
+    spline: BezierSpline;
+    nextRun?: SkiRunSpline;
+}
 
 export class World extends GameObject {
     private playerVelocity: Vector2D = new Vector2D(0, -1);
 
-    private chunkActiveArea = new Vector2D(3, 2);
+    private chunkActiveArea = new Vector2D(5, 3);
+    private runsActiveArea = new Vector2D(10, 6);
     private chunkSize = new Vector2D(256, 256);
 
     private chunkPosition: Vector2D = new Vector2D(0, 0);
 
     player: Snowboarder;
 
+    private runSplines: SkiRunSpline[] = [];
+
     constructor(parent: Parent, player: Snowboarder) {
         super(parent, new Vector2D(0, 0), new Vector2D(0, 0));
+
+        this.AutoCenter = false;
 
         this.player = player;
         new SnowboarderTrail(this);
         this.container.label = "World";
 
+        // TODO: Idk if this is needed
         // Move world origin
         this.position.x = -(this.player.worldPosition.x);
         this.position.y = -(this.player.worldPosition.y);
 
-        // this.updateChunks();
+        // Create initial ski run
+        const initialRun2 = {
+            spline: new BezierSpline([
+                new Vector2D(128, 128),
+                new Vector2D(512, 512),
+                new Vector2D(-512, 1024),
+                new Vector2D(0, 1536),
+            ]),
+        };
+
+        const initialRun1 = {
+            spline: new BezierSpline([
+                new Vector2D(-512, -1536),
+                new Vector2D(512, -1024),
+                new Vector2D(-512, -512),
+                new Vector2D(128, 128),
+            ]),
+            nextRun: initialRun2
+        };
+        
+        this.runSplines.push(initialRun1);
+        this.runSplines.push(initialRun2);
+        // initialRun1.spline.drawDebug(this);
+        // initialRun2.spline.drawDebug(this);
+        
+    }
+
+    public getDistanceToNearestRun(position: Vector2D): number {
+        let nearestDistance = Infinity;
+        
+        for (const run of this.runSplines) {
+            const distance = run.spline.getDistanceToPoint(position);
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+            }
+        }
+
+        return nearestDistance;
+    }
+
+    /**
+     * ### Debugging use only
+     * Adds a visual element directly to the world container
+     * @param visual - The visual element to add
+     */
+    public addVisual(visual: Container) {
+        this.container.addChild(visual);
     }
 
     public override update(deltaTime: number): void {
@@ -40,6 +99,12 @@ export class World extends GameObject {
 
         super.update(deltaTime);
         this.updateChunks();
+    }
+
+    private updateRuns() {
+        for (const run of this.runSplines) {
+            
+        }
     }
 
     private updateChunks() {
@@ -98,5 +163,9 @@ export class World extends GameObject {
                 }
             }
         }
+    }
+
+    public override get WorldPosition(): Vector2D {
+        return new Vector2D(0, 0);
     }
 }
