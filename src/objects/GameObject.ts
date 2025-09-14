@@ -9,8 +9,7 @@ export type Parent = Application | GameObject;
  */
 export abstract class GameObject {
     protected position: Vector2D;
-    rotation: number;
-    size: Vector2D;
+    protected rotation: number;
     scale: Vector2D;
 
     parent: GameObject | null = null;
@@ -26,13 +25,11 @@ export abstract class GameObject {
     constructor(
         parent: Parent,
         position: Vector2D = new Vector2D(0, 0),
-        size: Vector2D = new Vector2D(0, 0),
         rotation: number = 0,
         scale: Vector2D = new Vector2D(1, 1),
     ) {
         this.position = position;
         this.rotation = rotation;
-        this.size = size;
         this.scale = scale;
 
         if (parent instanceof GameObject) {
@@ -156,6 +153,24 @@ export abstract class GameObject {
             return this.parent.ScreenPosition.add(this.position);
         } else {
             return this.position;
+        }
+    }
+
+    /**
+     * This object's rotation in degrees.
+     */
+    get Rotation(): number {
+        return this.rotation;
+    }
+
+    /**
+     * This object's rotation in world coordinates.
+     */
+    get WorldRotation(): number {
+        if (this.parent) {
+            return this.parent.WorldRotation + this.rotation;
+        } else {
+            return this.rotation;
         }
     }
 }

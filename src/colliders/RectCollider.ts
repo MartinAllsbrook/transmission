@@ -108,6 +108,6 @@ export class RectCollider extends SATCollider {
     }
 
     protected get Rotation(): number {
-        return this.host.rotation * (Math.PI / 180);
+        return this.host.WorldRotation * (Math.PI / 180);
     }
 }

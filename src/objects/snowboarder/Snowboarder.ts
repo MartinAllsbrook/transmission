@@ -7,6 +7,8 @@ import Game from "islands/Game.tsx";
 import { LayerManager } from "../../rendering/LayerManager.ts";
 import { StatTracker } from "../../scoring/StatTracker.ts";
 import { TextManager } from "../../scoring/TextManager.ts";
+import { SATCollider } from "../../colliders/SATCollider.ts";
+import { Snowboard } from "./Snowboard.ts";
 
 export class Snowboarder extends GameObject {
     private turnInput: number = 0;
@@ -32,6 +34,8 @@ export class Snowboarder extends GameObject {
 
     private timeGoingFast: number = 0; 
 
+    private snowboard: Snowboard;
+
     constructor(parent: Parent, stats: {
         speed: StatTracker;
         distance: StatTracker;
@@ -40,6 +44,8 @@ export class Snowboarder extends GameObject {
         super(parent);
 
         this.stats = stats;
+
+        this.snowboard = new Snowboard(this);
 
         this.setupInputs();
 
@@ -67,46 +73,31 @@ export class Snowboarder extends GameObject {
         bodyTexture.source.scaleMode = "nearest";
         const bodySprite = new Sprite(bodyTexture);
 
-        const boardTexture = await Assets.load("/snowboarder/Board.png");
-        boardTexture.source.scaleMode = "nearest";
-        const boardSprite = new Sprite(boardTexture);
-
-        this.container.addChild(boardSprite);
         this.container.addChild(bodySprite);
         this.container.addChild(headSprite);
 
         await super.createSprite();
-        this.setupCollider();
     }
 
-    private setupCollider() {
-        const collider = new RectCollider(
-            this,
-            new Vector2D(0, 0),
-            new Vector2D(32, 7),
-            true,
-            "player",
-        );
-
-        collider.onCollisionStart((other) => {
-            if (other.layer === "obstacle") {
-                if (this.velocity.magnitude() > 10) {
-                    Game.endGame();
-                }
-                
-                this.velocity = this.velocity.multiply(-0.5);
+    public onCollisionStart(other: SATCollider): void {
+        if (other.layer === "obstacle") {
+            if (this.velocity.magnitude() > 10) {
+                Game.endGame();
             }
-            if (other.layer === "jump" && !this.inAir) {
-                this.height += 1;
-            }
-        });
-
-        collider.onCollisionEnd((other) => {
-            if (other.layer === "jump" && !this.inAir) {
-                this.inAir = true;
-            }
-        });
+            
+            this.velocity = this.velocity.multiply(-0.5);
+        }
+        if (other.layer === "jump" && !this.inAir) {
+            this.height += 1;
+        }
     }
+
+    public onCollisionEnd(other: SATCollider): void {
+        if (other.layer === "jump" && !this.inAir) {
+            this.inAir = true;
+        }
+    }
+
 
     public override update(deltaTime: number): void {
 

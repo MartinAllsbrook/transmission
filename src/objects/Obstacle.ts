@@ -8,7 +8,7 @@ export class Obstacle extends GameObject {
         parent: Parent,
         position: Vector2D,
     ) {
-        super(parent, position, new Vector2D(32, 32));
+        super(parent, position);
     }
 
     public override async createSprite() {

@@ -10,18 +10,19 @@ export class WorldChunk extends GameObject {
 
     private world: World
 
+    private size: Vector2D;
+
     constructor(
         world: World,
         position: Vector2D,
         chunkPosition: Vector2D,
-        size: Vector2D,
+        chunkSize: Vector2D = new Vector2D(256, 256),
     ) {
-        super(world, position, size);
+        super(world, position);
 
         this.world = world;
         this.chunkPosition = chunkPosition;
-        this.size = size;
-
+        this.size = chunkSize;
         this.createChunk();
     }
 
