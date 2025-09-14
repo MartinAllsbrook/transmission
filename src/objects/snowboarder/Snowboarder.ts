@@ -107,7 +107,6 @@ export class Snowboarder extends GameObject {
         this.updatePhysics(deltaTime);
 
         this.updateStats();
-        this.updateTrail();
 
 
         const speed = this.velocity.magnitude();
@@ -123,14 +122,7 @@ export class Snowboarder extends GameObject {
         super.update(deltaTime);
     }
 
-    private updateTrail() {
-        if (this.inAir) return;
 
-        SnowboarderTrail.instance?.addTrailPoint(
-            this.worldPosition,
-            Vector2D.fromAngle(this.rotation * (Math.PI / 180) - Math.PI / 2),
-        );
-    }
 
     // #region Scoring & Stats
 
@@ -171,7 +163,7 @@ export class Snowboarder extends GameObject {
             // Rotate
             this.rotationRate += (this.turnInput - this.rotationRate) * deltaTime * 10;
             
-            const radians = (this.rotation) * (Math.PI / 180);
+            const radians = (this.snowboard.WorldRotation) * (Math.PI / 180);
     
             // Normal force
             const forward = Vector2D.fromAngle(radians - Math.PI / 2);
@@ -210,7 +202,15 @@ export class Snowboarder extends GameObject {
         this.stats.speed.Value = 0;
     }
 
+    public override get WorldPosition(): Vector2D {
+        return this.worldPosition.clone();
+    }
+
     public get Velocity(): Vector2D {
         return this.velocity.clone();
+    }
+
+    public get InAir(): boolean {
+        return this.inAir;
     }
 }

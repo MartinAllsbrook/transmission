@@ -1,3 +1,4 @@
+import { ExtraMath } from "../../math/ExtraMath.ts";
 import { Vector2D } from "../../math/Vector2D.ts";
 import { GameObject } from "../GameObject.ts";
 import { Snowboarder } from "./Snowboarder.ts";
@@ -42,7 +43,7 @@ export class Head extends GameObject {
         }
         
         // Lerp towards the target rotation.
-        this.rotation = this.lerp(this.rotation, this.targetRotation, this.lerpSpeed * deltaTime);
+        this.rotation = ExtraMath.lerpSafe(this.rotation, this.targetRotation, this.lerpSpeed * deltaTime);
         
         super.update(deltaTime);
     }
@@ -51,10 +52,6 @@ export class Head extends GameObject {
         while (angle > 180) angle -= 360;
         while (angle < -180) angle += 360;
         return angle;
-    }
-
-    private lerp(start: number, end: number, factor: number): number {
-        return start + (end - start) * Math.min(1, factor);
     }
 
     public override async createSprite() {
