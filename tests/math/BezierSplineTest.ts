@@ -1,4 +1,4 @@
-import { BezierSpline } from "src/math/BezierSpline.ts";
+import { BezierSpline } from "src/math/splines/BezierSpline.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 
 /**

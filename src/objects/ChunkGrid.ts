@@ -1,4 +1,4 @@
-import { BezierSpline } from "../math/BezierSpline.ts";
+import { BezierSpline } from "../math/splines/BezierSpline.ts";
 import { Vector2D } from "../math/Vector2D.ts";
 
 export class ChunkGrid {

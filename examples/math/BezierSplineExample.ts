@@ -1,5 +1,5 @@
 import { Vector2D } from "src/math/Vector2D.ts";
-import { BezierSpline } from "src/math/BezierSpline.ts";
+import { BezierSpline } from "src/math/splines/BezierSpline.ts";
 
 /**
  * Example usage of the BezierSpline class

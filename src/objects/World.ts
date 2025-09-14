@@ -3,12 +3,18 @@ import { WorldChunk } from "./WorldChunk.ts";
 import { Snowboarder } from "./Snowboarder.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { SnowboarderTrail } from "./SnowbarderTrail.ts";
-import { BezierSpline } from "../math/BezierSpline.ts";
+import { BezierSpline } from "../math/splines/BezierSpline.ts";
 import { Container, Graphics } from "pixi.js";
+import { SplinePoint } from "../math/splines/SplinePoint.ts";
 
 interface SkiRunSpline {
     spline: BezierSpline;
     nextRun?: SkiRunSpline;
+}
+
+interface SkiRunNode {
+    point: SplinePoint;
+    next?: SkiRunNode;
 }
 
 export class World extends GameObject {
@@ -22,6 +28,7 @@ export class World extends GameObject {
 
     player: Snowboarder;
 
+    private runNodes: SkiRunNode[] = [];
     private runSplines: SkiRunSpline[] = [];
 
     constructor(parent: Parent, player: Snowboarder) {
@@ -38,38 +45,18 @@ export class World extends GameObject {
         this.position.x = -(this.player.worldPosition.x);
         this.position.y = -(this.player.worldPosition.y);
 
-        // Create initial ski run
-        const initialRun2 = {
-            spline: new BezierSpline([
-                new Vector2D(128, 128),
-                new Vector2D(512, 512),
-                new Vector2D(-512, 1024),
-                new Vector2D(0, 1536),
-            ]),
-        };
+        // Initial run point
+        const startPoint = new SplinePoint(new Vector2D(0, 0), new Vector2D(0, 128));
+        this.runNodes.push({ point: startPoint });
 
-        const initialRun1 = {
-            spline: new BezierSpline([
-                new Vector2D(-512, -1536),
-                new Vector2D(512, -1024),
-                new Vector2D(-512, -512),
-                new Vector2D(128, 128),
-            ]),
-            nextRun: initialRun2
-        };
-        
-        this.runSplines.push(initialRun1);
-        this.runSplines.push(initialRun2);
-        // initialRun1.spline.drawDebug(this);
-        // initialRun2.spline.drawDebug(this);
-        
+        this.updateRuns();
     }
 
     public getDistanceToNearestRun(position: Vector2D): number {
         let nearestDistance = Infinity;
         
         for (const run of this.runSplines) {
-            const distance = run.spline.getDistanceToPoint(position);
+            const distance = run.spline.getDistanceToPoint(position, 10);
             if (distance < nearestDistance) {
                 nearestDistance = distance;
             }
@@ -98,26 +85,51 @@ export class World extends GameObject {
         );
 
         super.update(deltaTime);
+        this.updateRuns();
         this.updateChunks();
     }
 
     private updateRuns() {
-        for (const run of this.runSplines) {
-            
+        for (const node of this.runNodes) {
+            const lowerBound = new Vector2D(
+                this.runsActiveArea.x * -1 * (this.chunkSize.x + 128),
+                this.runsActiveArea.y * -1 * (this.chunkSize.y + 128),
+            ).subtract(this.position);
+            const upperBound = new Vector2D(
+                this.runsActiveArea.x * (this.chunkSize.x + 128),
+                this.runsActiveArea.y * (this.chunkSize.y + 128)
+            ).subtract(this.position);
+
+            if (
+                node.point.Position.x > lowerBound.x &&
+                node.point.Position.x < upperBound.x &&
+                node.point.Position.y > lowerBound.y &&
+                node.point.Position.y < upperBound.y
+            ) {
+                if (!node.next) {
+                    // Create a new run segment
+                    const newPoint = new SplinePoint(
+                        node.point.Position.add(new Vector2D(
+                            (Math.random() - 0.5) * 512,
+                            -256 + (Math.random() * 512 + 512),
+                        )),
+                        new Vector2D((Math.random() - 0.5) * 256, 128),
+                    );
+
+                    node.next = { point: newPoint };
+                    this.runNodes.push(node.next);
+
+                    const newSpline = BezierSpline.createCubicFromPoints(node.point, newPoint);
+                    this.runSplines.push({ spline: newSpline });
+                    // newSpline.drawDebug(this);
+                }
+            }
         }
     }
 
     private updateChunks() {
-        for (
-            let x = -this.chunkActiveArea.x;
-            x <= this.chunkActiveArea.x;
-            x++
-        ) {
-            for (
-                let y = -this.chunkActiveArea.y;
-                y <= this.chunkActiveArea.y;
-                y++
-            ) {
+        for (let x = -this.chunkActiveArea.x; x <= this.chunkActiveArea.x; x++) {
+            for (let y = -this.chunkActiveArea.y; y <= this.chunkActiveArea.y; y++) {
                 const chunkCoord = new Vector2D(
                     this.chunkPosition.x + x,
                     this.chunkPosition.y + y,
