@@ -115,7 +115,6 @@ export class Snowboarder extends GameObject {
             // - Add points
             // - Add some momentum upwards when hitting a jump at speed
 
-
         if (this.jumpInput && !this.inAir) {
             this.height += 0.5;
             this.inAir = true;
@@ -138,6 +137,8 @@ export class Snowboarder extends GameObject {
         );
     }
 
+    // #region Scoring & Stats
+
     private updateStats() {
         const { speed, distance, score } = this.stats;
 
@@ -145,6 +146,14 @@ export class Snowboarder extends GameObject {
         distance.Value = this.worldPosition.y;
         score.Value = Math.floor(this.worldPosition.y / 10);
     }
+
+    private addScore(points: number) {
+        this.stats.score.Value += points;
+    }
+
+    // #endregion
+
+    // #region Physics and Movement
 
     private updatePhysics(deltaTime: number) {
         const turnStrength = 250;
@@ -193,9 +202,7 @@ export class Snowboarder extends GameObject {
         );
     }
 
-    setTurnInput(turn: number) {
-        this.turnInput = turn;
-    }
+    // #endregion
 
     public reset() {
         this.worldPosition.set(new Vector2D(128, 128));

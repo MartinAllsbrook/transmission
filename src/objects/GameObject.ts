@@ -1,6 +1,7 @@
 import { Application, Container } from "pixi.js";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { SATCollider } from "../colliders/SATCollider.ts";
+import { TextPopup } from "./TextPopup.ts";
 
 export type Parent = Application | GameObject;
 
@@ -76,6 +77,7 @@ export abstract class GameObject {
      * @param deltaTime Time in milliseconds since the last frame.
      */
     public update(_deltaTime: number): void {
+
         this.syncTransform();
         this.children.forEach((child) => child.update(_deltaTime));
     }

@@ -42,10 +42,8 @@ export class WorldChunk extends GameObject {
         const y = Math.random() * this.size.y;
 
         const worldPosition = this.WorldPosition.add(new Vector2D(x, y));
-        console.log("World Pos:", this.WorldPosition);
 
         if (this.world.getDistanceToNearestRun(worldPosition) < 192) {
-            console.log("Dist to run:", this.world.getDistanceToNearestRun(worldPosition));
             return;
         }
 
