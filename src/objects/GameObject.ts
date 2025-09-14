@@ -1,7 +1,6 @@
 import { Application, Container } from "pixi.js";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { SATCollider } from "../colliders/SATCollider.ts";
-import { TextPopup } from "./TextPopup.ts";
 
 export type Parent = Application | GameObject;
 

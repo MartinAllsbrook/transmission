@@ -4,7 +4,7 @@ import { Snowboarder } from "./Snowboarder.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { SnowboarderTrail } from "./SnowbarderTrail.ts";
 import { BezierSpline } from "../math/splines/BezierSpline.ts";
-import { Container, Graphics } from "pixi.js";
+import { Container } from "pixi.js";
 import { SplinePoint } from "../math/splines/SplinePoint.ts";
 
 interface SkiRunSpline {
@@ -170,7 +170,6 @@ export class World extends GameObject {
                     Math.abs(reativePosition.x) > this.chunkActiveArea.x ||
                     Math.abs(reativePosition.y) > this.chunkActiveArea.y
                 ) {
-                    console.log("Removing chunk at", chunk.chunkPosition);
                     chunk.destroy();
                 }
             }

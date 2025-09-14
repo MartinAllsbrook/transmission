@@ -5,12 +5,11 @@ import { Snowboarder } from "src/objects/Snowboarder.ts";
 import { World } from "src/objects/World.ts";
 import { CollisionManager } from "src/colliders/CollisionManager.ts";
 import { OffsetContainer } from "src/objects/OffsetContainer.ts";
-import { Signal } from "@preact/signals";
 import { GameOverScreen } from "./GameOverScreen.tsx";
 import { StatDisplay } from "../components/StatDisplay.tsx";
 import { LayerManager } from "src/rendering/LayerManager.ts";
 import { StatTracker } from "src/scoring/StatTracker.ts";
-import { ScoreManager } from "src/scoring/ScoreManager.ts";
+import { TextManager } from "src/scoring/TextManager.ts";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -92,8 +91,9 @@ export default class Game extends Component {
 
         Game.rootObject = new OffsetContainer(Game.app);
         Game.player = new Snowboarder(Game.rootObject, this.stats);
-        const world = new World(Game.rootObject, Game.player);
-        new ScoreManager(Game.rootObject);
+        new World(Game.rootObject, Game.player);
+        
+        TextManager.initialize(Game.rootObject);
     }
 
     /**

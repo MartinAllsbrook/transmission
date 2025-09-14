@@ -2,11 +2,11 @@ import { Assets, Sprite } from "pixi.js";
 import { GameObject, Parent } from "./GameObject.ts";
 import { RectCollider } from "../colliders/RectCollider.ts";
 import { Vector2D } from "../math/Vector2D.ts";
-import { Signal } from "@preact/signals";
 import { SnowboarderTrail } from "./SnowbarderTrail.ts";
 import Game from "islands/Game.tsx";
 import { LayerManager } from "../rendering/LayerManager.ts";
 import { StatTracker } from "../scoring/StatTracker.ts";
+import { TextManager } from "../scoring/TextManager.ts";
 
 export class Snowboarder extends GameObject {
     private turnInput: number = 0;
@@ -29,6 +29,8 @@ export class Snowboarder extends GameObject {
 
     private inAir = false;
     private height: number = 0;
+
+    private timeGoingFast: number = 0; 
 
     constructor(parent: Parent, stats: {
         speed: StatTracker;
@@ -125,6 +127,17 @@ export class Snowboarder extends GameObject {
         this.updateStats();
         this.updateTrail();
 
+
+        const speed = this.velocity.magnitude();
+        if (speed > 300) {
+            this.timeGoingFast += deltaTime;
+            console.log(this.timeGoingFast);
+        } else if (this.timeGoingFast > 2) {
+            const points = Math.floor(this.timeGoingFast * 10);
+            this.addScore(points);
+            this.timeGoingFast = 0;
+        }
+
         super.update(deltaTime);
     }
 
@@ -140,15 +153,16 @@ export class Snowboarder extends GameObject {
     // #region Scoring & Stats
 
     private updateStats() {
-        const { speed, distance, score } = this.stats;
+        const { speed, distance } = this.stats;
 
         speed.Value = this.velocity.magnitude();
         distance.Value = this.worldPosition.y;
-        score.Value = Math.floor(this.worldPosition.y / 10);
     }
 
     private addScore(points: number) {
         this.stats.score.Value += points;
+
+        TextManager.createScoreFadeoutText(points);
     }
 
     // #endregion

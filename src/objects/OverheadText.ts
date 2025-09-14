@@ -1,20 +1,26 @@
 import { Text, TextStyle } from "pixi.js";
 import { GameObject, Parent } from "./GameObject.ts";
+import { Vector2D } from "../math/Vector2D.ts";
 
-export class TextPopup extends GameObject {
+export class OverheadText  extends GameObject {
     private text: string;
     private color: string;
+    private textSize: number;
     private lifetime: number;
-
-    constructor(parent: Parent, text: string, color: string = "#000000", lifetime: number = 5) {
+    constructor(
+        parent: Parent, 
+        text: string, 
+        color: string = "#000000",
+        size: number = 4, 
+        lifetime: number = 4
+    ) {
         super(parent);
-
-        console.log("TextPopup Container:", );
-
-        this.container.position.set(0, 0)
+        
+        this.position.set(new Vector2D(0, -32));
 
         this.text = text;
         this.color = color;
+        this.textSize = size;
         this.lifetime = lifetime;
     }
 
@@ -23,9 +29,9 @@ export class TextPopup extends GameObject {
 
         const style = new TextStyle({
             fontFamily: "Arial",
-            fontSize: 24,
+            fontSize: 8 * this.textSize,
             fill: this.color,
-            stroke: this.color,
+            // stroke: this.color,
             fontWeight: "bold",
         });
 
@@ -39,12 +45,12 @@ export class TextPopup extends GameObject {
 
 
     public override update(deltaTime: number): void {
-        this.position.y -= 15 * deltaTime;
-        this.container.alpha -= 0.25 * deltaTime;
+        this.position.y -= 16 * deltaTime;
+        this.container.alpha -= (1 / this.lifetime) * deltaTime;
         this.lifetime -= deltaTime;
-        console.log("Lifetime:", this.lifetime);
         if (this.lifetime <= 0) {
             this.destroy();
+            return; // Exit early to prevent accessing destroyed properties
         }
 
         super.update(deltaTime);

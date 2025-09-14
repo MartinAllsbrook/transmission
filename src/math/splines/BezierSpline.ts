@@ -1,6 +1,5 @@
 import { Vector2D } from "src/math/Vector2D.ts";
 import { Graphics } from "pixi.js";
-import Game from "islands/Game.tsx";
 import { World } from "../../objects/World.ts";
 import { SplinePoint } from "./SplinePoint.ts";
 

@@ -1,6 +1,5 @@
 import { GameObject, Parent } from "./GameObject.ts";
 import { Vector2D } from "../math/Vector2D.ts";
-import { Container } from "pixi.js";
 
 export class OffsetContainer extends GameObject {
     constructor(parent: Parent) {
