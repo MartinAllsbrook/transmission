@@ -65,16 +65,8 @@ export class Snowboarder extends GameObject {
     }
 
     public override async createSprite() {
-        const headTexture = await Assets.load("/snowboarder/Head.png");
-        headTexture.source.scaleMode = "nearest";
-        const headSprite = new Sprite(headTexture);
-
-        const bodyTexture = await Assets.load("/snowboarder/Body.png");
-        bodyTexture.source.scaleMode = "nearest";
-        const bodySprite = new Sprite(bodyTexture);
-
-        this.container.addChild(bodySprite);
-        this.container.addChild(headSprite);
+        await this.loadSprite("/snowboarder/Head.png", 1);
+        await this.loadSprite("/snowboarder/Body.png", 1);
 
         await super.createSprite();
     }

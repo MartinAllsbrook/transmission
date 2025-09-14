@@ -12,11 +12,7 @@ export class Obstacle extends GameObject {
     }
 
     public override async createSprite() {
-        const treeTexture = await Assets.load("/obsticales/Tree.png");
-        treeTexture.source.scaleMode = "nearest";
-        const treeSprite = new Sprite(treeTexture);
-        treeSprite.scale = 1.75;
-        this.container.addChild(treeSprite);
+        await this.loadSprite("/obsticales/Tree.png", 1.75);
 
         await super.createSprite();
 

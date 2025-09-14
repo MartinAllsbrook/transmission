@@ -12,13 +12,7 @@ export class Jump extends GameObject {
     } 
 
     public override async createSprite() {
-        const texture = await Assets.load("/jumps/SkiJump.png");
-        texture.source.scaleMode = "nearest";
-        const sprite = new Sprite(texture);
-    
-        sprite.scale = 2;
-
-        this.container.addChild(sprite);
+        await this.loadSprite("/jumps/SkiJump.png", 2);
 
         await super.createSprite();
     }

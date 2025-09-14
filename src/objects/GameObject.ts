@@ -1,4 +1,4 @@
-import { Application, Container } from "pixi.js";
+import { Application, Assets, Container, Sprite } from "pixi.js";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { SATCollider } from "../colliders/SATCollider.ts";
 
@@ -51,10 +51,10 @@ export abstract class GameObject {
     public async createSprite() {
         await Promise.resolve(); // Ensure async context
 
-        if (this.autoCenter) {
-            this.container.pivot.x = this.container.width / 2;
-            this.container.pivot.y = this.container.height / 2;
-        }
+        // if (this.autoCenter) {
+        //     this.container.pivot.x = this.container.width / 2;
+        //     this.container.pivot.y = this.container.height / 2;
+        // }
 
         this.container.position.set(this.position.x, this.position.y);
         this.container.rotation = this.rotation * (Math.PI / 180);
@@ -66,6 +66,16 @@ export abstract class GameObject {
         }
 
         this.onSpriteLoaded.forEach((callback) => callback());
+    }
+
+    protected async loadSprite(url: string, scale: number = 1): Promise<Sprite> {
+        const texture = await Assets.load(url);
+        texture.source.scaleMode = "nearest";
+        const sprite = new Sprite(texture);
+        sprite.anchor.set(0.5, 0.5);
+        sprite.scale.set(scale, scale);
+        this.container.addChild(sprite);
+        return sprite;
     }
 
     /**
