@@ -9,6 +9,8 @@ import { StatTracker } from "../../scoring/StatTracker.ts";
 import { TextManager } from "../../scoring/TextManager.ts";
 import { SATCollider } from "../../colliders/SATCollider.ts";
 import { Snowboard } from "./Snowboard.ts";
+import { Head } from "./Head.ts";
+import { Body } from "./Body.ts";
 
 export class Snowboarder extends GameObject {
     private turnInput: number = 0;
@@ -35,6 +37,8 @@ export class Snowboarder extends GameObject {
     private timeGoingFast: number = 0; 
 
     private snowboard: Snowboard;
+    private body: Body;
+    private head: Head;
 
     constructor(parent: Parent, stats: {
         speed: StatTracker;
@@ -46,6 +50,8 @@ export class Snowboarder extends GameObject {
         this.stats = stats;
 
         this.snowboard = new Snowboard(this);
+        this.body = new Body(this);
+        this.head = new Head(this);
 
         this.setupInputs();
 
@@ -62,13 +68,6 @@ export class Snowboarder extends GameObject {
         InputManager.getInput("jump").subscribe((newValue) => {
             this.jumpInput = newValue;
         });
-    }
-
-    public override async createSprite() {
-        await this.loadSprite("/snowboarder/Head.png", 1);
-        await this.loadSprite("/snowboarder/Body.png", 1);
-
-        await super.createSprite();
     }
 
     public onCollisionStart(other: SATCollider): void {
@@ -209,5 +208,9 @@ export class Snowboarder extends GameObject {
         this.stats.score.Value = 0;
         this.stats.distance.Value = 0;
         this.stats.speed.Value = 0;
+    }
+
+    public get Velocity(): Vector2D {
+        return this.velocity.clone();
     }
 }

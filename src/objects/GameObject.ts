@@ -141,7 +141,7 @@ export abstract class GameObject {
      * This object's position relative to its parent.
      */
     get Position(): Vector2D {
-        return this.position;
+        return this.position.clone();
     }
 
     /**
@@ -151,7 +151,7 @@ export abstract class GameObject {
         if (this.parent) {
             return this.parent.WorldPosition.add(this.position);
         } else {
-            return this.position;
+            return this.Position;
         }
     }
 
@@ -162,7 +162,7 @@ export abstract class GameObject {
         if (this.parent) {
             return this.parent.ScreenPosition.add(this.position);
         } else {
-            return this.position;
+            return this.Position;
         }
     }
 
@@ -182,5 +182,17 @@ export abstract class GameObject {
         } else {
             return this.rotation;
         }
+    }
+
+    /**
+     * Sets this object's rotation relative to the world.
+     */
+    set WorldRotation(value: number) {
+        if (this.parent) {
+            this.rotation = value - this.parent.WorldRotation;
+        } else {
+            this.rotation = value;
+        }
+        this.syncTransform();
     }
 }

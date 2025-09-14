@@ -1,8 +1,6 @@
-import Game from "islands/Game.tsx";
 import { RectCollider } from "../../colliders/RectCollider.ts";
 import { Vector2D } from "../../math/Vector2D.ts";
-import { GameObject, Parent } from "../GameObject.ts";
-import { Assets, Sprite } from "pixi.js";
+import { GameObject } from "../GameObject.ts";
 import { Snowboarder } from "./Snowboarder.ts"
 
 export class Snowboard extends GameObject {
@@ -27,7 +25,7 @@ export class Snowboard extends GameObject {
             this,
             new Vector2D(0, 0),
             new Vector2D(32, 7),
-            true,
+            false,
             "player",
         );
 

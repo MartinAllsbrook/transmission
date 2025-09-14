@@ -31,7 +31,7 @@ export class RectCollider extends SATCollider {
     protected createDebugShape(): void {
         this.debugShape = new Graphics()
             .rect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y)
-            .stroke({ width: 1, color: 0x00ff00 });
+            .stroke({ width: 1, color: 0x00ff00, alpha: 0.5 });
 
         Game.app?.stage.addChild(this.debugShape);
         if (!Game.app?.stage) console.error("No stage found in Game.app");

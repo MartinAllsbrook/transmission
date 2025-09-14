@@ -28,7 +28,7 @@ export class CircleCollider extends SATCollider {
     protected createDebugShape(): void {
         this.debugShape = new Graphics()
             .circle(0, 0, this.radius)
-            .stroke({ width: 1, color: 0x00ff00 });
+            .stroke({ width: 1, color: 0x00ff00, alpha: 0.5 });
 
         Game.app?.stage.addChild(this.debugShape);
 
