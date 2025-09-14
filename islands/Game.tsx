@@ -9,6 +9,7 @@ import { Signal } from "@preact/signals";
 import { GameOverScreen } from "./GameOverScreen.tsx";
 import { StatDisplay } from "../components/StatDisplay.tsx";
 import { LayerManager } from "src/rendering/LayerManager.ts";
+import { StatTracker } from "src/scoring/StatTracker.ts";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -31,9 +32,9 @@ export default class Game extends Component {
 
     /** Set of signals to extract info from the player */
     private stats = {
-        speed: new Signal(0),
-        distance: new Signal(0),
-        score: new Signal(0),
+        speed: new StatTracker(),
+        distance: new StatTracker(),
+        score: new StatTracker(),
     };
 
     override componentDidMount() {
@@ -50,7 +51,6 @@ export default class Game extends Component {
         }
     }
 
-    // #region Game Initialization
     
     /**
      * Initialize the PixiJS game
@@ -78,6 +78,8 @@ export default class Game extends Component {
         await this.createVisuals();
         this.startGameLoop();
     }
+
+    // #region Game Initialization
 
     /**
      * Create the game objects (pre-visuals)
@@ -149,18 +151,20 @@ export default class Game extends Component {
     // #region Rendering
 
     render() {
+        const { score, distance, speed } = this.stats;
+
         return (
             <div>
                 {Game.gameOver
                     ? (
                         <div>
                             <GameOverScreen
-                                score={this.stats.score.value}
-                                maxScore={0}
-                                distace={this.stats.distance.value}
-                                maxDistance={0}
-                                fastestSpeed={this.stats.speed.value}
-                                maxFastestSpeed={0}
+                                score={score.Value}
+                                maxScore={score.HigestValue}
+                                distace={distance.Value}
+                                maxDistance={distance.HigestValue}
+                                fastestSpeed={speed.Value}
+                                maxFastestSpeed={speed.HigestValue}
                                 onRestart={() => {
                                     Game.resetGame();
                                 }}
@@ -171,18 +175,18 @@ export default class Game extends Component {
                         <div class="absolute top-0 left-0 z-10 flex flex-col gap-2 p-2">
                             <StatDisplay
                                 name="Speed"
-                                value={this.stats.speed.value}
-                                highest={0}
+                                value={speed.Value}
+                                highest={speed.HigestValue}
                             />
                             <StatDisplay
                                 name="Distance"
-                                value={this.stats.distance.value}
-                                highest={0}
+                                value={distance.Value}
+                                highest={distance.HigestValue}
                             />
                             <StatDisplay
                                 name="Score"
-                                value={this.stats.score.value}
-                                highest={0}
+                                value={score.Value}
+                                highest={score.HigestValue}
                             />
                         </div>
                     )}
@@ -193,24 +197,4 @@ export default class Game extends Component {
     }
 
     // #endregion
-
-    // /**
-    //  * ### Debugging use only
-    //  * Returns the root game object (the one that centers the game on the screen)
-    //  */
-    // public static get RootObject() {
-    //     if (!this.rootObject) throw new Error("Root object not initialized");
-        
-    //     return this.rootObject;
-    // }
-
-    // /**
-    //  * ### Debugging use only
-    //  * Returns the world game object (the one that moves the scene)
-    //  */
-    // public static get World() {
-    //     if (!this.world) throw new Error("World object not initialized");
-
-    //     return this.world;
-    // }
 }

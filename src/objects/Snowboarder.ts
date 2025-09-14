@@ -6,6 +6,7 @@ import { Signal } from "@preact/signals";
 import { SnowboarderTrail } from "./SnowbarderTrail.ts";
 import Game from "islands/Game.tsx";
 import { LayerManager } from "../rendering/LayerManager.ts";
+import { StatTracker } from "../scoring/StatTracker.ts";
 
 export class Snowboarder extends GameObject {
     private turnInput: number = 0;
@@ -16,9 +17,9 @@ export class Snowboarder extends GameObject {
 
     /** A set of stats to be acessed by the game UI */
     private stats: {
-        speed: Signal<number>;
-        distance: Signal<number>;
-        score: Signal<number>;
+        speed: StatTracker;
+        distance: StatTracker;
+        score: StatTracker;
     };
 
     /** The current velocity of the player */
@@ -30,9 +31,9 @@ export class Snowboarder extends GameObject {
     private height: number = 0;
 
     constructor(parent: Parent, stats: {
-        speed: Signal<number>;
-        distance: Signal<number>;
-        score: Signal<number>;
+        speed: StatTracker;
+        distance: StatTracker;
+        score: StatTracker;
     }) {
         super(parent);
 
@@ -138,9 +139,11 @@ export class Snowboarder extends GameObject {
     }
 
     private updateStats() {
-        this.stats.speed.value = this.velocity.magnitude();
-        this.stats.distance.value = this.worldPosition.y;
-        this.stats.score.value = Math.floor(this.worldPosition.y / 10);
+        const { speed, distance, score } = this.stats;
+
+        speed.Value = this.velocity.magnitude();
+        distance.Value = this.worldPosition.y;
+        score.Value = Math.floor(this.worldPosition.y / 10);
     }
 
     private updatePhysics(deltaTime: number) {
