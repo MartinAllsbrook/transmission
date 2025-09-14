@@ -1,12 +1,12 @@
 import { Assets, Sprite } from "pixi.js";
-import { GameObject, Parent } from "./GameObject.ts";
-import { RectCollider } from "../colliders/RectCollider.ts";
-import { Vector2D } from "../math/Vector2D.ts";
+import { GameObject, Parent } from "../GameObject.ts";
+import { RectCollider } from "../../colliders/RectCollider.ts";
+import { Vector2D } from "../../math/Vector2D.ts";
 import { SnowboarderTrail } from "./SnowbarderTrail.ts";
 import Game from "islands/Game.tsx";
-import { LayerManager } from "../rendering/LayerManager.ts";
-import { StatTracker } from "../scoring/StatTracker.ts";
-import { TextManager } from "../scoring/TextManager.ts";
+import { LayerManager } from "../../rendering/LayerManager.ts";
+import { StatTracker } from "../../scoring/StatTracker.ts";
+import { TextManager } from "../../scoring/TextManager.ts";
 
 export class Snowboarder extends GameObject {
     private turnInput: number = 0;
@@ -222,5 +222,9 @@ export class Snowboarder extends GameObject {
         this.worldPosition.set(new Vector2D(128, 128));
         this.velocity.set(new Vector2D(0, 0));
         this.rotation = 0;
+
+        this.stats.score.Value = 0;
+        this.stats.distance.Value = 0;
+        this.stats.speed.Value = 0;
     }
 }

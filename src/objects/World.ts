@@ -1,8 +1,8 @@
 import { GameObject, Parent } from "./GameObject.ts";
 import { WorldChunk } from "./WorldChunk.ts";
-import { Snowboarder } from "./Snowboarder.ts";
+import { Snowboarder } from "./snowboarder/Snowboarder.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
-import { SnowboarderTrail } from "./SnowbarderTrail.ts";
+import { SnowboarderTrail } from "./snowboarder/SnowbarderTrail.ts";
 import { BezierSpline } from "../math/splines/BezierSpline.ts";
 import { Container } from "pixi.js";
 import { SplinePoint } from "../math/splines/SplinePoint.ts";
