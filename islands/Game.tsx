@@ -75,7 +75,7 @@ export default class Game extends Component {
         this.gameContainer.appendChild(Game.app.canvas);
 
         this.setupGame();
-        await this.createVisuals();
+        // GameObjects now automatically call createSprite() via queueMicrotask in their constructors
         this.startGameLoop();
     }
 
@@ -94,15 +94,6 @@ export default class Game extends Component {
         new World(Game.rootObject, Game.player);
         
         TextManager.initialize(Game.rootObject);
-    }
-
-    /**
-     * Marches though the gameobject tree and calls createVisuals on each object
-     */
-    private async createVisuals() {
-        if (!Game.rootObject) throw new Error("Root game object not initialized");
-
-        await Game.rootObject.createSprite(); // This will also call createSprite on all child gameobjects
     }
 
     /**

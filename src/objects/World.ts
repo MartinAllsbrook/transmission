@@ -148,13 +148,14 @@ export class World extends GameObject {
                         chunkCoord.x * -this.chunkSize.x,
                         chunkCoord.y * -this.chunkSize.y,
                     );
-                    const chunk = new WorldChunk(
+                    console.log(chunkWorldPosition);
+                    const _chunk = new WorldChunk(
                         this,
                         chunkWorldPosition,
                         chunkCoord,
                         this.chunkSize,
                     );
-                    chunk.createSprite();
+                    // Chunk will automatically call createSprite() via queueMicrotask
                 }
             }
         }

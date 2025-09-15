@@ -19,6 +19,7 @@ export abstract class GameObject {
     onSpriteLoaded: (() => void)[] = [];
 
     private colliders: SATCollider[] = [];
+    private spriteCreated: boolean = false;
 
     private autoCenter: boolean = true;
 
@@ -42,6 +43,12 @@ export abstract class GameObject {
         }
 
         this.syncTransform();
+
+        // Schedule createSprite() to run after all constructors in the chain have completed
+        // This ensures subclass constructors have finished setting up before createOwnSprites() is called
+        queueMicrotask(() => {
+            this.createSprite();
+        });
     }
 
     public set AutoCenter(value: boolean) {
@@ -49,20 +56,38 @@ export abstract class GameObject {
     }
 
     public async createSprite() {
+        // Prevent duplicate calls
+        if (this.spriteCreated) return;
+        this.spriteCreated = true;
+
         await Promise.resolve(); // Ensure async context
 
         this.container.position.set(this.position.x, this.position.y);
-
         this.container.scale.set(this.scale.x, this.scale.y);
 
+        // First, create this object's own sprites (they will render behind children)
+        await this.createOwnSprites();
+
+        // Then, add child containers to the hierarchy (they will render in front of this object's sprites)
+        // Note: Children that were created before this point will have their containers added here
         for (const child of this.children) {
-            await child.createSprite();
-            // child.container.zIndex = 1;
+            if (!this.container.children.includes(child.container)) {
+                this.container.addChild(child.container);
+            }
         }
-        // this.container.zIndex = 0;
-        // this.parent?.container.sortChildren();
+
+        // Children created after this point will automatically have createSprite() called via queueMicrotask
+        // No need to recursively call createSprite() on existing children since they handle themselves
 
         this.onSpriteLoaded.forEach((callback) => callback());
+    }
+
+    /**
+     * Override this method in subclasses to create the object's own sprites.
+     * This is called before child containers are added, ensuring proper render order.
+     */
+    protected async createOwnSprites(): Promise<void> {
+        // Base implementation does nothing - subclasses should override this
     }
 
     protected async loadSprite(url: string, scale: number = 1, rotation: number = 0): Promise<Sprite> {
@@ -97,11 +122,12 @@ export abstract class GameObject {
 
     /**
      * Adds a child game object to this game object.
+     * Note: Child containers are added to the display hierarchy during createSprite() to ensure proper render order.
      * @param child The child game object to add.
      */
     public addChild(child: GameObject): void {
         this.children.push(child);
-        this.container.addChild(child.container);
+        // Don't add to container hierarchy yet - this will be done in createSprite() to ensure proper render order
     }
 
     /**

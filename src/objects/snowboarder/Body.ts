@@ -16,8 +16,7 @@ export class Body extends GameObject {
         this.rotation = 90;
     }
 
-    public override async createSprite() {
+    protected override async createOwnSprites(): Promise<void> {
         await this.loadSprite("/snowboarder/Body.png", 1);
-        await super.createSprite();
     }
 }

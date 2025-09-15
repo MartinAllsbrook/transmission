@@ -59,9 +59,9 @@ export class WorldChunk extends GameObject {
         new Jump(this, new Vector2D(x, y));
     }
 
-    public override async createSprite() {
-        await super.createSprite();
-
+    protected override async createOwnSprites(): Promise<void> {
+        await Promise.resolve(); // Ensure async context
+        
         // Use actual chunk size
         const width = this.size?.x ?? 64;
         const height = this.size?.y ?? 64;

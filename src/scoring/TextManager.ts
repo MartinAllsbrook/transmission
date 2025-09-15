@@ -14,7 +14,7 @@ export class TextManager{
     }
 
     public static createFadeoutText(text: string, color: string, size: number, lifetime: number) {
-        const object = new OverheadText(this.root, text, color, size, lifetime);
-        object.createSprite();
+        const _object = new OverheadText(this.root, text, color, size, lifetime);
+        // Object will automatically call createSprite() via queueMicrotask
     }
 }

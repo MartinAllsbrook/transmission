@@ -11,10 +11,8 @@ export class Obstacle extends GameObject {
         super(parent, position);
     }
 
-    public override async createSprite() {
+    protected override async createOwnSprites(): Promise<void> {
         await this.loadSprite("/obsticales/Tree.png", 1.75);
-
-        await super.createSprite();
 
         const _collider = new CircleCollider(
             this,

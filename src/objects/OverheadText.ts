@@ -24,7 +24,7 @@ export class OverheadText  extends GameObject {
         this.lifetime = lifetime;
     }
 
-    public override async createSprite() {
+    protected override async createOwnSprites(): Promise<void> {
         await Promise.resolve(); // Ensure async context
 
         const style = new TextStyle({

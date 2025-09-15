@@ -50,10 +50,8 @@ export class Snowboard extends GameObject {
         );
     }
 
-    public override async createSprite() {
+    protected override async createOwnSprites(): Promise<void> {
         await this.loadSprite("/snowboarder/Board.png", 1);
-        
-        await super.createSprite();
     }
 
     private setupCollider() {

@@ -11,9 +11,7 @@ export class Jump extends GameObject {
         new RectCollider(this, new Vector2D(0, 0), new Vector2D(48, 32), true, "jump");
     } 
 
-    public override async createSprite() {
+    protected override async createOwnSprites(): Promise<void> {
         await this.loadSprite("/jumps/SkiJump.png", 2);
-
-        await super.createSprite();
     }
 }

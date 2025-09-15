@@ -57,9 +57,7 @@ export class Head extends GameObject {
         return angle;
     }
 
-    public override async createSprite() {
+    protected override async createOwnSprites(): Promise<void> {
         await this.loadSprite("/snowboarder/Head.png", 1);
-
-        await super.createSprite();
     }
 }
