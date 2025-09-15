@@ -148,7 +148,6 @@ export class World extends GameObject {
                         chunkCoord.x * -this.chunkSize.x,
                         chunkCoord.y * -this.chunkSize.y,
                     );
-                    console.log(chunkWorldPosition);
                     const _chunk = new WorldChunk(
                         this,
                         chunkWorldPosition,

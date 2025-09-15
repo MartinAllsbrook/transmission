@@ -127,7 +127,12 @@ export abstract class GameObject {
      */
     public addChild(child: GameObject): void {
         this.children.push(child);
-        // Don't add to container hierarchy yet - this will be done in createSprite() to ensure proper render order
+        
+        // If this parent has already had createSprite() called, immediately add the child's container
+        // Otherwise, it will be added when this parent's createSprite() is called
+        if (this.spriteCreated && !this.container.children.includes(child.container)) {
+            this.container.addChild(child.container);
+        }
     }
 
     /**
