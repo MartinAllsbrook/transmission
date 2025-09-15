@@ -8,7 +8,6 @@ import { Snowboarder } from "./Snowboarder.ts"
 export class Snowboard extends GameObject {
     private snowboarder: Snowboarder;
 
-    private shiftyInput: number = 0;
     private lerpSpeed: number = 5; // Adjust this to control how fast the board
 
     constructor(parent: Snowboarder) {
@@ -18,25 +17,9 @@ export class Snowboard extends GameObject {
         this.snowboarder = parent;
         this.setupCollider();
 
-        this.setupInputs();
-    }
-
-    private async setupInputs() {
-        const { InputManager } = await import("src/inputs/InputManager.ts");
-
-        InputManager.getInput("shifty").subscribe((newValue) => {
-            this.shiftyInput = newValue;
-        });
     }
 
     public override update(deltaTime: number): void {
-        
-
-
-        const targetRotation = this.shiftyInput * 90;
-
-        this.rotation = ExtraMath.lerpSafe(this.rotation, targetRotation, this.lerpSpeed * deltaTime);
-
         this.updateTrail();
         super.update(deltaTime);
     }

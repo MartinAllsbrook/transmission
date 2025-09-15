@@ -11,10 +11,12 @@ import { SATCollider } from "../../colliders/SATCollider.ts";
 import { Snowboard } from "./Snowboard.ts";
 import { Head } from "./Head.ts";
 import { Body } from "./Body.ts";
+import { ExtraMath } from "../../math/ExtraMath.ts";
 
 export class Snowboarder extends GameObject {
     private turnInput: number = 0;
     private jumpInput: boolean = false;
+    private shiftyInput: number = 0;
 
     /** The position of the player in the world, used for world scrolling */
     public worldPosition: Vector2D = new Vector2D(128, 128);
@@ -38,6 +40,17 @@ export class Snowboarder extends GameObject {
 
     private snowboard: Snowboard;
     private body: Body;
+
+
+    private shiftyTargetAngle: number = 0;
+    private shiftyAngle: number = 0;
+
+    // #region Settings
+
+    private shiftyLerpSpeed: number = 5;
+    private maxShiftyAngle: number = 90;
+    // #endregion
+
 
     constructor(parent: Parent, stats: {
         speed: StatTracker;
@@ -66,6 +79,10 @@ export class Snowboarder extends GameObject {
         InputManager.getInput("jump").subscribe((newValue) => {
             this.jumpInput = newValue;
         });
+
+        InputManager.getInput("shifty").subscribe((newValue) => {
+            this.shiftyInput = newValue;
+        });
     }
 
     public onCollisionStart(other: SATCollider): void {
@@ -76,14 +93,14 @@ export class Snowboarder extends GameObject {
             
             this.velocity = this.velocity.multiply(-0.5);
         }
-        if (other.layer === "jump" && !this.inAir) {
+        if (other.layer === "jump" && !this.InAir) {
             this.height += 1;
         }
     }
 
     public onCollisionEnd(other: SATCollider): void {
-        if (other.layer === "jump" && !this.inAir) {
-            this.inAir = true;
+        if (other.layer === "jump" && !this.InAir) {
+            this.InAir = true;
         }
     }
 
@@ -95,6 +112,7 @@ export class Snowboarder extends GameObject {
         // - Add some momentum upwards when hitting a jump at speed
 
     public override update(deltaTime: number): void {
+
         // While in air
             // Snowboarder forward matches body
             // Board becomes rotated by shifty input
@@ -102,10 +120,16 @@ export class Snowboarder extends GameObject {
             // Snowboarder forward matches board
             // Body becomes rotated by turn input
 
-        if (this.jumpInput && !this.inAir) {
+        if (this.jumpInput && !this.InAir) {
             this.height += 0.5;
-            this.inAir = true;
+            this.InAir = true;
         };
+
+        if (this.InAir) {
+            this.airUpdate(deltaTime);
+        } else {
+            this.groundUpdate(deltaTime);
+        }   
 
         this.updatePhysics(deltaTime);
 
@@ -115,7 +139,6 @@ export class Snowboarder extends GameObject {
         const speed = this.velocity.magnitude();
         if (speed > 300) {
             this.timeGoingFast += deltaTime;
-            console.log(this.timeGoingFast);
         } else if (this.timeGoingFast > 2) {
             const points = Math.floor(this.timeGoingFast * 10);
             this.addScore(points);
@@ -130,11 +153,28 @@ export class Snowboarder extends GameObject {
     // #region Air
 
     private switchToAirMovement() {
-        
+        console.log(`--- Switching to air movement ---`);
+        console.log(`Current state:`)
+        console.log(`Shifty angle: ${this.shiftyAngle}`);
+        console.log(`Body rotation: ${this.body.WorldRotation}`);
+        console.log(`Snowboard rotation: ${this.snowboard.Rotation}`);
+
+        this.shiftyAngle = this.shiftyAngle * -1;
+        this.rotation = this.body.WorldRotation;
+        this.snowboard.Rotation = this.shiftyAngle;
+        this.body.Rotation = 0;
+
+        console.log(`New state:`)
+        console.log(`Shifty angle: ${this.shiftyAngle}`);
+        console.log(`Body rotation: ${this.body.WorldRotation}`);
+        console.log(`Snowboard rotation: ${this.snowboard.Rotation}`);
     }
 
-    private airUpdate() {
-        
+    private airUpdate(deltaTime: number) {
+        this.shiftyTargetAngle = this.shiftyInput * -this.maxShiftyAngle;
+        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
+
+        this.snowboard.Rotation = this.shiftyAngle;
     }
 
     // #endregion
@@ -143,10 +183,28 @@ export class Snowboarder extends GameObject {
 
     private switchToGroundMovement() {
 
+        console.log(`--- Switching to ground movement ---`);
+        console.log(`Current state:`)
+        console.log(`Shifty angle: ${this.shiftyAngle}`);
+        console.log(`Body rotation: ${this.body.Rotation}`);
+        console.log(`Snowboard rotation: ${this.snowboard.WorldRotation}`);
+
+        this.shiftyAngle = this.shiftyAngle * -1;
+        this.rotation = this.snowboard.WorldRotation;
+        this.body.Rotation = this.shiftyAngle;
+        this.snowboard.Rotation = 0;
+
+        console.log(`New state:`)
+        console.log(`Shifty angle: ${this.shiftyAngle}`);
+        console.log(`Body rotation: ${this.body.Rotation}`);
+        console.log(`Snowboard rotation: ${this.snowboard.WorldRotation}`);        
     }
 
-    private groundUpdate() {
-        
+    private groundUpdate(deltaTime: number) {
+        this.shiftyTargetAngle = this.shiftyInput * this.maxShiftyAngle;
+        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
+    
+        this.body.Rotation = this.shiftyAngle;
     }
 
     // #endregion
@@ -175,11 +233,11 @@ export class Snowboarder extends GameObject {
     private updatePhysics(deltaTime: number) {
         const turnStrength = 250;
 
-        if (this.inAir) {
+        if (this.InAir) {
             this.height -= deltaTime;
             if (this.height <= 0) {
                 this.height = 0;
-                this.inAir = false;
+                this.InAir = false;
             }
         } else {
             const frictionStrength = 0.1; // Raising this lowers top speed (max 1)
@@ -241,5 +299,17 @@ export class Snowboarder extends GameObject {
 
     public get InAir(): boolean {
         return this.inAir;
+    }
+
+    public set InAir(value: boolean) {
+        if (this.inAir === value) return;
+
+        this.inAir = value;
+   
+        if (this.inAir) {
+            this.switchToAirMovement();
+        } else {
+            this.switchToGroundMovement();
+        }     
     }
 }

@@ -196,10 +196,17 @@ export abstract class GameObject {
     }
 
     /**
-     * This object's rotation in degrees.
+     * This object's local rotation in degrees.
      */
     get Rotation(): number {
         return this.rotation;
+    }
+
+    /**
+     * Sets this object's local rotation in degrees.
+     */
+    set Rotation(value: number) {
+        this.rotation = value;
     }
 
     /**
