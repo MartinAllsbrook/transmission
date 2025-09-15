@@ -30,6 +30,9 @@ export class Snowboard extends GameObject {
     }
 
     public override update(deltaTime: number): void {
+        
+
+
         const targetRotation = this.shiftyInput * 90;
 
         this.rotation = ExtraMath.lerpSafe(this.rotation, targetRotation, this.lerpSpeed * deltaTime);

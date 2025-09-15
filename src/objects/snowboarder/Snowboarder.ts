@@ -38,7 +38,6 @@ export class Snowboarder extends GameObject {
 
     private snowboard: Snowboard;
     private body: Body;
-    private head: Head;
 
     constructor(parent: Parent, stats: {
         speed: StatTracker;
@@ -51,7 +50,6 @@ export class Snowboarder extends GameObject {
 
         this.snowboard = new Snowboard(this);
         this.body = new Body(this);
-        this.head = new Head(this);
 
         this.setupInputs();
 
@@ -89,15 +87,20 @@ export class Snowboarder extends GameObject {
         }
     }
 
+    // TODOs:
+        // - Snowboarder scaling on jump
+        // - Gain height the longer you're on a jump
+        // - Add shifties to control air rotation
+        // - Add points
+        // - Add some momentum upwards when hitting a jump at speed
 
     public override update(deltaTime: number): void {
-
-        // TODOs:
-            // - Snowboarder scaling on jump
-            // - Gain height the longer you're on a jump
-            // - Add shifties to control air rotation
-            // - Add points
-            // - Add some momentum upwards when hitting a jump at speed
+        // While in air
+            // Snowboarder forward matches body
+            // Board becomes rotated by shifty input
+        // While on ground
+            // Snowboarder forward matches board
+            // Body becomes rotated by turn input
 
         if (this.jumpInput && !this.inAir) {
             this.height += 0.5;
@@ -122,7 +125,33 @@ export class Snowboarder extends GameObject {
         super.update(deltaTime);
     }
 
+    // #region State Management
 
+    // #region Air
+
+    private switchToAirMovement() {
+        
+    }
+
+    private airUpdate() {
+        
+    }
+
+    // #endregion
+
+    // #region Ground
+
+    private switchToGroundMovement() {
+
+    }
+
+    private groundUpdate() {
+        
+    }
+
+    // #endregion
+
+    // #endregion
 
     // #region Scoring & Stats
 

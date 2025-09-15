@@ -1,17 +1,20 @@
 import { ExtraMath } from "../../math/ExtraMath.ts";
 import { Vector2D } from "../../math/Vector2D.ts";
 import { GameObject } from "../GameObject.ts";
+import { Body } from "./Body.ts";
 import { Snowboarder } from "./Snowboarder.ts";
 
 export class Head extends GameObject {
-    private snowboarder: Snowboarder;
+    private body: Body;
+    private snowboarder: Snowboarder
     private targetRotation: number = 0;
     private lerpSpeed: number = 6; // Adjust this to control how fast the head turns
     private maxHeadTurn: number = 145; // Maximum degrees the head can turn from center
 
-    constructor(parent: Snowboarder) {
+    constructor(parent: Body, snowboarder: Snowboarder) {
         super(parent);
-        this.snowboarder = parent;
+        this.body = parent;
+        this.snowboarder = snowboarder;
         this.container.label = "Head";
     }
 
@@ -19,7 +22,7 @@ export class Head extends GameObject {
         const forward = this.snowboarder.Velocity.normalize();
         const velocityAngle = forward.heading() * (180 / Math.PI);
         
-        let relativeTargetRotation = velocityAngle - this.snowboarder.WorldRotation; // Calculate the desired head rotation relative to the snowboarder
+        let relativeTargetRotation = velocityAngle - this.body.WorldRotation; // Calculate the desired head rotation relative to the snowboarder
         relativeTargetRotation = this.normalizeAngle(relativeTargetRotation); // Normalize the angle to be between -180 and 180
         
         const clampedTarget = Math.max(-this.maxHeadTurn, Math.min(this.maxHeadTurn, relativeTargetRotation)); // Clamp the target rotation to the allowed range

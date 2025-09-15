@@ -51,29 +51,27 @@ export abstract class GameObject {
     public async createSprite() {
         await Promise.resolve(); // Ensure async context
 
-        // if (this.autoCenter) {
-        //     this.container.pivot.x = this.container.width / 2;
-        //     this.container.pivot.y = this.container.height / 2;
-        // }
-
         this.container.position.set(this.position.x, this.position.y);
-        this.container.rotation = this.rotation * (Math.PI / 180);
 
         this.container.scale.set(this.scale.x, this.scale.y);
 
         for (const child of this.children) {
             await child.createSprite();
+            // child.container.zIndex = 1;
         }
+        // this.container.zIndex = 0;
+        // this.parent?.container.sortChildren();
 
         this.onSpriteLoaded.forEach((callback) => callback());
     }
 
-    protected async loadSprite(url: string, scale: number = 1): Promise<Sprite> {
+    protected async loadSprite(url: string, scale: number = 1, rotation: number = 0): Promise<Sprite> {
         const texture = await Assets.load(url);
         texture.source.scaleMode = "nearest";
         const sprite = new Sprite(texture);
         sprite.anchor.set(0.5, 0.5);
         sprite.scale.set(scale, scale);
+        sprite.rotation = rotation * (Math.PI / 180);
         this.container.addChild(sprite);
         return sprite;
     }
