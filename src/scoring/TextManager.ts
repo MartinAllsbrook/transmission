@@ -1,5 +1,6 @@
 import { GameObject } from "../objects/GameObject.ts";
 import { OverheadText } from "../objects/OverheadText.ts";
+import { UpdatingText } from "../objects/text/UpdatingText.ts";
 
 export class TextManager{
     private static root: GameObject;
@@ -15,6 +16,12 @@ export class TextManager{
 
     public static createFadeoutText(text: string, color: string, size: number, lifetime: number) {
         const _object = new OverheadText(this.root, text, color, size, lifetime);
+        // Object will automatically call createSprite() via queueMicrotask
+    }
+
+    public static createUpdatingText(text: string, color: string, size: number): UpdatingText {
+        const object = new UpdatingText(this.root, "Distance [TEST]", text, color, size);
+        return object;
         // Object will automatically call createSprite() via queueMicrotask
     }
 }

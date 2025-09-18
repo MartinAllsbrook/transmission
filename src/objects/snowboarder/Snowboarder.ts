@@ -12,6 +12,7 @@ import { Snowboard } from "./Snowboard.ts";
 import { Head } from "./Head.ts";
 import { Body } from "./Body.ts";
 import { ExtraMath } from "../../math/ExtraMath.ts";
+import { UpdatingText } from "../text/UpdatingText.ts";
 
 export class Snowboarder extends GameObject {
     private turnInput: number = 0;
@@ -52,6 +53,8 @@ export class Snowboarder extends GameObject {
     // #endregion
 
 
+    updatingText: UpdatingText;
+
     constructor(parent: Parent, stats: {
         speed: StatTracker;
         distance: StatTracker;
@@ -67,6 +70,9 @@ export class Snowboarder extends GameObject {
         this.setupInputs();
 
         LayerManager.getLayer("foreground")?.attach(this.container);
+
+        this.updatingText = TextManager.createUpdatingText(this.stats.distance.Value.toFixed(0), "#FF0000", 2);
+
     }
 
     private async setupInputs() {
@@ -112,6 +118,7 @@ export class Snowboarder extends GameObject {
         // - Add some momentum upwards when hitting a jump at speed
 
     public override update(deltaTime: number): void {
+        this.updatingText.updateText(this.stats.distance.Value.toFixed(0));
 
         // While in air
             // Snowboarder forward matches body

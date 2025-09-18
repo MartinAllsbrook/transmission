@@ -10,6 +10,7 @@ export class Snowboard extends GameObject {
 
     private lerpSpeed: number = 5; // Adjust this to control how fast the board
 
+
     constructor(parent: Snowboarder) {
         super(parent);
         this.container.label = "Snowboard";

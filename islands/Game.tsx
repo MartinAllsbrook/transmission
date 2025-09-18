@@ -90,10 +90,11 @@ export default class Game extends Component {
         LayerManager.initialize(Game.app);
 
         Game.rootObject = new OffsetContainer(Game.app);
+        TextManager.initialize(Game.rootObject);
+        
         Game.player = new Snowboarder(Game.rootObject, this.stats);
         new World(Game.rootObject, Game.player);
         
-        TextManager.initialize(Game.rootObject);
     }
 
     /**
