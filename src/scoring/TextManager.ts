@@ -10,7 +10,6 @@ export class TextManager{
     }
 
     public static createScoreFadeoutText(points: number) {
-        console.log("Creating score text:", points);
         TextManager.createFadeoutText(`+${points}`, "#CCAC00", 4, 3);
     }
 
@@ -20,7 +19,6 @@ export class TextManager{
     }
 
     public static createUpdatingText(title: string, text: string, color: string, size: number): UpdatingText {
-        console.log("Creating updating text:", title, text);
         const object = new UpdatingText(this.root, title, text, color, size);
         return object;
         // Object will automatically call createSprite() via queueMicrotask

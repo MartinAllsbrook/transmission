@@ -54,7 +54,7 @@ export class Snowboarder extends GameObject {
 
 
     private startRotation: number = 0;
-
+    private startRotationSlip: number = 0;
     private rotationText?: UpdatingText;
 
     constructor(parent: Parent, stats: {
@@ -153,31 +153,17 @@ export class Snowboarder extends GameObject {
         super.update(deltaTime);
     }
 
-    // #region State Management
 
     // #region Air
 
     private onEnterAir() {
-        this.switchToAirMovement();
-
-        this.startRotation = this.snowboard.WorldRotation;
-        this.rotationText = TextManager.createUpdatingText(`Rotation`, `0`, "#FF00FF", 2);
-    }
-
-    private switchToAirMovement() {
-        this.shiftyAngle = this.shiftyAngle * -1;
-        this.rotation = this.body.WorldRotation - 90; // Flip for fakie
-        this.snowboard.Rotation = this.shiftyAngle;
-        this.body.Rotation = 0 + 90; // Flip for fakie
+        this.switchToAirShifty();
+        this.startSpin();
     }
 
     private airUpdate(deltaTime: number) {
-        this.shiftyTargetAngle = this.shiftyInput * -this.maxShiftyAngle;
-        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
-
-        this.snowboard.Rotation = this.shiftyAngle;
-        const rotationDiff = this.startRotation - this.snowboard.WorldRotation;
-        this.rotationText?.updateText(Math.abs(rotationDiff).toFixed(0));
+        this.applyAirShiftyUpdate(deltaTime);
+        this.spinUpdate();
     }
 
     // #endregion
@@ -185,36 +171,96 @@ export class Snowboarder extends GameObject {
     // #region Ground
 
     private onEnterGround() {
-        this.switchToGroundMovement();
-
-        const currentRotation = this.snowboard.WorldRotation;
-        const rotationDiff = this.startRotation - currentRotation;
-        this.rotationText?.updateText(Math.abs(rotationDiff).toFixed(0));
-        setTimeout(() => { this.rotationText?.destroy() }, 1000);
-        this.addScore(Math.abs(Math.floor(rotationDiff)));
-    }
-
-    private switchToGroundMovement() {
-        this.shiftyAngle = this.shiftyAngle * -1;
-        this.rotation = this.snowboard.WorldRotation;
-        this.body.Rotation = this.shiftyAngle + 90; // Flip for fakie
-        this.snowboard.Rotation = 0; 
-
-
+        this.switchToGroundShifty();
+        this.endSpin();
     }
 
     private groundUpdate(deltaTime: number) {
-        this.shiftyTargetAngle = this.shiftyInput * this.maxShiftyAngle;
-        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
-        this.body.Rotation = this.shiftyAngle + 90; // Flip for fakie
+        this.applyGroundShiftyUpdate(deltaTime);
     }
 
     // #endregion
+
+    // #region Shifty
+
+    private switchToAirShifty() {
+        this.shiftyAngle = this.shiftyAngle * -1;
+        this.rotation = this.body.WorldRotation - 90; // Flip for goofy
+        this.snowboard.Rotation = this.shiftyAngle;
+        this.body.Rotation = 0 + 90; // Flip for goofy
+    }
+
+    private applyAirShiftyUpdate(deltaTime: number) {
+        this.shiftyTargetAngle = this.shiftyInput * -this.maxShiftyAngle;
+        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
+    }
+
+    private switchToGroundShifty() {
+        this.shiftyAngle = this.shiftyAngle * -1;
+        this.rotation = this.snowboard.WorldRotation;
+        this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
+        this.snowboard.Rotation = 0; 
+    }
+
+    private applyGroundShiftyUpdate(deltaTime: number) {
+        this.shiftyTargetAngle = this.shiftyInput * this.maxShiftyAngle;
+        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
+        this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
+    }
 
     // #endregion
 
     // #region Scoring & Stats
 
+    private startSpin() {
+        this.rotationText = TextManager.createUpdatingText(`Rotation`, `0`, "#FF00FF", 2);
+
+        const boardRotation = this.snowboard.WorldRotation;
+        const heading = this.velocity.heading() * 180 / Math.PI;
+
+        let slip = ExtraMath.angleDifference(boardRotation, heading);
+        if (slip > 90) slip -= 180; // account for fakie
+
+        this.startRotationSlip = slip;
+        this.startRotation = Math.floor(boardRotation / 360) * 360 + heading;
+
+        console.log(
+            `Start Rotation: ${this.startRotation}\n`,
+            `Slip: ${slip}\n`,
+        );
+    }
+
+    private spinUpdate() {
+        this.snowboard.Rotation = this.shiftyAngle;
+        const rotationDiff = this.startRotation - this.snowboard.WorldRotation;
+        this.rotationText?.updateText(Math.abs(rotationDiff).toFixed(0));
+    }
+
+    private endSpin() {
+        const boardRotation = this.snowboard.WorldRotation;
+        const heading = this.velocity.heading() * 180 / Math.PI;
+
+        let slip = ExtraMath.angleDifference(boardRotation, heading);
+        if (slip > 90) slip -= 180; // account for fakie
+
+
+        console.log(
+            `End Rotation: ${boardRotation}\n`,
+            `Slip: ${slip}\n`,
+        );
+
+
+        const rotationDiff = this.startRotation - boardRotation;
+        this.rotationText?.updateText(Math.abs(rotationDiff).toFixed(0));
+        setTimeout(() => { this.rotationText?.destroy() }, 1000);
+    
+        this.landSpin(rotationDiff);
+    }
+    
+    private landSpin(spinDegrees: number) {
+        const closest90 = Math.round(spinDegrees / 90) * 90;
+        this.addScore(Math.abs(Math.floor(closest90)));
+    }
 
     private updateStats() {
         const { speed, distance } = this.stats;

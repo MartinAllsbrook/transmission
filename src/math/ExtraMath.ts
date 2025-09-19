@@ -42,4 +42,30 @@ export class ExtraMath {
         t = Math.max(0, Math.min(1, t));
         return start + (end - start) * t;
     }
+
+    /**
+     * Calculates the difference between two angles in degrees.
+     *
+     * The function returns the smallest (default) or largest difference between two angles,
+     * properly handling angles outside the [0, 360) range (e.g., 1080, -90).
+     *
+     * @param angle1 - The first angle in degrees.
+     * @param angle2 - The second angle in degrees.
+     * @param findLarger - If true, returns the larger difference; otherwise, returns the smaller (default: false).
+     * @returns The angle difference in degrees (always positive).
+     */
+    public static angleDifference(angle1: number, angle2: number, findLarger: boolean = false): number {
+        // Normalize angles to [0, 360)
+        const a1 = ((angle1 % 360) + 360) % 360;
+        const a2 = ((angle2 % 360) + 360) % 360;
+        // Find absolute difference
+        const diff = Math.abs(a1 - a2);
+        const minDiff = diff > 180 ? 360 - diff : diff;
+        if (findLarger) {
+            return 360 - minDiff;
+        } else {
+            return minDiff;
+        }
+    }
+    
 }
