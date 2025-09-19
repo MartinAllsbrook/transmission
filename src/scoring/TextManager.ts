@@ -19,8 +19,9 @@ export class TextManager{
         // Object will automatically call createSprite() via queueMicrotask
     }
 
-    public static createUpdatingText(text: string, color: string, size: number): UpdatingText {
-        const object = new UpdatingText(this.root, "Distance [TEST]", text, color, size);
+    public static createUpdatingText(title: string, text: string, color: string, size: number): UpdatingText {
+        console.log("Creating updating text:", title, text);
+        const object = new UpdatingText(this.root, title, text, color, size);
         return object;
         // Object will automatically call createSprite() via queueMicrotask
     }

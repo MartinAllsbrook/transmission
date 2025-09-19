@@ -53,7 +53,9 @@ export class Snowboarder extends GameObject {
     // #endregion
 
 
-    updatingText: UpdatingText;
+    private startRotation: number = 0;
+
+    private rotationText?: UpdatingText;
 
     constructor(parent: Parent, stats: {
         speed: StatTracker;
@@ -70,9 +72,6 @@ export class Snowboarder extends GameObject {
         this.setupInputs();
 
         LayerManager.getLayer("foreground")?.attach(this.container);
-
-        this.updatingText = TextManager.createUpdatingText(this.stats.distance.Value.toFixed(0), "#FF0000", 2);
-
     }
 
     private async setupInputs() {
@@ -118,7 +117,6 @@ export class Snowboarder extends GameObject {
         // - Add some momentum upwards when hitting a jump at speed
 
     public override update(deltaTime: number): void {
-        this.updatingText.updateText(this.stats.distance.Value.toFixed(0));
 
         // While in air
             // Snowboarder forward matches body
@@ -128,7 +126,7 @@ export class Snowboarder extends GameObject {
             // Body becomes rotated by turn input
 
         if (this.jumpInput && !this.InAir) {
-            this.height += 0.5;
+            this.height += 3;
             this.InAir = true;
         };
 
@@ -159,22 +157,18 @@ export class Snowboarder extends GameObject {
 
     // #region Air
 
+    private onEnterAir() {
+        this.switchToAirMovement();
+
+        this.startRotation = this.snowboard.WorldRotation;
+        this.rotationText = TextManager.createUpdatingText(`Rotation`, `0`, "#FF00FF", 2);
+    }
+
     private switchToAirMovement() {
-        console.log(`--- Switching to air movement ---`);
-        console.log(`Current state:`)
-        console.log(`Shifty angle: ${this.shiftyAngle}`);
-        console.log(`Body rotation: ${this.body.WorldRotation}`);
-        console.log(`Snowboard rotation: ${this.snowboard.Rotation}`);
-
         this.shiftyAngle = this.shiftyAngle * -1;
-        this.rotation = this.body.WorldRotation;
+        this.rotation = this.body.WorldRotation - 90; // Flip for fakie
         this.snowboard.Rotation = this.shiftyAngle;
-        this.body.Rotation = 0;
-
-        console.log(`New state:`)
-        console.log(`Shifty angle: ${this.shiftyAngle}`);
-        console.log(`Body rotation: ${this.body.WorldRotation}`);
-        console.log(`Snowboard rotation: ${this.snowboard.Rotation}`);
+        this.body.Rotation = 0 + 90; // Flip for fakie
     }
 
     private airUpdate(deltaTime: number) {
@@ -182,36 +176,37 @@ export class Snowboarder extends GameObject {
         this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
 
         this.snowboard.Rotation = this.shiftyAngle;
+        const rotationDiff = this.startRotation - this.snowboard.WorldRotation;
+        this.rotationText?.updateText(Math.abs(rotationDiff).toFixed(0));
     }
 
     // #endregion
 
     // #region Ground
 
+    private onEnterGround() {
+        this.switchToGroundMovement();
+
+        const currentRotation = this.snowboard.WorldRotation;
+        const rotationDiff = this.startRotation - currentRotation;
+        this.rotationText?.updateText(Math.abs(rotationDiff).toFixed(0));
+        setTimeout(() => { this.rotationText?.destroy() }, 1000);
+        this.addScore(Math.abs(Math.floor(rotationDiff)));
+    }
+
     private switchToGroundMovement() {
-
-        console.log(`--- Switching to ground movement ---`);
-        console.log(`Current state:`)
-        console.log(`Shifty angle: ${this.shiftyAngle}`);
-        console.log(`Body rotation: ${this.body.Rotation}`);
-        console.log(`Snowboard rotation: ${this.snowboard.WorldRotation}`);
-
         this.shiftyAngle = this.shiftyAngle * -1;
         this.rotation = this.snowboard.WorldRotation;
-        this.body.Rotation = this.shiftyAngle;
-        this.snowboard.Rotation = 0;
+        this.body.Rotation = this.shiftyAngle + 90; // Flip for fakie
+        this.snowboard.Rotation = 0; 
 
-        console.log(`New state:`)
-        console.log(`Shifty angle: ${this.shiftyAngle}`);
-        console.log(`Body rotation: ${this.body.Rotation}`);
-        console.log(`Snowboard rotation: ${this.snowboard.WorldRotation}`);        
+
     }
 
     private groundUpdate(deltaTime: number) {
         this.shiftyTargetAngle = this.shiftyInput * this.maxShiftyAngle;
         this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
-    
-        this.body.Rotation = this.shiftyAngle;
+        this.body.Rotation = this.shiftyAngle + 90; // Flip for fakie
     }
 
     // #endregion
@@ -219,6 +214,7 @@ export class Snowboarder extends GameObject {
     // #endregion
 
     // #region Scoring & Stats
+
 
     private updateStats() {
         const { speed, distance } = this.stats;
@@ -314,9 +310,9 @@ export class Snowboarder extends GameObject {
         this.inAir = value;
    
         if (this.inAir) {
-            this.switchToAirMovement();
+            this.onEnterAir();
         } else {
-            this.switchToGroundMovement();
+            this.onEnterGround();
         }     
     }
 }
