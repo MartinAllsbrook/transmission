@@ -174,6 +174,13 @@ export abstract class GameObject {
     }
 
     /**
+     * Sets this object's position relative to its parent.
+     */
+    set Position(value: Vector2D) {
+        this.position = value.clone();
+    }
+
+    /**
      * This object's position in world coordinates.
      */
     get WorldPosition(): Vector2D {

@@ -1,18 +1,15 @@
-import { Assets, Sprite } from "pixi.js";
 import { GameObject, Parent } from "../GameObject.ts";
-import { RectCollider } from "../../colliders/RectCollider.ts";
 import { Vector2D } from "../../math/Vector2D.ts";
-import { SnowboarderTrail } from "./SnowbarderTrail.ts";
 import Game from "islands/Game.tsx";
 import { LayerManager } from "../../rendering/LayerManager.ts";
 import { StatTracker } from "../../scoring/StatTracker.ts";
 import { TextManager } from "../../scoring/TextManager.ts";
 import { SATCollider } from "../../colliders/SATCollider.ts";
 import { Snowboard } from "./Snowboard.ts";
-import { Head } from "./Head.ts";
 import { Body } from "./Body.ts";
 import { ExtraMath } from "../../math/ExtraMath.ts";
 import { UpdatingText } from "../text/UpdatingText.ts";
+import { ScoringDisplay } from "../text/score/ScoringDisplay.ts";
 
 export class Snowboarder extends GameObject {
     private turnInput: number = 0;
@@ -28,6 +25,8 @@ export class Snowboarder extends GameObject {
         distance: StatTracker;
         score: StatTracker;
     };
+
+    private scoringDisplay: ScoringDisplay;
 
     /** The current velocity of the player */
     private velocity: Vector2D = new Vector2D(0, 0);
@@ -72,6 +71,7 @@ export class Snowboarder extends GameObject {
         this.setupInputs();
 
         LayerManager.getLayer("foreground")?.attach(this.container);
+        this.scoringDisplay = TextManager.createScoringDisplay();
     }
 
     private async setupInputs() {

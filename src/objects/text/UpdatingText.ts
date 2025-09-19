@@ -33,6 +33,8 @@ export class UpdatingText extends GameObject {
                 fill: this.color,
             }
         });
+
+        
     }
 
     protected override async createOwnSprites(): Promise<void> {

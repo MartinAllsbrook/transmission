@@ -1,5 +1,6 @@
 import { GameObject } from "../objects/GameObject.ts";
-import { OverheadText } from "../objects/OverheadText.ts";
+import { OverheadText } from "../objects/text/OverheadText.ts";
+import { ScoringDisplay } from "../objects/text/score/ScoringDisplay.ts";
 import { UpdatingText } from "../objects/text/UpdatingText.ts";
 
 export class TextManager{
@@ -22,5 +23,9 @@ export class TextManager{
         const object = new UpdatingText(this.root, title, text, color, size);
         return object;
         // Object will automatically call createSprite() via queueMicrotask
+    }
+
+    public static createScoringDisplay() {
+        return new ScoringDisplay(this.root);
     }
 }
