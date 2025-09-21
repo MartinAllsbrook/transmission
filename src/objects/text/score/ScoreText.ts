@@ -6,7 +6,7 @@ export class ScoreText extends RichText {
     constructor(parent: GameObject, content: string) {
         const style = new TextStyle({
             fontFamily: "Arial",
-            fontSize: 8 * 4,
+            fontSize: 64,
             fill: "#ffd700",
             fontWeight: "bold",
         })

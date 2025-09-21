@@ -272,7 +272,7 @@ export class Snowboarder extends GameObject {
     private addScore(points: number) {
         this.stats.score.Value += points;
 
-        TextManager.createScoreFadeoutText(points);
+        this.scoringDisplay.addScore(points, this.stats.score.Value.toString());    
     }
 
     // #endregion

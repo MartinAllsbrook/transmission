@@ -7,35 +7,21 @@ import { FadingText } from "../FadingText.ts";
 
 export class ScoringDisplay extends GameObject {
     
-    private padding: number = 16;
+    private padding: Vector2D;
 
     private score: ScoreText;
     private points: FadingText[] = [];
 
-    constructor(root: OffsetContainer, padding: number = 16) {
+    constructor(root: OffsetContainer, padding: Vector2D = new Vector2D(256, 128)) {
         const scrrenSize = new Vector2D(globalThis.innerWidth, globalThis.innerHeight);
-        const position = new Vector2D(-scrrenSize.x / 2 + padding, scrrenSize.y / 2 - padding); // Bottom-left corner
+        const position = new Vector2D(-scrrenSize.x / 2 + padding.x, scrrenSize.y / 2 - padding.y); // Bottom-left corner
 
         super(root, position);
         this.padding = padding;
 
         this.score = new ScoreText(this, "0");
+        this.container.label = "ScoreDisplay";
 
-        this.test();
-    }
-
-    private test() {
-        setTimeout(() => this.addScore(100, "100"), 500);
-        setTimeout(() => this.addScore(250, "350"), 1000);
-        setTimeout(() => this.addScore(500, "850"), 2000);
-        setTimeout(() => this.addScore(150, "1000"), 3000);
-        setTimeout(() => this.addScore(50, "1050"), 4000);
-        setTimeout(() => this.addScore(200, "1250"), 5000);
-        setTimeout(() => this.addScore(750, "2000"), 6000);
-        setTimeout(() => this.addScore(300, "2300"), 7000);
-        setTimeout(() => this.addScore(400, "2700"), 8000);
-        setTimeout(() => this.addScore(600, "3300"), 9000);
-        setTimeout(() => this.addScore(700, "4000"), 10000);
     }
 
     public addScore(points: number, score: string) {
@@ -44,7 +30,7 @@ export class ScoringDisplay extends GameObject {
     }
 
     private pushPointText(points: number) {
-        const size = 24;
+        const size = 48;
 
         const pointText = new FadingText(this, `+${points}`, new TextStyle({
             fontSize: size,
@@ -58,11 +44,5 @@ export class ScoringDisplay extends GameObject {
         }
 
         this.points.push(pointText);
-    }
-
-    protected override createOwnSprites(): Promise<void> {
-        this.container.label = "ScoreDisplay";
-
-        return Promise.resolve();
     }
 }
