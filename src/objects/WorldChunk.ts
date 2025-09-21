@@ -29,11 +29,11 @@ export class WorldChunk extends GameObject {
     private createChunk(): void {
 
         if (Math.random() < 0.1) {
-            // this.createRandomJump();
+            this.createRandomJump();
         }
 
         for (let i = 0; i < 4; i++) {
-            // this.createRandomObstacle();
+            this.createRandomObstacle();
         }
 
     }

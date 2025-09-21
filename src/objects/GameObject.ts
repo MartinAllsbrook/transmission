@@ -117,7 +117,7 @@ export abstract class GameObject {
     private syncTransform() {
         this.container.position.set(this.position.x, this.position.y);
         this.container.rotation = this.rotation * (Math.PI / 180);
-        // this.container.scale.set(this.scale.x, this.scale.y);
+        this.container.scale.set(this.scale.x, this.scale.y);
     }
 
     /**

@@ -163,7 +163,7 @@ export class Snowboarder extends GameObject {
         this.shadow.Rotation = this.snowboard.WorldRotation;
         this.shadow.Position = new Vector2D(0, this.height * 15);
 
-        this.scale
+        this.scale = new Vector2D(1 + this.height * 0.1, 1 + this.height * 0.1);
 
         super.update(deltaTime);
     }
