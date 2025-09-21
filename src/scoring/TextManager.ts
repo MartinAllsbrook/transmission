@@ -1,7 +1,7 @@
 import { GameObject } from "../objects/GameObject.ts";
 import { OverheadText } from "../objects/text/OverheadText.ts";
 import { ScoringDisplay } from "../objects/text/score/ScoringDisplay.ts";
-import { TrickText } from "../objects/text/TrickText.ts";
+import { TrickDisplay } from "../objects/text/tricks/TrickDisplay.ts";
 import { UpdatingText } from "../objects/text/UpdatingText.ts";
 
 export class TextManager{
@@ -9,6 +9,7 @@ export class TextManager{
     
     public static initialize(root: GameObject) {
         this.root = root;
+
     }
 
     public static createScoreFadeoutText(points: number) {
@@ -30,7 +31,8 @@ export class TextManager{
         return new ScoringDisplay(this.root);
     }
 
-    public static createTrickText(trickName: string) {
-        return new TrickText(this.root, trickName);
+    public static createTrickDisplay() {
+        const trickDisplay = new TrickDisplay(this.root);
+        return trickDisplay;
     }
 }

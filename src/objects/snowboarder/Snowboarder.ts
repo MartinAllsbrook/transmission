@@ -10,6 +10,8 @@ import { Body } from "./Body.ts";
 import { ExtraMath } from "../../math/ExtraMath.ts";
 import { UpdatingText } from "../text/UpdatingText.ts";
 import { ScoringDisplay } from "../text/score/ScoringDisplay.ts";
+import { TrickDisplay } from "../text/tricks/TrickDisplay.ts";
+import { TrickPopup } from "../text/tricks/TrickPopup.ts";
 
 export class Snowboarder extends GameObject {
     private turnInput: number = 0;
@@ -27,6 +29,9 @@ export class Snowboarder extends GameObject {
     };
 
     private scoringDisplay: ScoringDisplay;
+    private trickDisplay: TrickDisplay;
+
+    private currentSpinTrickPopup?: TrickPopup;
 
     /** The current velocity of the player */
     private velocity: Vector2D = new Vector2D(0, 0);
@@ -72,6 +77,7 @@ export class Snowboarder extends GameObject {
 
         LayerManager.getLayer("foreground")?.attach(this.container);
         this.scoringDisplay = TextManager.createScoringDisplay();
+        this.trickDisplay = TextManager.createTrickDisplay();
     }
 
     private async setupInputs() {
@@ -233,7 +239,23 @@ export class Snowboarder extends GameObject {
     private spinUpdate() {
         this.snowboard.Rotation = this.shiftyAngle;
         const rotationDiff = this.startRotation - this.snowboard.WorldRotation;
-        this.rotationText?.updateText(Math.abs(rotationDiff).toFixed(0));
+
+        const boardRotation = this.snowboard.WorldRotation;
+        const heading = this.velocity.heading() * 180 / Math.PI;
+
+        let slip = ExtraMath.angleDifference(boardRotation, heading);
+        if (slip > 90) slip -= 180; // account for fakie
+
+        this.rotationText?.updateText(Math.abs(slip).toFixed(0));
+
+        const closest90 = Math.round(rotationDiff / 180) * 180;
+        if (Math.abs(closest90) >= 180) {
+            if (!this.currentSpinTrickPopup) {
+                this.currentSpinTrickPopup = this.trickDisplay.addTrick(`${Math.abs(closest90)} Spin`);
+            } else if (this.currentSpinTrickPopup.getText() !== `${Math.abs(closest90)} Spin`) {
+                this.currentSpinTrickPopup.setText(`${Math.abs(closest90)} Spin`);
+            }
+        }
     }
 
     private endSpin() {
@@ -245,21 +267,33 @@ export class Snowboarder extends GameObject {
 
 
         console.log(
-            `End Rotation: ${boardRotation}\n`,
+            `Board Rotation: ${boardRotation.toFixed(2)} Heading: ${heading.toFixed(2)}\n`,
             `Slip: ${slip}\n`,
         );
 
 
         const rotationDiff = this.startRotation - boardRotation;
-        this.rotationText?.updateText(Math.abs(rotationDiff).toFixed(0));
+        this.rotationText?.updateText(Math.abs(slip).toFixed(0));
         setTimeout(() => { this.rotationText?.destroy() }, 1000);
     
-        this.landSpin(rotationDiff);
+        this.landSpin(rotationDiff, slip);
     }
     
-    private landSpin(spinDegrees: number) {
-        const closest90 = Math.round(spinDegrees / 90) * 90;
+    private landSpin(spinDegrees: number, slip: number) {
+        const closest90 = Math.round(spinDegrees / 180) * 180;
         this.addScore(Math.abs(Math.floor(closest90)));
+
+        slip = Math.abs(slip);
+
+        if (slip > 40) {
+            this.trickDisplay.landTrick("Poor");
+        } else if (slip > 20) {
+            this.trickDisplay.landTrick("Okay");
+        } else if (slip > 10) {
+            this.trickDisplay.landTrick("Good");
+        } else {
+            this.trickDisplay.landTrick("Perfect");
+        }
     }
 
     private updateStats() {

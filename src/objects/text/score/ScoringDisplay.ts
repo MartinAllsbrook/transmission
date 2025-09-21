@@ -12,7 +12,7 @@ export class ScoringDisplay extends GameObject {
     private score: ScoreText;
     private points: FadingText[] = [];
 
-    constructor(root: OffsetContainer, padding: Vector2D = new Vector2D(256, 128)) {
+    constructor(root: OffsetContainer, padding: Vector2D = new Vector2D(128, 64)) {
         const scrrenSize = new Vector2D(globalThis.innerWidth, globalThis.innerHeight);
         const position = new Vector2D(-scrrenSize.x / 2 + padding.x, scrrenSize.y / 2 - padding.y); // Bottom-left corner
 

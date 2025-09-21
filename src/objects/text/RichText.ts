@@ -6,8 +6,9 @@ export class RichText extends GameObject {
     private style: TextStyle;
     private content: string;
     private textSprite?: Text;
+    private anchor: { x: number; y: number };
 
-    constructor(parent: GameObject, content: string, style: TextStyle = new TextStyle()) {
+    constructor(parent: GameObject, content: string, style: TextStyle = new TextStyle(), anchor: { x: number; y: number } = { x: 0, y: 1 }) {
         super(parent);
 
         const defaultStyleOptions = {
@@ -21,6 +22,7 @@ export class RichText extends GameObject {
             ...style,
             ...defaultStyleOptions
         });
+        this.anchor = anchor;
 
     }
 
@@ -28,7 +30,7 @@ export class RichText extends GameObject {
         this.textSprite = new Text({
             style: this.style,
             text: this.content,
-            anchor: { x: 0, y: 1 },
+            anchor: this.anchor,
         });
     
         this.container.addChild(this.textSprite);
@@ -41,5 +43,9 @@ export class RichText extends GameObject {
         if (this.textSprite) {
             this.textSprite.text = newText;
         }
+    }
+
+    public getText(): string {
+        return this.content;
     }
 }
