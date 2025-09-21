@@ -192,6 +192,17 @@ export abstract class GameObject {
     }
 
     /**
+     * Sets this object's position in world coordinates.
+     */
+    set WorldPosition(value: Vector2D) {
+        if (this.parent) {
+            this.position = value.subtract(this.parent.WorldPosition);
+        } else {
+            this.position = value.clone();
+        }
+    }
+
+    /**
      * This object's position in world coordinates.
      */
     get ScreenPosition(): Vector2D {

@@ -12,6 +12,7 @@ import { UpdatingText } from "../text/UpdatingText.ts";
 import { ScoringDisplay } from "../text/score/ScoringDisplay.ts";
 import { TrickDisplay } from "../text/tricks/TrickDisplay.ts";
 import { TrickPopup } from "../text/tricks/TrickPopup.ts";
+import { Shadow } from "./Shadow.ts";
 
 export class Snowboarder extends GameObject {
     private turnInput: number = 0;
@@ -43,6 +44,7 @@ export class Snowboarder extends GameObject {
 
     private timeGoingFast: number = 0; 
 
+    private shadow: Shadow;
     private snowboard: Snowboard;
     private body: Body;
 
@@ -70,8 +72,10 @@ export class Snowboarder extends GameObject {
 
         this.stats = stats;
 
+        this.shadow = new Shadow(parent);
         this.snowboard = new Snowboard(this);
         this.body = new Body(this);
+
 
         this.setupInputs();
 
@@ -155,6 +159,11 @@ export class Snowboarder extends GameObject {
             this.addScore(points);
             this.timeGoingFast = 0;
         }
+
+        this.shadow.Rotation = this.snowboard.WorldRotation;
+        this.shadow.Position = new Vector2D(0, this.height * 15);
+
+        this.scale
 
         super.update(deltaTime);
     }

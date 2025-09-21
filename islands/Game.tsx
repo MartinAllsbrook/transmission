@@ -10,6 +10,7 @@ import { StatDisplay } from "../components/StatDisplay.tsx";
 import { LayerManager } from "src/rendering/LayerManager.ts";
 import { StatTracker } from "src/scoring/StatTracker.ts";
 import { TextManager } from "src/scoring/TextManager.ts";
+import { Shadow } from "src/objects/snowboarder/Shadow.ts";
 
 export default class Game extends Component {
     /** Reference to the game container div */

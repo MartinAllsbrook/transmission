@@ -1,9 +1,12 @@
 import { Application, IRenderLayer, RenderLayer } from "pixi.js";
+import { Snowboarder } from "../objects/snowboarder/Snowboarder.ts";
 
 export class LayerManager {
     public static layers: Record<string, IRenderLayer> = {
         background: new RenderLayer(),
+        shadows: new RenderLayer(),
         foreground: new RenderLayer(),
+        
     };
 
     public static initialize(app: Application) {
