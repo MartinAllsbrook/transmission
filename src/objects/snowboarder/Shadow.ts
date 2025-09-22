@@ -1,8 +1,12 @@
 import { Graphics } from "pixi.js";
 import { GameObject, Parent } from "../GameObject.ts";
 import { LayerManager } from "../../rendering/LayerManager.ts";
+import { Vector2D } from "../../math/Vector2D.ts";
 
 export class Shadow extends GameObject {
+    private radius: number = 20;
+    private shinkFactor: number = 0.7;
+
     constructor(parent: Parent) {
         super(parent);
         this.container.label = "Shadow";
@@ -11,7 +15,7 @@ export class Shadow extends GameObject {
     }
 
     protected override createOwnSprites(): Promise<void> {
-        let radius = 20;
+        let radius = this.radius;
         for (let i = 0; i < 3; i++) {
             const ellipse = new Graphics()
             .ellipse(0, 0, radius, radius / 2)
@@ -20,12 +24,18 @@ export class Shadow extends GameObject {
                 alpha: 0.15
             })
             this.container.addChild(ellipse);
-            radius *= 0.7;
+            radius *= this.shinkFactor;
         }
-
-        
-
     
         return super.createOwnSprites(); // Ensure async context
+    }
+
+    public setEffects(height: number, rotation: number): void {
+        this.Rotation = rotation;
+
+        this.Position = new Vector2D(0, height * 15);
+
+        this.scale = new Vector2D(1 + height * 0.15, 1 + height * 0.15);
+        this.container.alpha = Math.max(0, 1 - height * 0.33);
     }
 }

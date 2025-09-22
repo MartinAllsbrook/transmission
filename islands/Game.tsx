@@ -8,9 +8,7 @@ import { OffsetContainer } from "src/objects/OffsetContainer.ts";
 import { GameOverScreen } from "./GameOverScreen.tsx";
 import { StatDisplay } from "../components/StatDisplay.tsx";
 import { LayerManager } from "src/rendering/LayerManager.ts";
-import { StatTracker } from "src/scoring/StatTracker.ts";
 import { TextManager } from "src/scoring/TextManager.ts";
-import { Shadow } from "src/objects/snowboarder/Shadow.ts";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -31,13 +29,6 @@ export default class Game extends Component {
     /** The main player object */
     private static player?: Snowboarder;
 
-    /** Set of signals to extract info from the player */
-    private stats = {
-        speed: new StatTracker(),
-        distance: new StatTracker(),
-        score: new StatTracker(),
-    };
-
     override componentDidMount() {
         // Only run on client side
         if (typeof window !== "undefined") {
@@ -51,7 +42,6 @@ export default class Game extends Component {
             Game.app.destroy(true);
         }
     }
-
     
     /**
      * Initialize the PixiJS game
@@ -63,8 +53,6 @@ export default class Game extends Component {
         Game.app = new Application();
         // deno-lint-ignore no-explicit-any
         (globalThis as any).__PIXI_APP__ = Game.app;
-
-        
 
         // Initialize the application
         await Game.app.init({
@@ -92,7 +80,7 @@ export default class Game extends Component {
 
         Game.rootObject = new OffsetContainer(Game.app);
         TextManager.initialize(Game.rootObject);
-        Game.player = new Snowboarder(Game.rootObject, this.stats);
+        Game.player = new Snowboarder(Game.rootObject);
         new World(Game.rootObject, Game.player);
     }
 
@@ -144,20 +132,12 @@ export default class Game extends Component {
     // #region Rendering
 
     render() {
-        const { score, distance, speed } = this.stats;
-
         return (
             <div>
                 {Game.gameOver
                     ? (
                         <div>
                             <GameOverScreen
-                                score={score.Value}
-                                maxScore={score.HigestValue}
-                                distace={distance.Value}
-                                maxDistance={distance.HigestValue}
-                                fastestSpeed={speed.Value}
-                                maxFastestSpeed={speed.HigestValue}
                                 onRestart={() => {
                                     Game.resetGame();
                                 }}
@@ -166,21 +146,7 @@ export default class Game extends Component {
                     )
                     : (
                         <div class="absolute top-0 left-0 z-10 flex flex-col gap-2 p-2">
-                            <StatDisplay
-                                name="Speed"
-                                value={speed.Value}
-                                highest={speed.HigestValue}
-                            />
-                            <StatDisplay
-                                name="Distance"
-                                value={distance.Value}
-                                highest={distance.HigestValue}
-                            />
-                            <StatDisplay
-                                name="Score"
-                                value={score.Value}
-                                highest={score.HigestValue}
-                            />
+
                         </div>
                     )}
 

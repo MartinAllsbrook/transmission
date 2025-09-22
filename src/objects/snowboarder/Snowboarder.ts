@@ -2,7 +2,6 @@ import { GameObject, Parent } from "../GameObject.ts";
 import { Vector2D } from "../../math/Vector2D.ts";
 import Game from "islands/Game.tsx";
 import { LayerManager } from "../../rendering/LayerManager.ts";
-import { StatTracker } from "../../scoring/StatTracker.ts";
 import { TextManager } from "../../scoring/TextManager.ts";
 import { SATCollider } from "../../colliders/SATCollider.ts";
 import { Snowboard } from "./Snowboard.ts";
@@ -13,64 +12,47 @@ import { ScoringDisplay } from "../text/score/ScoringDisplay.ts";
 import { TrickDisplay } from "../text/tricks/TrickDisplay.ts";
 import { TrickPopup } from "../text/tricks/TrickPopup.ts";
 import { Shadow } from "./Shadow.ts";
-
+  
 export class Snowboarder extends GameObject {
+    // Inputs
     private turnInput: number = 0;
     private jumpInput: boolean = false;
     private shiftyInput: number = 0;
-
+        
     /** The position of the player in the world, used for world scrolling */
     public worldPosition: Vector2D = new Vector2D(128, 128);
-
-    /** A set of stats to be acessed by the game UI */
-    private stats: {
-        speed: StatTracker;
-        distance: StatTracker;
-        score: StatTracker;
-    };
-
-    private scoringDisplay: ScoringDisplay;
-    private trickDisplay: TrickDisplay;
-
-    private currentSpinTrickPopup?: TrickPopup;
-
-    /** The current velocity of the player */
+    
+    // Physics & State
     private velocity: Vector2D = new Vector2D(0, 0);
-
     private rotationRate: number = 0;
-
+    
     private inAir = false;
+    private vericalVelocity: number = 0;
     private height: number = 0;
-
-    private timeGoingFast: number = 0; 
-
+    
+    // Shifty
+    private shiftyTargetAngle: number = 0;
+    private shiftyAngle: number = 0;    
+    private shiftyLerpSpeed: number = 3;
+    private maxShiftyAngle: number = 90;
+    
+    // Components
     private shadow: Shadow;
     private snowboard: Snowboard;
     private body: Body;
-
-
-    private shiftyTargetAngle: number = 0;
-    private shiftyAngle: number = 0;
-
-    // #region Settings
-
-    private shiftyLerpSpeed: number = 5;
-    private maxShiftyAngle: number = 90;
-    // #endregion
-
-
+    
+    // Scoring
+    private score: number = 0;
+    private timeGoingFast: number = 0; 
     private startRotation: number = 0;
     private startRotationSlip: number = 0;
     private rotationText?: UpdatingText;
+    private currentSpinTrickPopup?: TrickPopup;
+    private scoringDisplay: ScoringDisplay;
+    private trickDisplay: TrickDisplay;
 
-    constructor(parent: Parent, stats: {
-        speed: StatTracker;
-        distance: StatTracker;
-        score: StatTracker;
-    }) {
+    constructor(parent: Parent) {
         super(parent);
-
-        this.stats = stats;
 
         this.shadow = new Shadow(parent);
         this.snowboard = new Snowboard(this);
@@ -108,12 +90,16 @@ export class Snowboarder extends GameObject {
             
             this.velocity = this.velocity.multiply(-0.5);
         }
+
+        // If we hit a jump and we're not already in the air, add some height and velocity - wont be used until we enter the air
         if (other.layer === "jump" && !this.InAir) {
             this.height += 1;
+            this.vericalVelocity = this.velocity.magnitude() * 0.0075;
         }
     }
 
     public onCollisionEnd(other: SATCollider): void {
+        // At the end of a jump if the player isnt in the air, put them in the air
         if (other.layer === "jump" && !this.InAir) {
             this.InAir = true;
         }
@@ -127,29 +113,18 @@ export class Snowboarder extends GameObject {
         // - Add some momentum upwards when hitting a jump at speed
 
     public override update(deltaTime: number): void {
-
-        // While in air
-            // Snowboarder forward matches body
-            // Board becomes rotated by shifty input
-        // While on ground
-            // Snowboarder forward matches board
-            // Body becomes rotated by turn input
-
-        if (this.jumpInput && !this.InAir) {
-            this.height += 3;
+        if (this.jumpInput && !this.InAir) { // Jump
+            this.vericalVelocity += 4;
             this.InAir = true;
         };
-
+        
         if (this.InAir) {
             this.airUpdate(deltaTime);
         } else {
             this.groundUpdate(deltaTime);
         }   
-
-        this.updatePhysics(deltaTime);
-
-        this.updateStats();
-
+        
+        this.updatePhysics(deltaTime); // 2D physics
 
         const speed = this.velocity.magnitude();
         if (speed > 300) {
@@ -160,10 +135,8 @@ export class Snowboarder extends GameObject {
             this.timeGoingFast = 0;
         }
 
-        this.shadow.Rotation = this.snowboard.WorldRotation;
-        this.shadow.Position = new Vector2D(0, this.height * 15);
-
-        this.scale = new Vector2D(1 + this.height * 0.1, 1 + this.height * 0.1);
+        this.scale = new Vector2D(1 + this.height * 0.15, 1 + this.height * 0.15);
+        this.shadow.setEffects(this.height, this.snowboard.WorldRotation);
 
         super.update(deltaTime);
     }
@@ -305,17 +278,9 @@ export class Snowboarder extends GameObject {
         }
     }
 
-    private updateStats() {
-        const { speed, distance } = this.stats;
-
-        speed.Value = this.velocity.magnitude();
-        distance.Value = this.worldPosition.y;
-    }
-
     private addScore(points: number) {
-        this.stats.score.Value += points;
-
-        this.scoringDisplay.addScore(points, this.stats.score.Value.toString());    
+        this.score += points;
+        this.scoringDisplay.addScore(points, this.score.toString());    
     }
 
     // #endregion
@@ -326,9 +291,12 @@ export class Snowboarder extends GameObject {
         const turnStrength = 250;
 
         if (this.InAir) {
-            this.height -= deltaTime;
+            this.vericalVelocity -= 16  * deltaTime;
+            this.height += this.vericalVelocity * deltaTime;
+
             if (this.height <= 0) {
                 this.height = 0;
+                this.vericalVelocity = 0;
                 this.InAir = false;
             }
         } else {
@@ -376,9 +344,7 @@ export class Snowboarder extends GameObject {
         this.velocity.set(new Vector2D(0, 0));
         this.rotation = 0;
 
-        this.stats.score.Value = 0;
-        this.stats.distance.Value = 0;
-        this.stats.speed.Value = 0;
+        this.score = 0;
     }
 
     public override get WorldPosition(): Vector2D {

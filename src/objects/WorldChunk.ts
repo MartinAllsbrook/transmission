@@ -33,7 +33,7 @@ export class WorldChunk extends GameObject {
         }
 
         for (let i = 0; i < 4; i++) {
-            this.createRandomObstacle();
+            // this.createRandomObstacle();
         }
 
     }
