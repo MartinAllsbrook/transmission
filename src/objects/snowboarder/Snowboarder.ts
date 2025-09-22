@@ -295,7 +295,7 @@ export class Snowboarder extends GameObject {
 
         const closest90 = Math.round(rotationDiff / 180) * 180;
         if (Math.abs(closest90) >= 180) {
-            if (!this.currentSpinTrickPopup) {
+            if (!this.currentSpinTrickPopup || this.currentSpinTrickPopup?.Destroyed) {
                 this.currentSpinTrickPopup = this.trickDisplay.addTrick(`${Math.abs(closest90)} Spin`);
             } else if (this.currentSpinTrickPopup.getText() !== `${Math.abs(closest90)} Spin`) {
                 this.currentSpinTrickPopup.setText(`${Math.abs(closest90)} Spin`);
