@@ -59,6 +59,9 @@ export default class Game extends Component {
         await Game.app.init({
             background: "#ffffff",
             resizeTo: globalThis.window,
+            antialias: true,
+            resolution: globalThis.devicePixelRatio || 1,
+            autoDensity: true
         });
 
         // Append the application canvas to the game container
