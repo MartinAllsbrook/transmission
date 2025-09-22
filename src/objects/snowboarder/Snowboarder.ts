@@ -12,6 +12,7 @@ import { ScoringDisplay } from "../text/score/ScoringDisplay.ts";
 import { TrickDisplay } from "../text/tricks/TrickDisplay.ts";
 import { TrickPopup } from "../text/tricks/TrickPopup.ts";
 import { Shadow } from "./Shadow.ts";
+import { InputManager } from "../../inputs/InputManager.ts";
   
 export class Snowboarder extends GameObject {
     // Inputs
@@ -68,8 +69,7 @@ export class Snowboarder extends GameObject {
 
     // #region Miscellaneous
 
-    private async setupInputs() {
-        const { InputManager } = await import("src/inputs/InputManager.ts");
+    private setupInputs() {
 
         InputManager.getInput("turn").subscribe((newValue) => {
             this.turnInput = newValue;
@@ -99,7 +99,7 @@ export class Snowboarder extends GameObject {
     public onCollisionStart(other: SATCollider): void {
         if (other.layer === "obstacle") {
             if (this.velocity.magnitude() > 10) {
-                Game.endGame();
+                Game.endGame("You crashed into an obstacle!");
             }
             
             this.velocity = this.velocity.multiply(-0.5);
@@ -311,26 +311,19 @@ export class Snowboarder extends GameObject {
         if (slip > 90) slip -= 180; // account for fakie
 
 
-        console.log(
-            `Board Rotation: ${boardRotation.toFixed(2)} Heading: ${heading.toFixed(2)}\n`,
-            `Slip: ${slip}\n`,
-        );
-
 
         const rotationDiff = this.startRotation - boardRotation;
         this.rotationText?.updateText(Math.abs(slip).toFixed(0));
         setTimeout(() => { this.rotationText?.destroy() }, 1000);
-    
-        this.landSpin(rotationDiff, slip);
-    }
-    
-    private landSpin(spinDegrees: number, slip: number) {
-        const closest90 = Math.round(spinDegrees / 180) * 180;
+        
+        const closest90 = Math.round(rotationDiff / 180) * 180;
         this.addScore(Math.abs(Math.floor(closest90)));
 
         slip = Math.abs(slip);
 
-        if (slip > 40) {
+        if (slip > 70 && this.velocity.magnitude() > 450) {
+            Game.endGame("You caught an edge landing!");
+        } else if (slip > 40) {
             this.trickDisplay.landTrick("Poor");
         } else if (slip > 20) {
             this.trickDisplay.landTrick("Okay");
@@ -340,6 +333,7 @@ export class Snowboarder extends GameObject {
             this.trickDisplay.landTrick("Perfect");
         }
     }
+
 
     private addScore(points: number) {
         this.score += points;

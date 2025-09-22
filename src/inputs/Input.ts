@@ -14,6 +14,8 @@ export abstract class Input<T> {
         this.type = type;
         this.value = defaultValue;
 
+        if (typeof document === "undefined") return;
+
         document.addEventListener("keydown", (event) => {
             this.onKeyDown(event.key);
         });

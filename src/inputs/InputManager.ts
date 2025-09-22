@@ -7,6 +7,7 @@ type InputMap = {
     jump: BooleanInput;
     turn: ValueInput;
     shifty: ValueInput;
+    restart: BooleanInput;
     // Add other inputs here as needed, e.g. move: ValueInput;
 };
 
@@ -15,6 +16,7 @@ export class InputManager {
         jump: new BooleanInput("jump", [" ", "w", "ArrowUp"]),
         turn: new ValueInput("turn", ["d"], ["a"]),
         shifty: new ValueInput("shify", ["ArrowRight"], ["ArrowLeft"]),
+        restart: new BooleanInput("restart", ["r"]),
     };
 
     public static getInput<K extends keyof InputMap>(name: K): InputMap[K] {

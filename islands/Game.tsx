@@ -9,6 +9,7 @@ import { GameOverScreen } from "./GameOverScreen.tsx";
 import { StatDisplay } from "../components/StatDisplay.tsx";
 import { LayerManager } from "src/rendering/LayerManager.ts";
 import { TextManager } from "src/scoring/TextManager.ts";
+import { Signal } from "@preact/signals";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -17,8 +18,8 @@ export default class Game extends Component {
     /** Global acess to the pixi app for debugging draw calls */
     public static app?: Application;
 
-    /** Global acess to the game over state */
-    private static gameOver: boolean = false;
+    private static deathMessage: string | undefined;
+    private static gameOver: Signal<boolean> = new Signal(false);
 
     /** The the root container of the game, also used to center the game on the screen */
     private static rootObject?: OffsetContainer;
@@ -111,8 +112,9 @@ export default class Game extends Component {
 
     // #region Game State Management
 
-    public static endGame() {
-        Game.gameOver = true;
+    public static endGame(deathMessage?: string) {
+        Game.deathMessage = deathMessage;
+        Game.gameOver.value = true;
         this.app?.ticker.stop();
     }
 
@@ -121,7 +123,8 @@ export default class Game extends Component {
     }
 
     public static resetGame() {
-        Game.gameOver = false;
+        Game.deathMessage = undefined;
+        Game.gameOver.value = false;
         this.app?.ticker.start();
 
         this.player?.reset();
@@ -134,10 +137,14 @@ export default class Game extends Component {
     render() {
         return (
             <div>
-                {Game.gameOver
+                {Game.gameOver.value
                     ? (
+                        
                         <div>
+
+                        {console.log("rendering game over screen")}
                             <GameOverScreen
+                                deathMessage={Game.deathMessage}
                                 onRestart={() => {
                                     Game.resetGame();
                                 }}
