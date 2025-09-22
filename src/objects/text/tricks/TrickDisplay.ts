@@ -17,6 +17,7 @@ export class TrickDisplay extends GameObject {
     public addTrick(trickName: string): TrickPopup {
         const trickPopup = new TrickPopup(this, trickName);
 
+        trickPopup.Position = new Vector2D(0, -this.currentTrickPopups.length * (24 + 8));
         this.currentTrickPopups.push(trickPopup);
 
         return trickPopup;
@@ -26,6 +27,8 @@ export class TrickDisplay extends GameObject {
         for (const popup of this.currentTrickPopups) {
             popup.destroyAfter();
         }
+
+        this.currentTrickPopups = [];
 
         return new LandTrickPopup(this, execution);
     } 

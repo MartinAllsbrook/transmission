@@ -177,8 +177,6 @@ export class Snowboarder extends GameObject {
         this.applyAirShiftyUpdate(deltaTime);
         this.spinUpdate(deltaTime);
         this.airPhysicsUpdate(deltaTime); 
-
-
     }
 
     private switchToAirShifty() {
