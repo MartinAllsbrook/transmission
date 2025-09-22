@@ -10,7 +10,6 @@ export class TrickPopup extends RichText {
             fill: "#000000",
         }), { x: 0.5, y: 0.5 } );
 
-        setTimeout(() => this.destroy(), lifetime * 1000);
     }
 
     protected override createOwnSprites(): Promise<void> {
@@ -25,5 +24,9 @@ export class TrickPopup extends RichText {
         this.container.addChildAt(graphic, 0);
 
         return super.createOwnSprites();
+    }
+
+    public destroyAfter(time: number = 1.25) {
+        setTimeout(() => this.destroy(), time * 1000);
     }
 }

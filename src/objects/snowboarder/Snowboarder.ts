@@ -51,6 +51,7 @@ export class Snowboarder extends GameObject {
     private currentSpinTrickPopup?: TrickPopup;
     private scoringDisplay: ScoringDisplay;
     private trickDisplay: TrickDisplay;
+    private airTime: number = 0;
 
     constructor(parent: Parent) {
         super(parent);
@@ -174,8 +175,10 @@ export class Snowboarder extends GameObject {
 
     private airUpdate(deltaTime: number) {
         this.applyAirShiftyUpdate(deltaTime);
-        this.spinUpdate();
+        this.spinUpdate(deltaTime);
         this.airPhysicsUpdate(deltaTime); 
+
+
     }
 
     private switchToAirShifty() {
@@ -281,7 +284,7 @@ export class Snowboarder extends GameObject {
         );
     }
 
-    private spinUpdate() {
+    private spinUpdate(deltaTime: number) {
         this.snowboard.Rotation = this.shiftyAngle;
         const rotationDiff = this.startRotation - this.snowboard.WorldRotation;
 
@@ -292,6 +295,11 @@ export class Snowboarder extends GameObject {
         if (slip > 90) slip -= 180; // account for fakie
 
         this.rotationText?.updateText(Math.abs(slip).toFixed(0));
+
+        this.airTime += deltaTime;
+        if (this.airTime > 0.5) {
+            this.trickDisplay.addTrick(`Air Time: ${this.airTime.toFixed(1)}s`);
+        }
 
         const closest90 = Math.round(rotationDiff / 180) * 180;
         if (Math.abs(closest90) >= 180) {
@@ -314,6 +322,8 @@ export class Snowboarder extends GameObject {
         this.rotationText?.updateText(Math.abs(slip).toFixed(0));
         setTimeout(() => { this.rotationText?.destroy() }, 1000);
         
+        this.airTime = 0;
+
         const closest90 = Math.round(rotationDiff / 180) * 180;
         this.addScore(Math.abs(Math.floor(closest90)));
 
