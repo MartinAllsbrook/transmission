@@ -13,6 +13,7 @@ import { TrickDisplay } from "../text/tricks/TrickDisplay.ts";
 import { TrickPopup } from "../text/tricks/TrickPopup.ts";
 import { Shadow } from "./Shadow.ts";
 import { InputManager } from "../../inputs/InputManager.ts";
+import { TricksManager } from "./TricksManager.ts";
   
 export class Snowboarder extends GameObject {
     // Inputs
@@ -41,17 +42,7 @@ export class Snowboarder extends GameObject {
     private shadow: Shadow;
     private snowboard: Snowboard;
     private body: Body;
-    
-    // Scoring
-    private score: number = 0;
-    private timeGoingFast: number = 0; 
-    private startRotation: number = 0;
-    private startRotationSlip: number = 0;
-    private rotationText?: UpdatingText;
-    private currentSpinTrickPopup?: TrickPopup;
-    private scoringDisplay: ScoringDisplay;
-    private trickDisplay: TrickDisplay;
-    private airTime: number = 0;
+    private tricksManager: TricksManager;
 
     constructor(parent: Parent) {
         super(parent);
@@ -64,8 +55,8 @@ export class Snowboarder extends GameObject {
         this.setupInputs();
 
         LayerManager.getLayer("foreground")?.attach(this.container);
-        this.scoringDisplay = TextManager.createScoringDisplay();
-        this.trickDisplay = TextManager.createTrickDisplay();
+        this.tricksManager = new TricksManager(this);
+
     }
 
     // #region Miscellaneous
@@ -90,7 +81,7 @@ export class Snowboarder extends GameObject {
         this.velocity.set(new Vector2D(0, 0));
         this.rotation = 0;
 
-        this.score = 0;
+        this.tricksManager.reset();
     }
 
     // #endregion
@@ -138,14 +129,14 @@ export class Snowboarder extends GameObject {
         
         this.updatePhysics(deltaTime); // 2D physics
 
-        const speed = this.velocity.magnitude();
-        if (speed > 300) {
-            this.timeGoingFast += deltaTime;
-        } else if (this.timeGoingFast > 2) {
-            const points = Math.floor(this.timeGoingFast * 10);
-            this.addScore(points);
-            this.timeGoingFast = 0;
-        }
+        // const speed = this.velocity.magnitude();
+        // if (speed > 300) {
+        //     this.timeGoingFast += deltaTime;
+        // } else if (this.timeGoingFast > 2) {
+        //     const points = Math.floor(this.timeGoingFast * 10);
+        //     this.addScore(points);
+        //     this.timeGoingFast = 0;
+        // }
 
         this.scale = new Vector2D(1 + this.height * 0.15, 1 + this.height * 0.15);
         this.shadow.setEffects(this.height, this.snowboard.WorldRotation);
@@ -170,13 +161,20 @@ export class Snowboarder extends GameObject {
 
     private onEnterAir() {
         this.switchToAirShifty();
-        this.startSpin();
+        this.tricksManager.trickStart(
+            this.snowboard.WorldRotation, 
+            this.velocity.heading() * 180 / Math.PI
+        );
     }
 
     private airUpdate(deltaTime: number) {
         this.applyAirShiftyUpdate(deltaTime);
-        this.spinUpdate(deltaTime);
         this.airPhysicsUpdate(deltaTime); 
+        this.tricksManager.trickUpdate(
+            deltaTime,
+            this.snowboard.WorldRotation, 
+            this.velocity.heading() * 180 / Math.PI
+        );
     }
 
     private switchToAirShifty() {
@@ -189,6 +187,7 @@ export class Snowboarder extends GameObject {
     private applyAirShiftyUpdate(deltaTime: number) {
         this.shiftyTargetAngle = this.shiftyInput * -this.maxShiftyAngle;
         this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
+        this.snowboard.Rotation = this.shiftyAngle;
     }
 
     private airPhysicsUpdate(deltaTime: number) {
@@ -208,7 +207,10 @@ export class Snowboarder extends GameObject {
 
     private onEnterGround() {
         this.switchToGroundShifty();
-        this.endSpin();
+        this.tricksManager.endSpin(
+            this.snowboard.WorldRotation, 
+            this.velocity.heading() * 180 / Math.PI
+        );
     }
 
     private groundUpdate(deltaTime: number) {
@@ -258,91 +260,6 @@ export class Snowboarder extends GameObject {
         this.velocity = this.velocity.multiply(
             1 - frictionStrength * deltaTime,
         );
-    }
-
-    // #endregion
-
-    // #region Scoring & Stats
-
-    private startSpin() {
-        this.rotationText = TextManager.createUpdatingText(`Rotation`, `0`, "#FF00FF", 2);
-
-        const boardRotation = this.snowboard.WorldRotation;
-        const heading = this.velocity.heading() * 180 / Math.PI;
-
-        let slip = ExtraMath.angleDifference(boardRotation, heading);
-        if (slip > 90) slip -= 180; // account for fakie
-
-        this.startRotationSlip = slip;
-        this.startRotation = Math.floor(boardRotation / 360) * 360 + heading;
-
-        console.log(
-            `Start Rotation: ${this.startRotation}\n`,
-            `Slip: ${slip}\n`,
-        );
-    }
-
-    private spinUpdate(deltaTime: number) {
-        this.snowboard.Rotation = this.shiftyAngle;
-        const rotationDiff = this.startRotation - this.snowboard.WorldRotation;
-
-        const boardRotation = this.snowboard.WorldRotation;
-        const heading = this.velocity.heading() * 180 / Math.PI;
-
-        let slip = ExtraMath.angleDifference(boardRotation, heading);
-        if (slip > 90) slip -= 180; // account for fakie
-
-        this.rotationText?.updateText(Math.abs(slip).toFixed(0));
-
-        this.airTime += deltaTime;
-        if (this.airTime > 0.5) {
-            this.trickDisplay.addTrick(`Air Time: ${this.airTime.toFixed(1)}s`);
-        }
-
-        const closest90 = Math.round(rotationDiff / 180) * 180;
-        if (Math.abs(closest90) >= 180) {
-            if (!this.currentSpinTrickPopup || this.currentSpinTrickPopup?.Destroyed) {
-                this.currentSpinTrickPopup = this.trickDisplay.addTrick(`${Math.abs(closest90)} Spin`);
-            } else if (this.currentSpinTrickPopup.getText() !== `${Math.abs(closest90)} Spin`) {
-                this.currentSpinTrickPopup.setText(`${Math.abs(closest90)} Spin`);
-            }
-        }
-    }
-
-    private endSpin() {
-        const boardRotation = this.snowboard.WorldRotation;
-        const heading = this.velocity.heading() * 180 / Math.PI;
-
-        let slip = ExtraMath.angleDifference(boardRotation, heading);
-        if (slip > 90) slip -= 180; // account for fakie
-
-        const rotationDiff = this.startRotation - boardRotation;
-        this.rotationText?.updateText(Math.abs(slip).toFixed(0));
-        setTimeout(() => { this.rotationText?.destroy() }, 1000);
-        
-        this.airTime = 0;
-
-        const closest90 = Math.round(rotationDiff / 180) * 180;
-        this.addScore(Math.abs(Math.floor(closest90)));
-
-        slip = Math.abs(slip);
-
-        if (slip > 70 && this.velocity.magnitude() > 450) {
-            Game.endGame("You caught an edge landing!");
-        } else if (slip > 40) {
-            this.trickDisplay.landTrick("Poor");
-        } else if (slip > 20) {
-            this.trickDisplay.landTrick("Okay");
-        } else if (slip > 10) {
-            this.trickDisplay.landTrick("Good");
-        } else {
-            this.trickDisplay.landTrick("Perfect");
-        }
-    }
-
-    private addScore(points: number) {
-        this.score += points;
-        this.scoringDisplay.addScore(points, this.score.toString());    
     }
 
     // #endregion
