@@ -2,7 +2,7 @@ import { Component } from "preact";
 import { Application } from "pixi.js";
 
 import { Snowboarder } from "src/objects/snowboarder/Snowboarder.ts";
-import { World } from "src/objects/World.ts";
+import { World } from "src/objects/world/World.ts";
 import { CollisionManager } from "src/colliders/CollisionManager.ts";
 import { OffsetContainer } from "src/objects/OffsetContainer.ts";
 import { GameOverScreen } from "./GameOverScreen.tsx";

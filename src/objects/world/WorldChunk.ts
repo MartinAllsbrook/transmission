@@ -1,6 +1,6 @@
 import { Graphics } from "pixi.js";
 import { GameObject } from "src/objects/GameObject.ts";
-import { Obstacle } from "src/objects/Obstacle.ts";
+import { Obstacle } from "src/objects/world/Obstacle.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { Jump } from "./Jump.ts";
 import { World } from "./World.ts";
@@ -47,7 +47,6 @@ export class WorldChunk extends GameObject {
         if (this.world.getDistanceToNearestRun(worldPosition) < 192) {
             return;
         }
-
 
         new Obstacle(this, new Vector2D(x, y));
     }

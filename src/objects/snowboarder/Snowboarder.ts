@@ -310,8 +310,6 @@ export class Snowboarder extends GameObject {
         let slip = ExtraMath.angleDifference(boardRotation, heading);
         if (slip > 90) slip -= 180; // account for fakie
 
-
-
         const rotationDiff = this.startRotation - boardRotation;
         this.rotationText?.updateText(Math.abs(slip).toFixed(0));
         setTimeout(() => { this.rotationText?.destroy() }, 1000);
@@ -333,7 +331,6 @@ export class Snowboarder extends GameObject {
             this.trickDisplay.landTrick("Perfect");
         }
     }
-
 
     private addScore(points: number) {
         this.score += points;

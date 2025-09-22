@@ -1,6 +1,6 @@
 import { Vector2D } from "src/math/Vector2D.ts";
 import { Graphics } from "pixi.js";
-import { World } from "../../objects/World.ts";
+import { World } from "../../objects/world/World.ts";
 import { SplinePoint } from "./SplinePoint.ts";
 
 /**
@@ -317,7 +317,7 @@ export class BezierSpline {
             for (let i = 1; i < splinePoints.length; i++) {
                 graphics.lineTo(splinePoints[i].x, splinePoints[i].y);
             }
-            graphics.stroke({width: 2, color: 0xff0000}); // Red line, 2px width
+            graphics.stroke({width: 4, color: 0xff0000}); // Red line, 2px width
     
             // // Optional: Draw control points
             // graphics.lineStyle(1, 0x00ff00); // Green line for control points

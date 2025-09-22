@@ -1,7 +1,6 @@
-import { Assets, Sprite } from "pixi.js";
-import { GameObject } from "./GameObject.ts";
-import { Vector2D } from "../math/Vector2D.ts";
-import { RectCollider } from "../colliders/RectCollider.ts";
+import { GameObject } from "../GameObject.ts";
+import { Vector2D } from "../../math/Vector2D.ts";
+import { RectCollider } from "../../colliders/RectCollider.ts";
 
 export class Jump extends GameObject {
     constructor(parent: GameObject, position: Vector2D) {
