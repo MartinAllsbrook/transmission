@@ -66,6 +66,8 @@ export class Snowboarder extends GameObject {
         this.trickDisplay = TextManager.createTrickDisplay();
     }
 
+    // #region Miscellaneous
+
     private async setupInputs() {
         const { InputManager } = await import("src/inputs/InputManager.ts");
 
@@ -81,6 +83,18 @@ export class Snowboarder extends GameObject {
             this.shiftyInput = newValue;
         });
     }
+
+    public reset() {
+        this.worldPosition.set(new Vector2D(128, 128));
+        this.velocity.set(new Vector2D(0, 0));
+        this.rotation = 0;
+
+        this.score = 0;
+    }
+
+    // #endregion
+
+    // #region Collisions
 
     public onCollisionStart(other: SATCollider): void {
         if (other.layer === "obstacle") {
@@ -105,12 +119,9 @@ export class Snowboarder extends GameObject {
         }
     }
 
-    // TODOs:
-        // - Snowboarder scaling on jump
-        // - Gain height the longer you're on a jump
-        // - Add shifties to control air rotation
-        // - Add points
-        // - Add some momentum upwards when hitting a jump at speed
+    // #endregion
+
+    // #region Update
 
     public override update(deltaTime: number): void {
         if (this.jumpInput && !this.InAir) { // Jump
@@ -140,7 +151,19 @@ export class Snowboarder extends GameObject {
 
         super.update(deltaTime);
     }
+    
+    private updatePhysics(deltaTime: number) {
+        const turnStrength = 250;
 
+        this.rotation += this.rotationRate * deltaTime * turnStrength;
+
+        // Update position
+        this.worldPosition.set(
+            this.worldPosition.add(this.velocity.multiply(deltaTime)),
+        );
+    }
+
+    // #endregion
 
     // #region Air
 
@@ -152,24 +175,8 @@ export class Snowboarder extends GameObject {
     private airUpdate(deltaTime: number) {
         this.applyAirShiftyUpdate(deltaTime);
         this.spinUpdate();
+        this.airPhysicsUpdate(deltaTime); 
     }
-
-    // #endregion
-
-    // #region Ground
-
-    private onEnterGround() {
-        this.switchToGroundShifty();
-        this.endSpin();
-    }
-
-    private groundUpdate(deltaTime: number) {
-        this.applyGroundShiftyUpdate(deltaTime);
-    }
-
-    // #endregion
-
-    // #region Shifty
 
     private switchToAirShifty() {
         this.shiftyAngle = this.shiftyAngle * -1;
@@ -183,6 +190,32 @@ export class Snowboarder extends GameObject {
         this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
     }
 
+    private airPhysicsUpdate(deltaTime: number) {
+        this.vericalVelocity -= 16  * deltaTime;
+        this.height += this.vericalVelocity * deltaTime;
+
+        if (this.height <= 0) {
+            this.height = 0;
+            this.vericalVelocity = 0;
+            this.InAir = false;
+        }
+    }
+
+    // #endregion
+
+    // #region Ground
+
+    private onEnterGround() {
+        this.switchToGroundShifty();
+        this.endSpin();
+    }
+
+    private groundUpdate(deltaTime: number) {
+        this.applyGroundShiftyUpdate(deltaTime);
+        this.groundPhysicsUpdate(deltaTime);
+
+    }
+
     private switchToGroundShifty() {
         this.shiftyAngle = this.shiftyAngle * -1;
         this.rotation = this.snowboard.WorldRotation;
@@ -194,6 +227,36 @@ export class Snowboarder extends GameObject {
         this.shiftyTargetAngle = this.shiftyInput * this.maxShiftyAngle;
         this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
         this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
+    }
+    
+    private groundPhysicsUpdate(deltaTime: number) {
+        const frictionStrength = 0.1; // Raising this lowers top speed (max 1)
+        const gravityStrength = 140; // Raising this value makes the game feel faster
+        const slipStrength = 325; // Raising this value makes turning more responsive
+
+        // Apply gravity
+        this.velocity.y += gravityStrength * deltaTime;
+
+        // Rotate
+        this.rotationRate += (this.turnInput - this.rotationRate) * deltaTime * 10;
+        
+        const radians = (this.snowboard.WorldRotation) * (Math.PI / 180);
+
+        // Normal force
+        const forward = Vector2D.fromAngle(radians - Math.PI / 2);
+        const direction = this.velocity.normalize();
+        const projected = direction.projectOnto(forward);
+        const normal = projected.subtract(direction);
+
+        const strength = Math.pow((1 - normal.magnitude()), 2) * 0.25 + 1;
+        const normalDirection = projected.subtract(direction).normalize().multiply(strength);
+
+        this.velocity = this.velocity.add(normalDirection.multiply(deltaTime * slipStrength));
+
+        // Friction
+        this.velocity = this.velocity.multiply(
+            1 - frictionStrength * deltaTime,
+        );
     }
 
     // #endregion
@@ -285,67 +348,7 @@ export class Snowboarder extends GameObject {
 
     // #endregion
 
-    // #region Physics and Movement
-
-    private updatePhysics(deltaTime: number) {
-        const turnStrength = 250;
-
-        if (this.InAir) {
-            this.vericalVelocity -= 16  * deltaTime;
-            this.height += this.vericalVelocity * deltaTime;
-
-            if (this.height <= 0) {
-                this.height = 0;
-                this.vericalVelocity = 0;
-                this.InAir = false;
-            }
-        } else {
-            const frictionStrength = 0.1; // Raising this lowers top speed (max 1)
-            const gravityStrength = 140; // Raising this value makes the game feel faster
-            const slipStrength = 325; // Raising this value makes turning more responsive
-    
-            // Apply gravity
-            this.velocity.y += gravityStrength * deltaTime;
-    
-            // Rotate
-            this.rotationRate += (this.turnInput - this.rotationRate) * deltaTime * 10;
-            
-            const radians = (this.snowboard.WorldRotation) * (Math.PI / 180);
-    
-            // Normal force
-            const forward = Vector2D.fromAngle(radians - Math.PI / 2);
-            const direction = this.velocity.normalize();
-            const projected = direction.projectOnto(forward);
-            const normal = projected.subtract(direction);
-    
-            const strength = Math.pow((1 - normal.magnitude()), 2) * 0.25 + 1;
-            const normalDirection = projected.subtract(direction).normalize().multiply(strength);
-    
-            this.velocity = this.velocity.add(normalDirection.multiply(deltaTime * slipStrength));
-    
-            // Friction
-            this.velocity = this.velocity.multiply(
-                1 - frictionStrength * deltaTime,
-            );
-        }
-
-        this.rotation += this.rotationRate * deltaTime * turnStrength;
-
-        // Update position
-        this.worldPosition.set(
-            this.worldPosition.add(this.velocity.multiply(deltaTime)),
-        );
-    }
-
-    // #endregion
-
-    public reset() {
-        this.worldPosition.set(new Vector2D(128, 128));
-        this.velocity.set(new Vector2D(0, 0));
-        this.rotation = 0;
-
-        this.score = 0;
-    }
+    // #region Getters & Setters
 
     public override get WorldPosition(): Vector2D {
         return this.worldPosition.clone();
@@ -370,4 +373,6 @@ export class Snowboarder extends GameObject {
             this.onEnterGround();
         }     
     }
+
+    // #endregion
 }
