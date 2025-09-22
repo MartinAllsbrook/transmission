@@ -334,4 +334,19 @@ export class BezierSpline {
             //     graphics.endFill();
             // }
     }
+
+    public getDirections(numPoints: number = 100): Vector2D[] {
+        if (numPoints < 2) numPoints = 2;
+
+        const directions: Vector2D[] = [];
+
+        for (let i = 0; i < numPoints; i++) {
+            const t = i / (numPoints - 1);
+            const derivative = this.getDerivativeAt(t);
+            const direction = derivative.normalize();
+            directions.push(direction);
+        }
+
+        return directions;
+    }
 }

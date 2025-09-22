@@ -6,6 +6,7 @@ import { SnowboarderTrail } from "../snowboarder/SnowbarderTrail.ts";
 import { BezierSpline } from "../../math/splines/BezierSpline.ts";
 import { Container } from "pixi.js";
 import { SplinePoint } from "../../math/splines/SplinePoint.ts";
+import { SkiRun } from "./SkiRun.ts";
 
 interface SkiRunSpline {
     spline: BezierSpline;
@@ -121,7 +122,8 @@ export class World extends GameObject {
 
                     const newSpline = BezierSpline.createCubicFromPoints(node.point, newPoint);
                     this.runSplines.push({ spline: newSpline });
-                    // newSpline.drawDebug(this);
+                    
+                    new SkiRun(this, newSpline);
                 }
             }
         }
