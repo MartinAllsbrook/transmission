@@ -34,10 +34,10 @@ export class TricksManager {
     }
     
     public trickStart(boardRotation: number, heading: number) {
-        this.switch = Math.abs(ExtraMath.angleDifference(boardRotation + 90 % 360, heading)) > 90
+        this.switch = Math.abs(ExtraMath.angleDifference(boardRotation % 360, heading)) > 90
         this.rotationText = TextManager.createUpdatingText(`Rotation`, `0`, "#FF00FF", 2);
         this.takeoffSlip = this.calculateTakeoffSlip(boardRotation, heading);
-        this.startRotation = Math.floor(boardRotation / 360) * 360 + heading; // Heading (accounting for number of full board rotations)
+        this.startRotation = Math.floor(boardRotation / 180) * 180 + heading; // Heading (accounting for number of full board rotations)
     }
 
     private calculateTakeoffSlip(boardRotation: number, heading: number) {
@@ -72,6 +72,7 @@ export class TricksManager {
             return;
 
         let frontside: boolean;
+
         if (rotationDiff > 0) {
             frontside = !this.switch;
         } else {
