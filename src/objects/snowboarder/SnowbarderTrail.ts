@@ -29,7 +29,7 @@ export class SnowboarderTrail extends GameObject {
         SnowboarderTrail.instance = this;
         this.container.label = "SnowboarderTrail";
 
-        LayerManager.getLayer("background")?.attach(this.container);
+        LayerManager.getLayer("trail")?.attach(this.container);
     }
 
     public addTrailPoint(position: Vector2D, direction: Vector2D) {

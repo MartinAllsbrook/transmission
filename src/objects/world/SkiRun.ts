@@ -35,53 +35,42 @@ export class SkiRun extends GameObject {
             leftPoints.push(point.add(left));
         }
         
+
+
+        // Create center fill
+        this.createStroke(0.5, "#f0f5f9", this.width); // Greenish fill for ski run
+
         // Create border lines
-        const rightGraphics = new Graphics();
-        rightGraphics.moveTo(rightPoints[0].x, rightPoints[0].y);
-        for (let i = 1; i < rightPoints.length; i++) {
-            rightGraphics.lineTo(rightPoints[i].x, rightPoints[i].y);
-        }
-        rightGraphics.stroke({width: 16, color: "#eeeeee", miterLimit: 1, join: "round"});
-
-        const leftGraphics = new Graphics();
-        leftGraphics.moveTo(leftPoints[0].x, leftPoints[0].y);
-        for (let i = 1; i < leftPoints.length; i++) {
-            leftGraphics.lineTo(leftPoints[i].x, leftPoints[i].y);
-        }
-        leftGraphics.stroke({width: 16, color: "#eeeeee", miterLimit: 1, join: "round"});
-
+        this.createStroke(0, "#efeff6", 32); // Right border
+        this.createStroke(1, "#efeff6", 32); // Left border
+        
         LayerManager.getLayer("background").attach(this.container);
-        this.container.addChild(rightGraphics);
-        this.container.addChild(leftGraphics);
+        return super.createOwnSprites();
+    }
 
-        // Create grooming stripes
-        const numStripes = 96; // Number of grooming stripes across the run
-        const groomColor = "#e6f0fa"; // Very light blue-grey for grooming effect
-        const groomWidth = 2; // Thinner lines for grooming
+    private createStroke(offset: number, color: string, width: number){
+        const strokePoints: Vector2D[] = [];
+        for (let i = 0; i < this.points.length; i++) {
+            const point = this.points[i];
+            const direction = this.directions[i];
+            const right = direction.perpendicular().normalize().multiply((this.width / 2));
+            const left = right.multiply(-1);
 
-        for (let stripe = 1; stripe < numStripes; stripe++) {
-            const t = stripe / numStripes; // Interpolation factor (0.167, 0.333, 0.5, 0.667, 0.833)
-            const stripePoints: Vector2D[] = [];
+            const rightPoint = point.add(right);
+            const leftPoint = point.add(left);
 
-            // Calculate points for this stripe by lerping between left and right
-            for (let i = 0; i < leftPoints.length; i++) {
-                const leftPoint = leftPoints[i];
-                const rightPoint = rightPoints[i];
-                const stripePoint = Vector2D.lerp(leftPoint, rightPoint, t);
-                stripePoints.push(stripePoint);
-            }
-
-            // Draw the stripe
-            const stripeGraphics = new Graphics();
-            stripeGraphics.moveTo(stripePoints[0].x, stripePoints[0].y);
-            for (let i = 1; i < stripePoints.length; i++) {
-                stripeGraphics.lineTo(stripePoints[i].x, stripePoints[i].y);
-            }
-            stripeGraphics.stroke({width: groomWidth, color: groomColor, miterLimit: 1});
-
-            this.container.addChild(stripeGraphics);
+            const strokePoint = Vector2D.lerp(leftPoint, rightPoint, offset);
+            strokePoints.push(strokePoint);
         }
 
-        return super.createOwnSprites();
+        const strokeGraphics = new Graphics();
+        strokeGraphics.moveTo(strokePoints[0].x, strokePoints[0].y);
+        for (let i = 1; i < strokePoints.length; i++) {
+            strokeGraphics.lineTo(strokePoints[i].x, strokePoints[i].y);
+        }
+
+        strokeGraphics.stroke({width: width, color: color, miterLimit: 1, join: "round"});
+        this.container.addChild(strokeGraphics);
+
     }
 }

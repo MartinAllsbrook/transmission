@@ -4,6 +4,7 @@ import { Snowboarder } from "../objects/snowboarder/Snowboarder.ts";
 export class LayerManager {
     public static layers: Record<string, IRenderLayer> = {
         background: new RenderLayer(),
+        trail: new RenderLayer(),
         shadows: new RenderLayer(),
         foreground: new RenderLayer(),
         
