@@ -42,6 +42,8 @@ export class TrickDisplay extends GameObject {
 
         this.currentTrickPopups = [];
 
-        return new LandTrickPopup(this, execution);
+        const landPopup = new LandTrickPopup(this, execution);
+        landPopup.Position = new Vector2D(0, 36);
+        return landPopup;
     } 
 }

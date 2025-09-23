@@ -15,6 +15,7 @@ export class TricksManager {
     private scoringDisplay: ScoringDisplay;
     
     private rotationTrick?: TrickPopup;
+    private airTimeTrick?: TrickPopup;
     
     // State
     private score: number = 0;
@@ -33,7 +34,7 @@ export class TricksManager {
     }
     
     public trickStart(boardRotation: number, heading: number) {
-        this.switch = Math.abs(ExtraMath.angleDifference(boardRotation % 360, heading)) > 90
+        this.switch = Math.abs(ExtraMath.angleDifference(boardRotation + 90 % 360, heading)) > 90
         this.rotationText = TextManager.createUpdatingText(`Rotation`, `0`, "#FF00FF", 2);
         this.takeoffSlip = this.calculateTakeoffSlip(boardRotation, heading);
         this.startRotation = Math.floor(boardRotation / 360) * 360 + heading; // Heading (accounting for number of full board rotations)
@@ -52,8 +53,14 @@ export class TricksManager {
 
         this.airTime += deltaTime;
         if (this.airTime > 0.5) {
-            this.display.addTrick(`Air Time: ${this.airTime.toFixed(1)}s`);
-        }
+            const airTimeTrickText = `Air Time: ${this.airTime.toFixed(1)}s`;
+
+            if (!this.airTimeTrick || this.airTimeTrick?.Destroyed){
+                this.airTimeTrick = this.display.addTrick(airTimeTrickText);
+            } else if (this.airTimeTrick.getText() !== airTimeTrickText) {
+                this.airTimeTrick.setText(airTimeTrickText);
+            }
+        } 
 
         this.updateSpinTrick(rotationDiff);
     }
@@ -78,7 +85,6 @@ export class TricksManager {
         } else if (this.rotationTrick.getText() !== trickText) {
             this.rotationTrick.setText(trickText);
         }
-        
     }
 
     public endSpin(boardRotation: number, heading: number) {
