@@ -1,10 +1,8 @@
-import Game from "islands/Game.tsx";
 import { TrickDisplay } from "../text/tricks/TrickDisplay.ts";
 import { Snowboarder } from "./Snowboarder.ts";
 import { UpdatingText } from "../text/UpdatingText.ts";
 import { TrickPopup } from "../text/tricks/TrickPopup.ts";
 import { ScoringDisplay } from "../text/score/ScoringDisplay.ts";
-import { OffsetContainer } from "../OffsetContainer.ts";
 import { TextManager } from "../../scoring/TextManager.ts";
 import { ExtraMath } from "../../math/ExtraMath.ts";
 
@@ -14,9 +12,10 @@ export class TricksManager {
     // UI / Displays
     private display: TrickDisplay;
     private rotationText?: UpdatingText;
-    private currentSpinTrickPopup?: TrickPopup;
     private scoringDisplay: ScoringDisplay;
-
+    
+    private rotationTrick?: TrickPopup;
+    
     // State
     private score: number = 0;
     private startRotation: number = 0;
@@ -24,6 +23,8 @@ export class TricksManager {
     
     private timeGoingFast: number = 0; 
     private takeoffSlip: number = 0;
+
+    private switch: boolean = false;
     
     constructor(snowboarder: Snowboarder) {
         this.snowboarder = snowboarder;
@@ -32,6 +33,7 @@ export class TricksManager {
     }
     
     public trickStart(boardRotation: number, heading: number) {
+        this.switch = Math.abs(ExtraMath.angleDifference(boardRotation % 360, heading)) > 90
         this.rotationText = TextManager.createUpdatingText(`Rotation`, `0`, "#FF00FF", 2);
         this.takeoffSlip = this.calculateTakeoffSlip(boardRotation, heading);
         this.startRotation = Math.floor(boardRotation / 360) * 360 + heading; // Heading (accounting for number of full board rotations)
@@ -43,7 +45,7 @@ export class TricksManager {
         return slip;
     }
 
-    public trickUpdate(deltaTime: number, boardRotation: number, heading: number) {
+    public trickUpdate(deltaTime: number, boardRotation: number, _heading: number) {
         const rotationDiff = this.startRotation - boardRotation;
 
         this.rotationText?.updateText(Math.abs(rotationDiff).toFixed(0));
@@ -53,14 +55,30 @@ export class TricksManager {
             this.display.addTrick(`Air Time: ${this.airTime.toFixed(1)}s`);
         }
 
+        this.updateSpinTrick(rotationDiff);
+    }
+
+    private updateSpinTrick(rotationDiff: number) {
         const closest90 = Math.round(rotationDiff / 180) * 180;
-        if (Math.abs(closest90) >= 180) {
-            if (!this.currentSpinTrickPopup || this.currentSpinTrickPopup?.Destroyed) {
-                this.currentSpinTrickPopup = this.display.addTrick(`${Math.abs(closest90)} Spin`);
-            } else if (this.currentSpinTrickPopup.getText() !== `${Math.abs(closest90)} Spin`) {
-                this.currentSpinTrickPopup.setText(`${Math.abs(closest90)} Spin`);
-            }
+        
+        if (Math.abs(closest90) < 180)
+            return;
+
+        let frontside: boolean;
+        if (rotationDiff > 0) {
+            frontside = !this.switch;
+        } else {
+            frontside = this.switch;
         }
+
+        const trickText = `${this.switch ? "Switch " : ""}${frontside ? "Frontside " : "Backside "}${Math.abs(closest90)}Spin`;
+
+        if (!this.rotationTrick || this.rotationTrick?.Destroyed) {
+            this.rotationTrick = this.display.addTrick(trickText);
+        } else if (this.rotationTrick.getText() !== trickText) {
+            this.rotationTrick.setText(trickText);
+        }
+        
     }
 
     public endSpin(boardRotation: number, heading: number) {

@@ -3,7 +3,7 @@ import { GameObject } from "../../GameObject.ts";
 import { RichText } from "../RichText.ts";
 
 export class TrickPopup extends RichText {
-    constructor(parent: GameObject, content: string, lifetime: number = 1.5) {
+    constructor(parent: GameObject, content: string) {
         super(parent, content, new TextStyle({
             fontSize: 16,
             fontWeight: "bold",

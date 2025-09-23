@@ -14,8 +14,20 @@ export class TrickDisplay extends GameObject {
         this.container.label = "TrickDisplay";
     }
 
-    public addTrick(trickName: string): TrickPopup {
-        const trickPopup = new TrickPopup(this, trickName);
+    // Value Tricks
+    // - Spin (Frontside, Backside)
+    // - Airtime
+
+    // Tricks
+    // - Boardslide
+    // - Lipslide
+    // - 50-50
+    // - Shifty
+    // - Grab (Indy, Melon, Tail, Nose)
+
+
+    public addTrick(trick: string): TrickPopup {
+        const trickPopup = new TrickPopup(this, trick);
 
         trickPopup.Position = new Vector2D(0, -this.currentTrickPopups.length * (24 + 8));
         this.currentTrickPopups.push(trickPopup);
