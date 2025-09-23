@@ -23,6 +23,8 @@ export abstract class GameObject {
 
     private autoCenter: boolean = true;
 
+    private destroyed: boolean = false;
+
     constructor(
         parent: Parent,
         position: Vector2D = new Vector2D(0, 0),
@@ -165,7 +167,15 @@ export abstract class GameObject {
 
         // Destroy graphics container
         this.container.destroy({ children: true });
+
+        // Mark as destroyed
+        this.destroyed = true;
     }
+
+    public get Destroyed(): boolean {
+        return this.destroyed;
+    }
+
     /**
      * This object's position relative to its parent.
      */

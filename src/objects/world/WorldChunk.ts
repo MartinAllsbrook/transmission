@@ -33,7 +33,7 @@ export class WorldChunk extends GameObject {
         }
 
         for (let i = 0; i < 4; i++) {
-            this.createRandomObstacle();
+            // this.createRandomObstacle();
         }
 
     }
@@ -62,13 +62,13 @@ export class WorldChunk extends GameObject {
         await Promise.resolve(); // Ensure async context
         
         // Use actual chunk size
-        const width = this.size?.x ?? 64;
-        const height = this.size?.y ?? 64;
+        // const width = this.size?.x ?? 64;
+        // const height = this.size?.y ?? 64;
 
-        const graphics = new Graphics()
-            .rect(0, 0, width, height)
-            .stroke({ width: 2, color: 0x000000, alpha: 0.05 });
+        // const graphics = new Graphics()
+        //     .rect(0, 0, width, height)
+        //     .stroke({ width: 2, color: 0x000000, alpha: 0.05 });
 
-        this.container.addChild(graphics);
+        // this.container.addChild(graphics);
     }
 }
