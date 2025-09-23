@@ -1,5 +1,5 @@
 import { Component } from "preact";
-import { Application } from "pixi.js";
+import { Application, Graphics } from "pixi.js";
 
 import { Snowboarder } from "src/objects/snowboarder/Snowboarder.ts";
 import { World } from "src/objects/world/World.ts";
@@ -10,6 +10,8 @@ import { StatDisplay } from "../components/StatDisplay.tsx";
 import { LayerManager } from "src/rendering/LayerManager.ts";
 import { TextManager } from "src/scoring/TextManager.ts";
 import { Signal } from "@preact/signals";
+import { CatmullRomSpline } from "src/math/splines/CatmullRomSpline.ts";
+import { Vector2D } from "src/math/Vector2D.ts";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -85,7 +87,35 @@ export default class Game extends Component {
         Game.rootObject = new OffsetContainer(Game.app);
         TextManager.initialize(Game.rootObject);
         Game.player = new Snowboarder(Game.rootObject);
-        new World(Game.rootObject, Game.player);
+        const world = new World(Game.rootObject, Game.player);
+
+        const catmullRomSpline = new CatmullRomSpline([
+            new Vector2D(0, 0),
+            new Vector2D(100, -50),
+            new Vector2D(200, 0),
+            new Vector2D(300, -100),
+            new Vector2D(400, 0),
+            new Vector2D(500, -50),
+            new Vector2D(600, 0),
+        ]);
+
+        let splineGraphic = catmullRomSpline.drawDebug(world);
+
+        this.splineTestLoop(catmullRomSpline, splineGraphic, world);
+    }
+
+    private splineTestLoop(spline: CatmullRomSpline, graphic: Graphics, world: World) {
+        setTimeout(() => {
+            spline.shiftPoint();
+            spline.addControlPoint(new Vector2D(
+                spline.getControlPoints()[spline.getControlPoints().length - 1].x + (Math.random() * 200 + 50),
+                (Math.random() - 0.5) * 200,
+            ));
+
+            graphic.destroy();
+            graphic = spline.drawDebug(world);
+            this.splineTestLoop(spline, graphic, world);
+        }, 4000);
     }
 
     /**

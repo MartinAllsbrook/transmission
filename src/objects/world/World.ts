@@ -10,6 +10,7 @@ import { SkiRun } from "./SkiRun.ts";
 
 interface SkiRunSpline {
     spline: BezierSpline;
+    object: SkiRun;
     nextRun?: SkiRunSpline;
 }
 
@@ -19,15 +20,13 @@ interface SkiRunNode {
 }
 
 export class World extends GameObject {
-    private playerVelocity: Vector2D = new Vector2D(0, -1);
+    player: Snowboarder;
 
     private chunkActiveArea = new Vector2D(5, 3);
     private runsActiveArea = new Vector2D(10, 6);
     private chunkSize = new Vector2D(256, 256);
 
     private chunkPosition: Vector2D = new Vector2D(0, 0);
-
-    player: Snowboarder;
 
     private runNodes: SkiRunNode[] = [];
     private runSplines: SkiRunSpline[] = [];
@@ -121,9 +120,7 @@ export class World extends GameObject {
                     this.runNodes.push(node.next);
 
                     const newSpline = BezierSpline.createCubicFromPoints(node.point, newPoint);
-                    this.runSplines.push({ spline: newSpline });
-                    
-                    new SkiRun(this, newSpline);
+                    this.runSplines.push({ spline: newSpline, object: new SkiRun(this, newSpline) }); 
                 }
             }
         }

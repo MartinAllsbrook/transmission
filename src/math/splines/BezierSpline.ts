@@ -304,35 +304,35 @@ export class BezierSpline {
     }
 
     public drawDebug(world: World) {
-            // Draw the spline using PixiJS
-            const graphics = new Graphics();
-            world.addVisual(graphics);
-    
-            // Get points along the spline
-            const splinePoints = this.getPoints(50);
-    
-            // Draw the curve
-            graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
-            
-            for (let i = 1; i < splinePoints.length; i++) {
-                graphics.lineTo(splinePoints[i].x, splinePoints[i].y);
-            }
-            graphics.stroke({width: 4, color: 0xff0000}); // Red line, 2px width
-    
-            // // Optional: Draw control points
-            // graphics.lineStyle(1, 0x00ff00); // Green line for control points
-            // const controlPoints = newSpline.getControlPoints();
-            // for (let i = 0; i < controlPoints.length - 1; i++) {
-            //     graphics.moveTo(controlPoints[i].x, controlPoints[i].y);
-            //     graphics.lineTo(controlPoints[i + 1].x, controlPoints[i + 1].y);
-            // }
-    
-            // // Draw control point markers
-            // for (const point of controlPoints) {
-            //     graphics.beginFill(0x0000ff); // Blue circles for control points
-            //     graphics.drawCircle(point.x, point.y, 3);
-            //     graphics.endFill();
-            // }
+        // Draw the spline using PixiJS
+        const graphics = new Graphics();
+        world.addVisual(graphics);
+
+        // Get points along the spline
+        const splinePoints = this.getPoints(50);
+
+        // Draw the curve
+        graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
+        
+        for (let i = 1; i < splinePoints.length; i++) {
+            graphics.lineTo(splinePoints[i].x, splinePoints[i].y);
+        }
+        graphics.stroke({width: 4, color: 0xff0000}); // Red line, 2px width
+
+        // // Optional: Draw control points
+        // graphics.lineStyle(1, 0x00ff00); // Green line for control points
+        // const controlPoints = newSpline.getControlPoints();
+        // for (let i = 0; i < controlPoints.length - 1; i++) {
+        //     graphics.moveTo(controlPoints[i].x, controlPoints[i].y);
+        //     graphics.lineTo(controlPoints[i + 1].x, controlPoints[i + 1].y);
+        // }
+
+        // // Draw control point markers
+        // for (const point of controlPoints) {
+        //     graphics.beginFill(0x0000ff); // Blue circles for control points
+        //     graphics.drawCircle(point.x, point.y, 3);
+        //     graphics.endFill();
+        // }
     }
 
     public getDirections(numPoints: number = 100): Vector2D[] {
