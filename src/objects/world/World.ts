@@ -65,6 +65,10 @@ export class World extends GameObject {
         super.update(deltaTime);
         this.updateChunks();
         this.updateTrails();
+        this.treesContainer.updateMaskPosition(
+            this.player.worldPosition.x,
+            this.player.worldPosition.y,
+        );
     }
 
     private updateTrails() {

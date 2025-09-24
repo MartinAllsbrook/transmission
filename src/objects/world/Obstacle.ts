@@ -39,7 +39,7 @@ export class Obstacle extends GameObject {
             "obstacle",
         );
 
-        LayerManager.getLayer("foreground")?.attach(this.container);
+        // LayerManager.getLayer("foreground")?.attach(this.container);
     }
 
     public override update(_deltaTime: number): void {

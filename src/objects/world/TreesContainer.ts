@@ -5,29 +5,37 @@ import { Graphics } from "pixi.js";
 export class TreesContainer extends GameObject {
     private mask: Graphics | null = null;
 
-    private width: number = 64;
-    private height: number = 64; 
+    private width: number = 32;
+    private height: number = 32; 
 
     constructor(parent: World) {
         super(parent);
         this.container.label = "TreesContainer";
+    }
+    
+    protected override async createOwnSprites(): Promise<void> {
+        await super.createOwnSprites();
         this.createCircleMask();
     }
 
-    protected override async createOwnSprites(): Promise<void> {
-        await super.createOwnSprites();
-    }
-
     private createCircleMask(): void {
-        // Create a circular mask
+        // Create a mask that covers everything EXCEPT the circular hole
         this.mask = new Graphics();
         
-        // Draw a circle in the middle of the screen
+        // Create a large rectangle that covers the entire screen area
+        const screenWidth = globalThis.innerWidth;
+        const screenHeight = globalThis.innerHeight;
+        
+        // Draw the outer rectangle (visible area)
+        this.mask.rect(-screenWidth, -screenHeight, screenWidth * 2, screenHeight * 2);
+        this.mask.fill({ color: 0xffffff, alpha: 1 });
+        
+        // Cut out a circular hole by drawing a circle and using it to cut from the rectangle
         this.mask.ellipse(128, 128, this.width, this.height);
-        this.mask.fill(0xff0000); // Color doesn't matter for masks
+        this.mask.cut();
         
         this.mask.label = "TreesContainerMask";
-
+        
         // Apply the mask to this container
         this.container.mask = this.mask;
         
@@ -36,14 +44,31 @@ export class TreesContainer extends GameObject {
         if (this.parent) {
             this.parent.container.addChild(this.mask);
         }
+
+        this.mask.alpha = 0.5;
+
     }
 
     public updateMaskPosition(centerX: number, centerY: number): void {
         if (this.mask) {
+            console.log(`Updating mask position to (${centerX}, ${centerY})`);
+
+            // Clear the existing mask and redraw it at the new position
             this.mask.clear();
-            this.mask.ellipse(globalThis.innerWidth / 2, globalThis.innerWidth / 2, this.width, this.height);
-            this.mask.fill(0xffffff);
-        }
+            
+            // Create a large rectangle that covers the entire screen area
+            const screenWidth = globalThis.innerWidth;
+            const screenHeight = globalThis.innerHeight;
+            
+            // Draw the outer rectangle (visible area)
+            this.mask.rect(-screenWidth + centerX, -screenHeight + centerY, screenWidth * 2, screenHeight * 2);
+            this.mask.fill({ color: 0xffffff, alpha: 0.5 });
+            
+            // Cut out a circular hole at the specified position
+            this.mask.ellipse(centerX, centerY, this.width, this.height);
+            this.mask.cut();
+            this.mask.alpha = 0.5;
+        }   
     }
 
     public override destroy(): void {
