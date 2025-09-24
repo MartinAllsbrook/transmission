@@ -33,7 +33,7 @@ export class WorldChunk extends GameObject {
         }
 
         for (let i = 0; i < 4; i++) {
-            // this.createRandomObstacle();
+            this.createRandomObstacle();
         }
 
     }
@@ -44,7 +44,7 @@ export class WorldChunk extends GameObject {
 
         const worldPosition = this.WorldPosition.add(new Vector2D(x, y));
 
-        if (this.world.getDistanceToNearestRun(worldPosition) < 192) {
+        if (this.world.distanceToTrail(worldPosition) < 192) {
             return;
         }
 

@@ -87,35 +87,7 @@ export default class Game extends Component {
         Game.rootObject = new OffsetContainer(Game.app);
         TextManager.initialize(Game.rootObject);
         Game.player = new Snowboarder(Game.rootObject);
-        const world = new World(Game.rootObject, Game.player);
-
-        const catmullRomSpline = new CatmullRomSpline([
-            new Vector2D(0, 0),
-            new Vector2D(100, -50),
-            new Vector2D(200, 0),
-            new Vector2D(300, -100),
-            new Vector2D(400, 0),
-            new Vector2D(500, -50),
-            new Vector2D(600, 0),
-        ]);
-
-        const splineGraphic = catmullRomSpline.drawDebug(world);
-
-        this.splineTestLoop(catmullRomSpline, splineGraphic, world);
-    }
-
-    private splineTestLoop(spline: CatmullRomSpline, graphic: Graphics, world: World) {
-        setTimeout(() => {
-            spline.shiftPoint();
-            spline.addControlPoint(new Vector2D(
-                spline.getControlPoints()[spline.getControlPoints().length - 1].x + (Math.random() * 200 + 50),
-                (Math.random() - 0.5) * 200,
-            ));
-
-            graphic.destroy();
-            graphic = spline.drawDebug(world);
-            this.splineTestLoop(spline, graphic, world);
-        }, 4000);
+        Game.world = new World(Game.rootObject, Game.player);
     }
 
     /**
@@ -155,10 +127,12 @@ export default class Game extends Component {
         return Game.gameOver;
     }
 
-    public static resetGame() {
+    public static resetGame = () => {
         Game.deathMessage = undefined;
         Game.gameOver.value = false;
         this.app?.ticker.start();
+        console.log(this.world)
+        Game.world?.reset();
 
         this.player?.reset();
     }

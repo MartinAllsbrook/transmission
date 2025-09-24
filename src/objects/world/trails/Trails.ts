@@ -8,7 +8,7 @@ import { Graphics } from "pixi.js";
 export class Trails extends GameObject {
     private spline: CatmullRomSpline;
     private world: World;
-    private debugGraphics: Graphics;
+    // private debugGraphics: Graphics;
 
     constructor(parent: World, startingPoint: Vector2D = new Vector2D(128, 128), width: number = 10, resolution: number = 10) {
         super(parent);
@@ -33,7 +33,7 @@ export class Trails extends GameObject {
 
         // Create the spline
         this.spline = new CatmullRomSpline(initialPoints);
-        this.debugGraphics = this.spline.drawDebug(this.world);
+        // this.debugGraphics = this.spline.drawDebug(this.world);
     }
 
     private nextPoint(lastPoint: Vector2D): Vector2D {
@@ -58,9 +58,14 @@ export class Trails extends GameObject {
         return lastPoint.add(offset);
     }
 
+    public getDistanceToTrail(position: Vector2D): number {
+        const closest = this.spline.getClosestPoint(position, 20);
+        return closest ? position.distanceTo(closest.point) : Infinity;
+    }
+
     private updateTrail() {
-        this.debugGraphics.destroy(); // TODO: delete or make this use clear()
-        this.debugGraphics = this.spline.drawDebug(this.world);
+        // this.debugGraphics.destroy(); // TODO: delete or make this use clear()
+        // this.debugGraphics = this.spline.drawDebug(this.world);
     }
 
     /**
@@ -118,5 +123,10 @@ export class Trails extends GameObject {
         if (!point) throw new Error("Not enough control points in spline");
 
         return point;
+    }
+
+    public override destroy(): void {
+        // this.debugGraphics.destroy();
+        super.destroy();
     }
 }
