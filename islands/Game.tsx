@@ -99,7 +99,7 @@ export default class Game extends Component {
             new Vector2D(600, 0),
         ]);
 
-        let splineGraphic = catmullRomSpline.drawDebug(world);
+        const splineGraphic = catmullRomSpline.drawDebug(world);
 
         this.splineTestLoop(catmullRomSpline, splineGraphic, world);
     }

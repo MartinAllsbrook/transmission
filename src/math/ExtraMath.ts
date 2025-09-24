@@ -67,5 +67,30 @@ export class ExtraMath {
             return minDiff;
         }
     }
+
+    /**
+     * Returns a normally distributed random number between 0 and 1, centered around 0.5.
+     *
+     * @remarks
+     * This method uses the Box-Muller transform to generate normally distributed values
+     * and then scales and clamps them to the [0, 1] range. The distribution has a mean of 0.5
+     * and a standard deviation of approximately 0.15, ensuring most values fall within the valid range
+     * while maintaining the normal distribution characteristics.
+     *
+     * @returns A normally distributed number between 0 and 1, centered around 0.5.
+     */
+    public static normalRandom(): number {
+        // Box-Muller transform to generate normally distributed values
+        const u = Math.random();
+        const v = Math.random();
+        const z = Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+        
+        // Scale and translate: mean = 0.5, standard deviation ≈ 0.15
+        // This ensures most values (≈99.7%) fall within [0, 1]
+        const scaled = 0.5 + z * 0.15;
+        
+        // Clamp to [0, 1] range
+        return Math.max(0, Math.min(1, scaled));
+    }
     
 }

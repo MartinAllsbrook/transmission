@@ -3,24 +3,19 @@ import { Vector2D } from "../Vector2D.ts";
 import { World } from "../../objects/world/World.ts";
 
 /**
- * A Catmull-Rom spline implementation that requires explicit definition of all control points.
- * The spline passes through the 2nd to 2nd-to-last control points only.
- * Requires a minimum of 4 control points for predictable behavior.
- * The first and last control points define the tangents but the curve doesn't pass through them.
+ * A Catmull-Rom spline implementation that provides smooth interpolation through any number of control points.
+ * The spline passes through all control points and provides C1 continuity (continuous first derivatives).
  */
-export class CatmullRomSpline {
+export class CatmullRomSplineOld {
     private controlPoints: Vector2D[];
     private tension: number;
 
     /**
      * Create a new CatmullRomSpline instance
-     * @param controlPoints An array of Vector2D points (minimum 4 required)
+     * @param controlPoints An optional array of Vector2D points to use as initial control points
      * @param tension The tension parameter (0.0 = tight curves, 0.5 = standard Catmull-Rom, 1.0 = loose curves)
      */
     constructor(controlPoints: Vector2D[] = [], tension: number = 0.5) {
-        if (controlPoints.length > 0 && controlPoints.length < 4) {
-            throw new Error("CatmullRomSpline requires at least 4 control points for explicit behavior");
-        }
         this.controlPoints = [...controlPoints];
         this.tension = Math.max(0, Math.min(1, tension)); // Clamp tension between 0 and 1
     }
@@ -35,10 +30,10 @@ export class CatmullRomSpline {
 
     /**
      * Remove the last control point from the spline
-     * @returns True if a point was removed, false if there were insufficient points
+     * @returns True if a point was removed, false if there were no points
      */
     public popPoint(): boolean {
-        if (this.controlPoints.length > 4) {
+        if (this.controlPoints.length > 0) {
             this.controlPoints.pop();
             return true;
         }
@@ -47,10 +42,10 @@ export class CatmullRomSpline {
 
     /**
      * Remove the first control point from the spline
-     * @returns True if a point was removed, false if there were insufficient points
+     * @returns True if a point was removed, false if there were no points
      */
     public shiftPoint(): boolean {
-        if (this.controlPoints.length > 4) {
+        if (this.controlPoints.length > 0) {
             this.controlPoints.shift();
             return true;
         }
@@ -71,10 +66,10 @@ export class CatmullRomSpline {
     /**
      * Remove a control point at the specified index
      * @param index The index of the control point to remove
-     * @returns True if the point was successfully removed, false if the index is invalid or would leave insufficient points
+     * @returns True if the point was successfully removed, false if the index is invalid
      */
     public removeControlPoint(index: number): boolean {
-        if (index >= 0 && index < this.controlPoints.length && this.controlPoints.length > 4) {
+        if (index >= 0 && index < this.controlPoints.length) {
             this.controlPoints.splice(index, 1);
             return true;
         }
@@ -158,62 +153,25 @@ export class CatmullRomSpline {
     }
 
     /**
-     * Check if the spline is valid (has at least 4 control points)
-     * @returns True if the spline can be used for interpolation
-     */
-    public isValid(): boolean {
-        return this.controlPoints.length >= 4;
-    }
-
-    /**
-     * Get the number of interpolated segments in the spline
-     * @returns The number of segments that can be interpolated (controlPoints.length - 3)
-     */
-    public getSegmentCount(): number {
-        return Math.max(0, this.controlPoints.length - 3);
-    }
-
-    /**
-     * Get the control points that the spline actually passes through
-     * @returns Array of control points from index 1 to n-2 (the interpolated points)
-     */
-    public getInterpolatedControlPoints(): Vector2D[] {
-        if (this.controlPoints.length < 4) {
-            return [];
-        }
-        return this.controlPoints.slice(1, -1).map(point => new Vector2D(point.x, point.y));
-    }
-
-    /**
-     * Get the tangent control points (first and last control points)
-     * @returns Object with start and end tangent control points
-     */
-    public getTangentControlPoints(): { start: Vector2D | null; end: Vector2D | null } {
-        if (this.controlPoints.length < 4) {
-            return { start: null, end: null };
-        }
-        return {
-            start: new Vector2D(this.controlPoints[0].x, this.controlPoints[0].y),
-            end: new Vector2D(this.controlPoints[this.controlPoints.length - 1].x, this.controlPoints[this.controlPoints.length - 1].y)
-        };
-    }
-
-    /**
      * Calculate a point on the Catmull-Rom spline
-     * @param t The parameter value (0.0 to 1.0) representing position along the interpolated portion of the spline
-     *          t=0 corresponds to the 2nd control point, t=1 corresponds to the 2nd-to-last control point
+     * @param t The parameter value (0.0 to 1.0) representing position along the entire spline
      * @returns The interpolated point on the spline, or null if there are insufficient control points
      */
     public getPoint(t: number): Vector2D | null {
-        if (this.controlPoints.length < 4) {
+        if (this.controlPoints.length < 2) {
             return null;
         }
 
         // Clamp t to valid range
         t = Math.max(0, Math.min(1, t));
 
-        // Calculate which segment we're in (segments between points 1 to n-2)
-        const segmentCount = this.controlPoints.length - 3; // Number of interpolated segments
+        // For splines with only 2 points, use linear interpolation
+        if (this.controlPoints.length === 2) {
+            return Vector2D.lerp(this.controlPoints[0], this.controlPoints[1], t);
+        }
+
+        // Calculate which segment we're in
+        const segmentCount = this.controlPoints.length - 1;
         const segmentT = t * segmentCount;
         const segmentIndex = Math.floor(segmentT);
         const localT = segmentT - segmentIndex;
@@ -221,8 +179,8 @@ export class CatmullRomSpline {
         // Handle edge case where t = 1.0
         if (segmentIndex >= segmentCount) {
             return new Vector2D(
-                this.controlPoints[this.controlPoints.length - 2].x,
-                this.controlPoints[this.controlPoints.length - 2].y
+                this.controlPoints[this.controlPoints.length - 1].x,
+                this.controlPoints[this.controlPoints.length - 1].y
             );
         }
 
@@ -231,27 +189,44 @@ export class CatmullRomSpline {
 
     /**
      * Calculate a point on a specific segment of the spline
-     * @param segmentIndex The index of the segment (0 to controlPoints.length - 4)
+     * @param segmentIndex The index of the segment (0 to controlPoints.length - 2)
      * @param t The parameter value (0.0 to 1.0) along the segment
      * @returns The interpolated point on the segment
      */
     public getPointOnSegment(segmentIndex: number, t: number): Vector2D | null {
-        if (this.controlPoints.length < 4 || segmentIndex < 0 || segmentIndex >= this.controlPoints.length - 3) {
+        if (segmentIndex < 0 || segmentIndex >= this.controlPoints.length - 1) {
             return null;
         }
 
         // Get the four control points needed for Catmull-Rom interpolation
-        // segmentIndex 0 uses control points 0,1,2,3
-        // segmentIndex 1 uses control points 1,2,3,4, etc.
-        const p0 = this.controlPoints[segmentIndex];
-        const p1 = this.controlPoints[segmentIndex + 1];
-        const p2 = this.controlPoints[segmentIndex + 2];
-        const p3 = this.controlPoints[segmentIndex + 3];
+        const p0 = this.getControlPointForSegment(segmentIndex - 1);
+        const p1 = this.controlPoints[segmentIndex];
+        const p2 = this.controlPoints[segmentIndex + 1];
+        const p3 = this.getControlPointForSegment(segmentIndex + 2);
 
         return this.catmullRomInterpolate(p0, p1, p2, p3, t);
     }
 
-
+    /**
+     * Get a control point for segment calculation, handling edge cases
+     * @param index The index of the control point
+     * @returns The control point, using appropriate edge handling
+     */
+    private getControlPointForSegment(index: number): Vector2D {
+        if (index < 0) {
+            // For the point before the first, extrapolate backwards
+            const p0 = this.controlPoints[0];
+            const p1 = this.controlPoints[1];
+            return p0.subtract(p1.subtract(p0));
+        } else if (index >= this.controlPoints.length) {
+            // For the point after the last, extrapolate forwards
+            const p0 = this.controlPoints[this.controlPoints.length - 2];
+            const p1 = this.controlPoints[this.controlPoints.length - 1];
+            return p1.add(p1.subtract(p0));
+        } else {
+            return this.controlPoints[index];
+        }
+    }
 
     /**
      * Perform Catmull-Rom interpolation between four points
@@ -280,16 +255,21 @@ export class CatmullRomSpline {
 
     /**
      * Calculate the tangent vector at a specific point on the spline
-     * @param t The parameter value (0.0 to 1.0) representing position along the interpolated portion of the spline
+     * @param t The parameter value (0.0 to 1.0) representing position along the entire spline
      * @returns The tangent vector at the specified point, or null if there are insufficient control points
      */
     public getTangent(t: number): Vector2D | null {
-        if (this.controlPoints.length < 4) {
+        if (this.controlPoints.length < 2) {
             return null;
         }
 
+        // For splines with only 2 points, tangent is the direction vector
+        if (this.controlPoints.length === 2) {
+            return this.controlPoints[1].subtract(this.controlPoints[0]).normalize();
+        }
+
         // Calculate which segment we're in
-        const segmentCount = this.controlPoints.length - 3;
+        const segmentCount = this.controlPoints.length - 1;
         const segmentT = t * segmentCount;
         const segmentIndex = Math.floor(segmentT);
         const localT = segmentT - segmentIndex;
@@ -309,15 +289,15 @@ export class CatmullRomSpline {
      * @returns The tangent vector at the specified point
      */
     public getTangentOnSegment(segmentIndex: number, t: number): Vector2D | null {
-        if (this.controlPoints.length < 4 || segmentIndex < 0 || segmentIndex >= this.controlPoints.length - 3) {
+        if (segmentIndex < 0 || segmentIndex >= this.controlPoints.length - 1) {
             return null;
         }
 
         // Get the four control points needed for tangent calculation
-        const p0 = this.controlPoints[segmentIndex];
-        const p1 = this.controlPoints[segmentIndex + 1];
-        const p2 = this.controlPoints[segmentIndex + 2];
-        const p3 = this.controlPoints[segmentIndex + 3];
+        const p0 = this.getControlPointForSegment(segmentIndex - 1);
+        const p1 = this.controlPoints[segmentIndex];
+        const p2 = this.controlPoints[segmentIndex + 1];
+        const p3 = this.getControlPointForSegment(segmentIndex + 2);
 
         return this.catmullRomTangent(p0, p1, p2, p3, t);
     }
@@ -349,10 +329,10 @@ export class CatmullRomSpline {
     /**
      * Sample points along the spline at regular intervals
      * @param numSamples The number of points to sample (minimum 2)
-     * @returns An array of sampled points along the interpolated portion of the spline
+     * @returns An array of sampled points along the spline
      */
     public samplePoints(numSamples: number): Vector2D[] {
-        if (this.controlPoints.length < 4 || numSamples < 2) {
+        if (this.controlPoints.length < 2 || numSamples < 2) {
             return [];
         }
 
@@ -369,12 +349,12 @@ export class CatmullRomSpline {
     }
 
     /**
-     * Calculate the approximate length of the interpolated portion of the spline
+     * Calculate the approximate length of the spline
      * @param resolution The number of segments to use for approximation (higher = more accurate)
      * @returns The approximate length of the spline
      */
     public getLength(resolution: number = 100): number {
-        if (this.controlPoints.length < 4) {
+        if (this.controlPoints.length < 2) {
             return 0;
         }
 
@@ -399,13 +379,13 @@ export class CatmullRomSpline {
     }
 
     /**
-     * Find the closest point on the interpolated portion of the spline to a given point
+     * Find the closest point on the spline to a given point
      * @param targetPoint The point to find the closest spline point to
      * @param resolution The resolution for the search (higher = more accurate but slower)
      * @returns An object containing the closest point and its parameter value t
      */
     public getClosestPoint(targetPoint: Vector2D, resolution: number = 100): { point: Vector2D; t: number } | null {
-        if (this.controlPoints.length < 4) {
+        if (this.controlPoints.length < 2) {
             return null;
         }
 
@@ -435,37 +415,30 @@ export class CatmullRomSpline {
         const graphics = new Graphics();
         world.addVisual(graphics);
 
-        if (this.controlPoints.length < 4) {
-            return graphics; // Nothing to draw
-        }
-
-        // Get points along the interpolated spline
+        // Get points along the spline
         const splinePoints = this.samplePoints(50);
 
-        if (splinePoints.length > 0) {
-            // Draw the curve
-            graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
-            
-            for (let i = 1; i < splinePoints.length; i++) {
-                graphics.lineTo(splinePoints[i].x, splinePoints[i].y);
-            }
-            graphics.stroke({width: 4, color: 0xff0000}); // Red line, 4px width
+        // Draw the curve
+        graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
+        
+        for (let i = 1; i < splinePoints.length; i++) {
+            graphics.lineTo(splinePoints[i].x, splinePoints[i].y);
         }
+        graphics.stroke({width: 4, color: 0xff0000}); // Red line, 2px width
 
-        // Draw all control points (green for tangent points, blue for interpolated points)
-        for (let i = 0; i < this.controlPoints.length; i++) {
-            const controlPoint = this.controlPoints[i];
-            graphics.circle(controlPoint.x, controlPoint.y, 8);
-            
-            // First and last points are tangent control points (green)
-            // Middle points are interpolated through (blue)
-            if (i === 0 || i === this.controlPoints.length - 1) {
-                graphics.fill({color: 0x00ff00}); // Green for tangent control points
-            } else {
-                graphics.fill({color: 0x0000ff}); // Blue for interpolated points
-            }
+        for (const controlPoint of this.controlPoints){
+            graphics.circle(controlPoint.x, controlPoint.y, 10)
+            graphics.fill({color: 0x00ff00});
         }
 
         return graphics;
+
+
+        // // Draw control point markers
+        // for (const point of controlPoints) {
+        //     graphics.beginFill(0x0000ff); // Blue circles for control points
+        //     graphics.drawCircle(point.x, point.y, 3);
+        //     graphics.endFill();
+        // }
     }
 }
