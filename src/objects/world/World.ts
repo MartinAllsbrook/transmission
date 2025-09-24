@@ -5,6 +5,7 @@ import { Vector2D } from "src/math/Vector2D.ts";
 import { SnowboarderTrail } from "../snowboarder/SnowbarderTrail.ts";
 import { Container } from "pixi.js";
 import { Trails } from "./trails/Trails.ts";
+import { TreesContainer } from "./TreesContainer.ts";
 
 export class World extends GameObject {
     player: Snowboarder;
@@ -17,10 +18,14 @@ export class World extends GameObject {
 
     private chunkPosition: Vector2D = new Vector2D(0, 0);
 
+    private treesContainer: TreesContainer;
+
     constructor(parent: Parent, player: Snowboarder) {
         super(parent, new Vector2D(0, 0));
 
         this.AutoCenter = false;
+
+        this.treesContainer = new TreesContainer(this);
 
         this.player = player;
         new SnowboarderTrail(this);
@@ -97,6 +102,7 @@ export class World extends GameObject {
                         chunkCoord.y * -this.chunkSize.y,
                     );
                     const _chunk = new WorldChunk(
+                        this.treesContainer,
                         this,
                         chunkWorldPosition,
                         chunkCoord,

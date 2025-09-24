@@ -8,17 +8,18 @@ import { World } from "./World.ts";
 export class WorldChunk extends GameObject {
     chunkPosition: Vector2D;
 
-    private world: World
+    private world: World;
 
     private size: Vector2D;
 
     constructor(
+        parent: GameObject,
         world: World,
         position: Vector2D,
         chunkPosition: Vector2D,
         chunkSize: Vector2D = new Vector2D(256, 256),
     ) {
-        super(world, position);
+        super(parent, position);
 
         this.world = world;
         this.chunkPosition = chunkPosition;
