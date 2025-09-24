@@ -1,6 +1,7 @@
 import { Graphics } from "pixi.js";
 import { Vector2D } from "../Vector2D.ts";
 import { World } from "../../objects/world/World.ts";
+import { GameObject } from "../../objects/GameObject.ts";
 
 /**
  * A Catmull-Rom spline implementation that requires explicit definition of all control points.

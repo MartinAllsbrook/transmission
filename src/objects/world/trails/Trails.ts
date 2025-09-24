@@ -2,20 +2,24 @@ import { CatmullRomSpline } from "../../../math/splines/CatmullRomSpline.ts";
 import { Vector2D } from "../../../math/Vector2D.ts";
 import { GameObject } from "../../GameObject.ts";
 import { ExtraMath } from "../../../math/ExtraMath.ts";
+import { World } from "../World.ts";
+import { Graphics } from "pixi.js";
 
 export class Trails extends GameObject {
     private spline: CatmullRomSpline;
-    // private width: number;
-    // private resolution: number;
+    private world: World;
+    private debugGraphics: Graphics;
 
-    constructor(parent: GameObject, startingPoint: Vector2D = new Vector2D(128, 128), width: number = 10, resolution: number = 10) {
+    constructor(parent: World, startingPoint: Vector2D = new Vector2D(128, 128), width: number = 10, resolution: number = 10) {
         super(parent);
 
         const initialPoints: Vector2D[] = [];
 
+        this.world = parent;
+
         // To start we need to initialize 2 points before the starting point
-        initialPoints.push(new Vector2D(startingPoint.x, startingPoint.y - 256));
-        initialPoints.push(new Vector2D(startingPoint.x, startingPoint.y - 256));
+        initialPoints.push(new Vector2D(startingPoint.x, startingPoint.y - 512));
+        initialPoints.push(new Vector2D(startingPoint.x, startingPoint.y - 512));
         initialPoints.push(startingPoint);
 
         // Then we should initialize a few points after the starting point
@@ -29,12 +33,13 @@ export class Trails extends GameObject {
 
         // Create the spline
         this.spline = new CatmullRomSpline(initialPoints);
+        this.debugGraphics = this.spline.drawDebug(this.world);
     }
 
     private nextPoint(lastPoint: Vector2D): Vector2D {
         // Average distance will be 0.5 * variation + minDistance
-        const variation = 256;
-        const minDistance = 128;
+        const variation = 512;
+        const minDistance = 256;
 
         const distance = ExtraMath.normalRandom() * variation + minDistance;
         
@@ -54,7 +59,8 @@ export class Trails extends GameObject {
     }
 
     private updateTrail() {
-
+        this.debugGraphics.destroy(); // TODO: delete or make this use clear()
+        this.debugGraphics = this.spline.drawDebug(this.world);
     }
 
     /**
@@ -77,11 +83,12 @@ export class Trails extends GameObject {
     }
 
     /**
-     * Returns the last (higest) point in the trail. 
-     * This is the third point in the spline because the first two are used for tangents.
+     * Returns the seccond to last (higest) point in the trail. 
+     * This is the third point in the spline because the first is used for tangents, and the seccond is to far lol.
      * @returns The last point in the trail
+     * ### TODO: this is really seccond to last point, rename
      */
-    public getLastPoint(): Vector2D {
+    public getLastPoint(): Vector2D { 
         const point = this.spline.getControlPoint(2);
 
         if (!point) throw new Error("Not enough control points in spline");
@@ -91,11 +98,11 @@ export class Trails extends GameObject {
 
     /**
      * Returns the first (lowest) point in the trail.
-     * This is the third-to-last point in the spline because the last two are used for tangents.
+     * This is the seccond-to-last point in the spline because the last one is used for tangents.
      * @returns The first point in the trail
      */
     public getFirstPoint(): Vector2D {
-        const point = this.spline.getControlPoint(this.spline.controlPointCount() - 3);
+        const point = this.spline.getControlPoint(this.spline.controlPointCount() - 2);
 
         if (!point) throw new Error("Not enough control points in spline");
 

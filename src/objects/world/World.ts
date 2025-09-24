@@ -7,6 +7,7 @@ import { BezierSpline } from "../../math/splines/BezierSpline.ts";
 import { Container } from "pixi.js";
 import { SplinePoint } from "../../math/splines/SplinePoint.ts";
 import { SkiRun } from "./SkiRun.ts";
+import { Trails } from "./trails/Trails.ts";
 
 interface SkiRunSpline {
     spline: BezierSpline;
@@ -21,6 +22,8 @@ interface SkiRunNode {
 
 export class World extends GameObject {
     player: Snowboarder;
+
+    private trails: Trails;
 
     private chunkActiveArea = new Vector2D(5, 3);
     private runsActiveArea = new Vector2D(10, 6);
@@ -39,6 +42,8 @@ export class World extends GameObject {
         this.player = player;
         new SnowboarderTrail(this);
         this.container.label = "World";
+
+        this.trails = new Trails(this);
 
         // TODO: Idk if this is needed
         // Move world origin
@@ -87,6 +92,22 @@ export class World extends GameObject {
         super.update(deltaTime);
         this.updateRuns();
         this.updateChunks();
+        this.updateTrails();
+    }
+
+    private updateTrails() {
+        const upperBound = (this.runsActiveArea.y * this.chunkSize.y) - this.position.y;
+        const lowerBound = (this.runsActiveArea.y * this.chunkSize.y * -1) - this.position.y;
+
+        console.log(`Trail bounds: ${lowerBound.toFixed(0)} to ${upperBound.toFixed(0)}`);
+
+        if (this.trails.getLastPoint().y < lowerBound) {
+            this.trails.shortenTrail();
+        }
+
+        if (this.trails.getFirstPoint().y < upperBound) {
+            this.trails.extendTrail();
+        }
     }
 
     private updateRuns() {
