@@ -88,7 +88,7 @@ export class World extends GameObject {
                     this.chunkPosition.y + y,
                 );
 
-                const existingChunk = this.children.find((child) => {
+                const existingChunk = this.treesContainer.children.find((child) => {
                     if (child instanceof WorldChunk) {
                         return child.chunkPosition.x === chunkCoord.x &&
                             child.chunkPosition.y === chunkCoord.y;

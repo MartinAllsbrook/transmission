@@ -3,66 +3,54 @@ import { World } from "./World.ts";
 import { Graphics } from "pixi.js";
 
 export class TreesContainer extends GameObject {
-    private circleMask: Graphics | null = null;
+    private mask: Graphics | null = null;
+
+    private width: number = 64;
+    private height: number = 64; 
 
     constructor(parent: World) {
         super(parent);
         this.container.label = "TreesContainer";
+        this.createCircleMask();
     }
 
     protected override async createOwnSprites(): Promise<void> {
         await super.createOwnSprites();
-        this.createCircleMask();
     }
 
     private createCircleMask(): void {
         // Create a circular mask
-        this.circleMask = new Graphics();
-        
-        // Get screen dimensions (you might want to get this from your app or parent)
-        const screenWidth = 800; // Replace with your actual screen width
-        const screenHeight = 600; // Replace with your actual screen height
-        const radius = Math.min(screenWidth, screenHeight) / 4; // Adjust radius as needed
+        this.mask = new Graphics();
         
         // Draw a circle in the middle of the screen
-        this.circleMask.circle(screenWidth / 2, screenHeight / 2, radius);
-        this.circleMask.fill(0xffffff); // Color doesn't matter for masks
+        this.mask.ellipse(128, 128, this.width, this.height);
+        this.mask.fill(0xff0000); // Color doesn't matter for masks
         
+        this.mask.label = "TreesContainerMask";
+
         // Apply the mask to this container
-        this.container.mask = this.circleMask;
+        this.container.mask = this.mask;
         
         // Add the mask to the parent container so it's part of the display tree
         // Note: Masks need to be added to the display tree to work properly
         if (this.parent) {
-            this.parent.container.addChild(this.circleMask);
+            this.parent.container.addChild(this.mask);
         }
     }
 
     public updateMaskPosition(centerX: number, centerY: number): void {
-        if (this.circleMask) {
-            this.circleMask.clear();
-            const radius = 150; // Adjust radius as needed
-            this.circleMask.circle(centerX, centerY, radius);
-            this.circleMask.fill(0xffffff);
-        }
-    }
-
-    public setMaskRadius(radius: number): void {
-        if (this.circleMask) {
-            this.circleMask.clear();
-            // Get current position from the mask's bounds or use screen center
-            const screenWidth = 800; // Replace with your actual screen width
-            const screenHeight = 600; // Replace with your actual screen height
-            this.circleMask.circle(screenWidth / 2, screenHeight / 2, radius);
-            this.circleMask.fill(0xffffff);
+        if (this.mask) {
+            this.mask.clear();
+            this.mask.ellipse(globalThis.innerWidth / 2, globalThis.innerWidth / 2, this.width, this.height);
+            this.mask.fill(0xffffff);
         }
     }
 
     public override destroy(): void {
         // Clean up the mask
-        if (this.circleMask) {
-            this.circleMask.destroy();
-            this.circleMask = null;
+        if (this.mask) {
+            this.mask.destroy();
+            this.mask = null;
         }
         super.destroy();
     }

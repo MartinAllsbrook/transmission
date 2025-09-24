@@ -25,6 +25,7 @@ export class WorldChunk extends GameObject {
         this.chunkPosition = chunkPosition;
         this.size = chunkSize;
         this.createChunk();
+        this.container.label = `WorldChunk (${this.chunkPosition.x}, ${this.chunkPosition.y})`;
     }
 
     private createChunk(): void {
@@ -45,9 +46,9 @@ export class WorldChunk extends GameObject {
 
         const worldPosition = this.WorldPosition.add(new Vector2D(x, y));
 
-        if (this.world.distanceToTrail(worldPosition) < 192) {
-            return;
-        }
+        // if (this.world.distanceToTrail(worldPosition) < 192) {
+        //     return;
+        // }
 
         new Obstacle(this, new Vector2D(x, y));
     }
