@@ -1,13 +1,14 @@
 import { Application, IRenderLayer, RenderLayer } from "pixi.js";
-import { Snowboarder } from "../objects/snowboarder/Snowboarder.ts";
 
 export class LayerManager {
     public static layers: Record<string, IRenderLayer> = {
         background: new RenderLayer(),
         trail: new RenderLayer(),
         shadows: new RenderLayer(),
+        snowboarder: new RenderLayer(),
         foreground: new RenderLayer(),
-        
+        snowboarderOverlay: new RenderLayer(),
+        ui: new RenderLayer(),
     };
 
     public static initialize(app: Application) {

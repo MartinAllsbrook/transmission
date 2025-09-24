@@ -103,6 +103,17 @@ export abstract class GameObject {
         return sprite;
     }
 
+    
+    protected async loadSpriteNew(url: string): Promise<Sprite> {
+        const texture = await Assets.load(url);
+        texture.source.scaleMode = "nearest";
+        const sprite = new Sprite(texture);
+        sprite.anchor.set(0.5, 0.5);
+        sprite.scale.set(1, 1);
+        sprite.rotation = 0 * (Math.PI / 180);
+        return sprite;
+    }
+
     /**
      * Method to update the game object each frame. Called with the time delta since the last frame.
      * @param deltaTime Time in milliseconds since the last frame.
