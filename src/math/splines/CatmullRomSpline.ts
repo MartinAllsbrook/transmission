@@ -7,6 +7,11 @@ import { World } from "../../objects/world/World.ts";
  * The spline passes through the 2nd to 2nd-to-last control points only.
  * Requires a minimum of 4 control points for predictable behavior.
  * The first and last control points define the tangents but the curve doesn't pass through them.
+ * 
+ * Tension Parameter:
+ * - 0.0: Tight curves, more angular transitions
+ * - 0.5: Standard Catmull-Rom spline (recommended)
+ * - 1.0: Loose curves, very smooth but may overshoot
  */
 export class CatmullRomSpline {
     private controlPoints: Vector2D[];
@@ -16,6 +21,7 @@ export class CatmullRomSpline {
      * Create a new CatmullRomSpline instance
      * @param controlPoints An array of Vector2D points (minimum 4 required)
      * @param tension The tension parameter (0.0 = tight curves, 0.5 = standard Catmull-Rom, 1.0 = loose curves)
+     *                Controls the influence of tangent control points on curve smoothness.
      */
     constructor(controlPoints: Vector2D[] = [], tension: number = 0.5) {
         if (controlPoints.length > 0 && controlPoints.length < 4) {
@@ -36,25 +42,27 @@ export class CatmullRomSpline {
     /**
      * Remove the last control point from the spline
      * @returns True if a point was removed, false if there were insufficient points
+     * @throws Error if attempting to remove a point would leave fewer than 4 control points
      */
     public popPoint(): boolean {
-        if (this.controlPoints.length > 4) {
-            this.controlPoints.pop();
-            return true;
+        if (this.controlPoints.length <= 4) {
+            throw new Error("Cannot remove control point: CatmullRomSpline requires at least 4 control points");
         }
-        return false;
+        this.controlPoints.pop();
+        return true;
     }
 
     /**
      * Remove the first control point from the spline
      * @returns True if a point was removed, false if there were insufficient points
+     * @throws Error if attempting to remove a point would leave fewer than 4 control points
      */
     public shiftPoint(): boolean {
-        if (this.controlPoints.length > 4) {
-            this.controlPoints.shift();
-            return true;
+        if (this.controlPoints.length <= 4) {
+            throw new Error("Cannot remove control point: CatmullRomSpline requires at least 4 control points");
         }
-        return false;
+        this.controlPoints.shift();
+        return true;
     }
 
     /**
@@ -71,14 +79,18 @@ export class CatmullRomSpline {
     /**
      * Remove a control point at the specified index
      * @param index The index of the control point to remove
-     * @returns True if the point was successfully removed, false if the index is invalid or would leave insufficient points
+     * @returns True if the point was successfully removed
+     * @throws Error if the index is invalid or if removing would leave fewer than 4 control points
      */
     public removeControlPoint(index: number): boolean {
-        if (index >= 0 && index < this.controlPoints.length && this.controlPoints.length > 4) {
-            this.controlPoints.splice(index, 1);
-            return true;
+        if (index < 0 || index >= this.controlPoints.length) {
+            throw new Error(`Invalid index ${index}: must be between 0 and ${this.controlPoints.length - 1}`);
         }
-        return false;
+        if (this.controlPoints.length <= 4) {
+            throw new Error("Cannot remove control point: CatmullRomSpline requires at least 4 control points");
+        }
+        this.controlPoints.splice(index, 1);
+        return true;
     }
 
     /**
@@ -136,7 +148,9 @@ export class CatmullRomSpline {
 
     /**
      * Set the tension parameter for the spline
-     * @param tension The tension value (0.0 = tight curves, 0.5 = standard, 1.0 = loose curves)
+     * @param tension The tension value (0.0 = tight curves, 0.5 = standard Catmull-Rom, 1.0 = loose curves)
+     *                Controls how much the tangent control points influence the curve shape.
+     *                Higher values create smoother curves but may cause more overshoot.
      */
     public setTension(tension: number): void {
         this.tension = Math.max(0, Math.min(1, tension));
@@ -152,6 +166,7 @@ export class CatmullRomSpline {
 
     /**
      * Clear all control points from the spline
+     * Note: After clearing, the spline will be invalid until at least 4 control points are added
      */
     public clear(): void {
         this.controlPoints = [];
@@ -196,6 +211,43 @@ export class CatmullRomSpline {
             start: new Vector2D(this.controlPoints[0].x, this.controlPoints[0].y),
             end: new Vector2D(this.controlPoints[this.controlPoints.length - 1].x, this.controlPoints[this.controlPoints.length - 1].y)
         };
+    }
+
+    /**
+     * Safe version of popPoint that returns false instead of throwing
+     * @returns True if a point was removed, false if there were insufficient points
+     */
+    public tryPopPoint(): boolean {
+        if (this.controlPoints.length <= 4) {
+            return false;
+        }
+        this.controlPoints.pop();
+        return true;
+    }
+
+    /**
+     * Safe version of shiftPoint that returns false instead of throwing
+     * @returns True if a point was removed, false if there were insufficient points
+     */
+    public tryShiftPoint(): boolean {
+        if (this.controlPoints.length <= 4) {
+            return false;
+        }
+        this.controlPoints.shift();
+        return true;
+    }
+
+    /**
+     * Safe version of removeControlPoint that returns false instead of throwing
+     * @param index The index of the control point to remove
+     * @returns True if the point was successfully removed, false if invalid or insufficient points
+     */
+    public tryRemoveControlPoint(index: number): boolean {
+        if (index < 0 || index >= this.controlPoints.length || this.controlPoints.length <= 4) {
+            return false;
+        }
+        this.controlPoints.splice(index, 1);
+        return true;
     }
 
     /**
