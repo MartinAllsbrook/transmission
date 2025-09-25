@@ -1,6 +1,6 @@
 import { GameObject } from "../GameObject.ts";
 import { World } from "./World.ts";
-import { Graphics, Sprite } from "pixi.js";
+import { Sprite } from "pixi.js";
 
 export class TreesContainer extends GameObject {
     private mask: Sprite | null = null;
@@ -30,8 +30,6 @@ export class TreesContainer extends GameObject {
         if (this.parent) {
             this.parent.container.addChild(this.mask);
         }
-
-
     }
 
     public updateMaskPosition(centerX: number, centerY: number): void {
