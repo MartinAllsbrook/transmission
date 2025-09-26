@@ -1,22 +1,26 @@
-import { Assets, Sprite } from "pixi.js";
+import { Sprite } from "pixi.js";
 import { GameObject, Parent } from "src/objects/GameObject.ts";
 import { CircleCollider } from "src/colliders/CircleCollider.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
-import { LayerManager } from "../../rendering/LayerManager.ts";
+import { World } from "./World.ts";
 
 export class Obstacle extends GameObject {
     private leafSprites: Sprite[] = [];
     private baseScale: number = 1.25;
+    private world: World;
 
-    constructor(
-        parent: Parent,
-        position: Vector2D,
-    ) {
+    private showingWarning: boolean = false;
+    private warningSprite?: Sprite;
+
+    private stumpSize = 8;
+
+    constructor(parent: Parent, position: Vector2D, world: World) {
         super(parent, position);
+
+        this.world = world;
     }
 
     protected override async createOwnSprites(): Promise<void> {
-
         const trunkSprite = await this.loadSprite("/obsticales/tree/Trunk.png", 1);
         trunkSprite.anchor.set(0.5, 1);
         trunkSprite.scale.set(this.baseScale, this.baseScale);
@@ -33,11 +37,20 @@ export class Obstacle extends GameObject {
 
         const _collider = new CircleCollider(
             this,
-            new Vector2D(0, -3),
-            6,
+            new Vector2D(0, -this.stumpSize),
+            this.stumpSize,
             true,
             "obstacle",
         );
+
+        this.warningSprite = await this.loadSpriteNew("/Warning.png", { 
+            position: new Vector2D(0, -this.stumpSize),
+            layer: "ui",
+            scale: new Vector2D(1.5, 1.5),
+        });
+        this.container.addChild(this.warningSprite);
+
+        this.warningSprite.visible = false;
 
         // LayerManager.getLayer("foreground")?.attach(this.container);
     }
@@ -54,5 +67,26 @@ export class Obstacle extends GameObject {
             const baseSpacing = -16 * this.baseScale; // Base spacing between leaves
             leaf.position.y = ((globalThis.innerHeight - this.ScreenPosition.y) * parallaxAmount + baseSpacing) * (index +0.5 ) ;
         });
+
+        const screenSize = new Vector2D(globalThis.innerWidth, globalThis.innerHeight);
+        if (this.ScreenPosition.subtract(screenSize.multiply(0.5)).magnitude() <= 256) {
+            if (!this.showingWarning) {
+                this.showingWarning = true;
+
+                if (this.warningSprite) {
+                    this.warningSprite.visible = true;
+                }
+            }
+        } else {
+            if (this.showingWarning) {
+                this.showingWarning = false;
+                if (this.warningSprite) {
+                    this.warningSprite.visible = false;
+                }
+            }
+        }    
+
+
+        super.update(_deltaTime);
     }
 }

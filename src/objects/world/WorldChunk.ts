@@ -1,4 +1,3 @@
-import { Graphics } from "pixi.js";
 import { GameObject } from "src/objects/GameObject.ts";
 import { Obstacle } from "src/objects/world/Obstacle.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
@@ -50,7 +49,7 @@ export class WorldChunk extends GameObject {
         //     return;
         // }
 
-        new Obstacle(this, new Vector2D(x, y));
+        new Obstacle(this, new Vector2D(x, y), this.world);
     }
 
     private createRandomJump() {

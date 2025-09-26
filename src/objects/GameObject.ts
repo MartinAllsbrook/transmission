@@ -1,6 +1,7 @@
 import { Application, Assets, Container, Sprite } from "pixi.js";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { SATCollider } from "../colliders/SATCollider.ts";
+import { LayerManager } from "../rendering/LayerManager.ts";
 
 export type Parent = Application | GameObject;
 
@@ -104,15 +105,20 @@ export abstract class GameObject {
     }
 
     
-    protected async loadSpriteNew(url: string, options: {
+    protected async loadSpriteNew(url: string, options?: {
         scale?: Vector2D;
         rotation?: number;
         anchor?: Vector2D;
         scaleMode?: "nearest" | "linear";
-
+        position?: Vector2D;
+        layer?: string;
+        zIndex?: number;
     }): Promise<Sprite> {
         const texture = await Assets.load(url);
         // Scale mode
+
+        if (options === undefined) options = {};
+
         texture.source.scaleMode = options.scaleMode ? options.scaleMode : "nearest";
 
         const sprite = new Sprite(texture);
@@ -126,15 +132,21 @@ export abstract class GameObject {
         // Scale
         if (options.scale)
             sprite.scale.set(options.scale.x, options.scale.y);
-        else
-            sprite.scale.set(1, 1);
         
         // Rotation
         if (options.rotation)
             sprite.rotation = options.rotation * (Math.PI / 180);
-        else
-            sprite.rotation = 0 * (Math.PI / 180);
+
+        // Position
+        if (options.position)
+            sprite.position.set(options.position.x, options.position.y);
+
+        if (options.layer) 
+            LayerManager.getLayer(options.layer)?.attach(sprite);
         
+        if (options.zIndex !== undefined)
+            sprite.zIndex = options.zIndex;
+
         return sprite;
     }
 

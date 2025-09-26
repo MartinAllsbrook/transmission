@@ -82,9 +82,10 @@ export default class Game extends Component {
     private setupGame() {
         if (!Game.app) throw new Error("PixiJS application not initialized");
 
-        LayerManager.initialize(Game.app);
-
+        // Root object made before layers so that it is the lowest "layer"
         Game.rootObject = new OffsetContainer(Game.app);
+        LayerManager.initialize(Game.app);
+        
         TextManager.initialize(Game.rootObject);
         Game.player = new Snowboarder(Game.rootObject);
         Game.world = new World(Game.rootObject, Game.player);
