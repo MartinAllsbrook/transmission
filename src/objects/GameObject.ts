@@ -104,13 +104,37 @@ export abstract class GameObject {
     }
 
     
-    protected async loadSpriteNew(url: string): Promise<Sprite> {
+    protected async loadSpriteNew(url: string, options: {
+        scale?: Vector2D;
+        rotation?: number;
+        anchor?: Vector2D;
+        scaleMode?: "nearest" | "linear";
+
+    }): Promise<Sprite> {
         const texture = await Assets.load(url);
-        texture.source.scaleMode = "nearest";
+        // Scale mode
+        texture.source.scaleMode = options.scaleMode ? options.scaleMode : "nearest";
+
         const sprite = new Sprite(texture);
-        sprite.anchor.set(0.5, 0.5);
-        sprite.scale.set(1, 1);
-        sprite.rotation = 0 * (Math.PI / 180);
+        
+        // Anchor point
+        if (options.anchor) 
+            sprite.anchor.set(options.anchor.x, options.anchor.y);
+        else 
+            sprite.anchor.set(0.5, 0.5);
+        
+        // Scale
+        if (options.scale)
+            sprite.scale.set(options.scale.x, options.scale.y);
+        else
+            sprite.scale.set(1, 1);
+        
+        // Rotation
+        if (options.rotation)
+            sprite.rotation = options.rotation * (Math.PI / 180);
+        else
+            sprite.rotation = 0 * (Math.PI / 180);
+        
         return sprite;
     }
 
