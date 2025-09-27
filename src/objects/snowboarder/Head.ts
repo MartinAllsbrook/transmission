@@ -1,5 +1,4 @@
 import { ExtraMath } from "../../math/ExtraMath.ts";
-import { Vector2D } from "../../math/Vector2D.ts";
 import { GameObject } from "../GameObject.ts";
 import { Body } from "./Body.ts";
 import { Snowboarder } from "./Snowboarder.ts";
@@ -58,6 +57,6 @@ export class Head extends GameObject {
     }
 
     protected override async createOwnSprites(): Promise<void> {
-        await this.loadSprite("/snowboarder/Head.png", 1);
+        await this.loadSprite("/snowboarder/Head.png");
     }
 }

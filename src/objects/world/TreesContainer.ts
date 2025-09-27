@@ -20,7 +20,7 @@ export class TreesContainer extends GameObject {
 
     private async createCircleMask(): Promise<void> {
         // Create a mask that covers everything EXCEPT the circular hole
-        this.mask = await this.loadSpriteNew("/Mask.png")
+        this.mask = await this.loadSprite("/Mask.png", { makeChild: false });
         this.mask.scale.set(2,2);
         // Apply the mask to this container
         this.container.mask = this.mask;

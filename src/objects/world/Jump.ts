@@ -11,6 +11,6 @@ export class Jump extends GameObject {
     } 
 
     protected override async createOwnSprites(): Promise<void> {
-        await this.loadSprite("/jumps/SkiJump.png", 2);
+        await this.loadSprite("/jumps/SkiJump.png", { scale: new Vector2D(2, 2) });
     }
 }

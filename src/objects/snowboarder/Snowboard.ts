@@ -1,5 +1,4 @@
 import { RectCollider } from "../../colliders/RectCollider.ts";
-import { ExtraMath } from "../../math/ExtraMath.ts";
 import { Vector2D } from "../../math/Vector2D.ts";
 import { GameObject } from "../GameObject.ts";
 import { SnowboarderTrail } from "./SnowbarderTrail.ts";
@@ -35,7 +34,7 @@ export class Snowboard extends GameObject {
     }
 
     protected override async createOwnSprites(): Promise<void> {
-        await this.loadSprite("/snowboarder/Board.png", 1);
+        await this.loadSprite("/snowboarder/Board.png");
     }
 
     private setupCollider() {

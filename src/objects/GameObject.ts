@@ -92,20 +92,8 @@ export abstract class GameObject {
     protected async createOwnSprites(): Promise<void> {
         // Base implementation does nothing - subclasses should override this
     }
-
-    protected async loadSprite(url: string, scale: number = 1, rotation: number = 0): Promise<Sprite> {
-        const texture = await Assets.load(url);
-        texture.source.scaleMode = "nearest";
-        const sprite = new Sprite(texture);
-        sprite.anchor.set(0.5, 0.5);
-        sprite.scale.set(scale, scale);
-        sprite.rotation = rotation * (Math.PI / 180);
-        this.container.addChild(sprite);
-        return sprite;
-    }
-
     
-    protected async loadSpriteNew(url: string, options?: {
+    protected async loadSprite(url: string, options?: {
         scale?: Vector2D;
         rotation?: number;
         anchor?: Vector2D;
@@ -113,12 +101,11 @@ export abstract class GameObject {
         position?: Vector2D;
         layer?: string;
         zIndex?: number;
+        makeChild?: boolean;
     }): Promise<Sprite> {
-        const texture = await Assets.load(url);
-        // Scale mode
-
         if (options === undefined) options = {};
-
+        
+        const texture = await Assets.load(url);
         texture.source.scaleMode = options.scaleMode ? options.scaleMode : "nearest";
 
         const sprite = new Sprite(texture);
@@ -141,11 +128,16 @@ export abstract class GameObject {
         if (options.position)
             sprite.position.set(options.position.x, options.position.y);
 
+        // Layer
         if (options.layer) 
             LayerManager.getLayer(options.layer)?.attach(sprite);
         
+        // Z-Index
         if (options.zIndex !== undefined)
             sprite.zIndex = options.zIndex;
+
+        if (options.makeChild === undefined || options.makeChild)
+            this.container.addChild(sprite);
 
         return sprite;
     }

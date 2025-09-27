@@ -21,13 +21,13 @@ export class Obstacle extends GameObject {
     }
 
     protected override async createOwnSprites(): Promise<void> {
-        const trunkSprite = await this.loadSprite("/obsticales/tree/Trunk.png", 1);
+        const trunkSprite = await this.loadSprite("/obsticales/tree/Trunk.png");
         trunkSprite.anchor.set(0.5, 1);
         trunkSprite.scale.set(this.baseScale, this.baseScale);
 
         const numLeaves = 5;
         for (let i = 1; i <= numLeaves; i++) {
-            const leafSprite = await this.loadSprite(`/obsticales/tree/LeavesLayer.png`, 1);
+            const leafSprite = await this.loadSprite(`/obsticales/tree/LeavesLayer.png`);
             leafSprite.anchor.set(0.5, 1);
             leafSprite.position.y = i * -16;
             const scale = ((numLeaves - i) * 0.25 + 1) * this.baseScale;
@@ -43,12 +43,11 @@ export class Obstacle extends GameObject {
             "obstacle",
         );
 
-        this.warningSprite = await this.loadSpriteNew("/Warning.png", { 
+        this.warningSprite = await this.loadSprite("/Warning.png", { 
             position: new Vector2D(0, -this.stumpSize),
             layer: "ui",
             scale: new Vector2D(1.5, 1.5),
         });
-        this.container.addChild(this.warningSprite);
 
         this.warningSprite.visible = false;
 
