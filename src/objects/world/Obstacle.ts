@@ -3,6 +3,7 @@ import { GameObject, Parent } from "src/objects/GameObject.ts";
 import { CircleCollider } from "src/colliders/CircleCollider.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { World } from "./World.ts";
+import { LayerManager } from "../../rendering/LayerManager.ts";
 
 export class Obstacle extends GameObject {
     private leafSprites: Sprite[] = [];
@@ -68,13 +69,16 @@ export class Obstacle extends GameObject {
         });
 
         const screenSize = new Vector2D(globalThis.innerWidth, globalThis.innerHeight);
-        if (this.ScreenPosition.subtract(screenSize.multiply(0.5)).magnitude() <= 256) {
+        const showDistance = 256;
+        const distance = this.ScreenPosition.subtract(screenSize.multiply(0.5)).magnitude()
+        if (distance <= showDistance) {
             if (!this.showingWarning) {
                 this.showingWarning = true;
-
-                if (this.warningSprite) {
-                    this.warningSprite.visible = true;
-                }
+            }
+            
+            if (this.warningSprite) {
+                this.warningSprite.visible = true;
+                this.warningSprite.alpha = 1 - distance / showDistance; 
             }
         } else {
             if (this.showingWarning) {

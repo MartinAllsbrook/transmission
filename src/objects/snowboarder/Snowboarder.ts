@@ -49,7 +49,7 @@ export class Snowboarder extends GameObject {
 
         this.setupInputs();
 
-        LayerManager.getLayer("foreground")?.attach(this.container);
+        LayerManager.getLayer("snowboarder")?.attach(this.container);
         this.tricksManager = new TricksManager(this);
 
     }

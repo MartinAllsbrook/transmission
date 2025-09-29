@@ -7,7 +7,6 @@ export class LayerManager {
         shadows: new RenderLayer(),
         snowboarder: new RenderLayer(),
         foreground: new RenderLayer(),
-        snowboarderOverlay: new RenderLayer(),
         ui: new RenderLayer(),
     };
 

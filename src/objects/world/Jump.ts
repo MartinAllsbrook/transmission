@@ -1,6 +1,7 @@
 import { GameObject } from "../GameObject.ts";
 import { Vector2D } from "../../math/Vector2D.ts";
 import { RectCollider } from "../../colliders/RectCollider.ts";
+import { LayerManager } from "../../rendering/LayerManager.ts";
 
 export class Jump extends GameObject {
     constructor(parent: GameObject, position: Vector2D) {
@@ -8,6 +9,7 @@ export class Jump extends GameObject {
         this.container.label = "Jump";
 
         new RectCollider(this, new Vector2D(0, 0), new Vector2D(48, 32), true, "jump");
+        LayerManager.getLayer("background")?.attach(this.container);
     } 
 
     protected override async createOwnSprites(): Promise<void> {
