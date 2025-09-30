@@ -46,7 +46,6 @@ export class Snowboarder extends GameObject {
         this.snowboard = new Snowboard(this);
         this.body = new Body(this);
 
-
         this.setupInputs();
 
         LayerManager.getLayer("snowboarder")?.attach(this.container);
@@ -57,7 +56,6 @@ export class Snowboarder extends GameObject {
     // #region Miscellaneous
 
     private setupInputs() {
-
         InputManager.getInput("turn").subscribe((newValue) => {
             this.turnInput = newValue;
         });
@@ -256,6 +254,12 @@ export class Snowboarder extends GameObject {
             1 - frictionStrength * deltaTime,
         );
     }
+
+    // #endregion
+
+    // #region Rail
+
+    
 
     // #endregion
 

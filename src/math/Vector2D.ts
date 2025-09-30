@@ -106,7 +106,7 @@ export class Vector2D {
      */
     public magnitude(): number {
         return Math.sqrt(
-            (Math.pow(Math.abs(this.x), 2)) + (Math.pow(Math.abs(this.y), 2)),
+            (Math.pow(this.x, 2)) + (Math.pow(this.y, 2)),
         );
     }
 
@@ -178,8 +178,19 @@ export class Vector2D {
      * @returns A new Vector2D instance representing the projected vector.
      */
     public projectOnto(vector: Vector2D): Vector2D {
-        const scalar = this.dot(vector) / vector.magnitude();
-        return vector.normalize().multiply(scalar);
+        const scalar = this.dot(vector) / vector.magnitude() ** 2;
+        return vector.multiply(scalar);
+    }
+
+    /**
+     * Returns the component of the vector that is in the direction of another vector, but is clamped so that it does not exceed the 'bounds' of the other vector.
+     * @param vector - The vector to project onto.
+     * @returns A new Vector2D instance representing the clamped projected vector.
+     */
+    public projectOntoClamped(vector: Vector2D): Vector2D {
+        let scalar = this.dot(vector) / vector.magnitude() ** 2;
+        scalar = Math.max(0, Math.min(1, scalar)); // Clamp between 0 and 1
+        return vector.multiply(scalar);
     }
 
     /**
