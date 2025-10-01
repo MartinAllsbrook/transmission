@@ -4,6 +4,7 @@ import { CircleCollider } from "src/colliders/CircleCollider.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { World } from "./World.ts";
 import { LayerManager } from "../../rendering/LayerManager.ts";
+import { OffsetContainer } from "../OffsetContainer.ts";
 
 export class Obstacle extends GameObject {
     private leafSprites: Sprite[] = [];
@@ -68,9 +69,8 @@ export class Obstacle extends GameObject {
             leaf.position.y = ((globalThis.innerHeight - this.ScreenPosition.y) * parallaxAmount + baseSpacing) * (index +0.5 ) ;
         });
 
-        const screenSize = new Vector2D(globalThis.innerWidth, globalThis.innerHeight);
         const showDistance = 256;
-        const distance = this.ScreenPosition.subtract(screenSize.multiply(0.5)).magnitude()
+        const distance = this.ScreenPosition.subtract(OffsetContainer.offset).magnitude()
         if (distance <= showDistance) {
             if (!this.showingWarning) {
                 this.showingWarning = true;

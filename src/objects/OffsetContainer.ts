@@ -2,6 +2,11 @@ import { GameObject, Parent } from "./GameObject.ts";
 import { Vector2D } from "../math/Vector2D.ts";
 
 export class OffsetContainer extends GameObject {
+    public static offset: Vector2D = new Vector2D(
+        globalThis.innerWidth / 2,
+        globalThis.innerHeight / 2.618,
+    );
+
     constructor(parent: Parent) {
         super(
             parent,
