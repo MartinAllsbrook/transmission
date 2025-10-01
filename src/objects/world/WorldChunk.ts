@@ -49,7 +49,7 @@ export class WorldChunk extends GameObject {
         //     return;
         // }
 
-        new Obstacle(this, new Vector2D(x, y), this.world);
+        new Obstacle(this, new Vector2D(x, y), this.world)
     }
 
     private createRandomJump() {

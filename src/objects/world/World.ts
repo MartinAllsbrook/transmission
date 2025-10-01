@@ -108,7 +108,7 @@ export class World extends GameObject {
                         chunkCoord.x * -this.chunkSize.x,
                         chunkCoord.y * -this.chunkSize.y,
                     );
-                    const _chunk = new WorldChunk(
+                    new WorldChunk(
                         this.treesContainer,
                         this,
                         chunkWorldPosition,
@@ -120,7 +120,7 @@ export class World extends GameObject {
             }
         }
 
-        for (const chunk of this.children) {
+        for (const chunk of this.treesContainer.children) {
             if (chunk instanceof WorldChunk) {
                 const reativePosition = new Vector2D(
                     chunk.chunkPosition.x - this.chunkPosition.x,
