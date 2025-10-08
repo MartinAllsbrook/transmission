@@ -1,7 +1,10 @@
 import { Snowboarder } from "../Snowboarder.ts";
+import { TricksManager } from "../TricksManager.ts";
 
 export abstract class State {
     protected snowboarder: Snowboarder;
+    protected tricksManager: TricksManager;
+
 
     constructor(snowboarder: Snowboarder) {
         this.snowboarder = snowboarder;

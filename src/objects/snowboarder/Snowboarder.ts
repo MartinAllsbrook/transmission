@@ -269,9 +269,6 @@ export class Snowboarder extends GameObject {
         return this.worldPosition.clone();
     }
 
-    public get Velocity(): Vector2D {
-        return this.velocity.clone();
-    }
 
     public get InAir(): boolean {
         return this.inAir;
@@ -287,6 +284,54 @@ export class Snowboarder extends GameObject {
         } else {
             this.onEnterGround();
         }     
+    }
+
+    public get Velocity(): Vector2D {
+        return this.velocity.clone();
+    }
+
+    public get BoardWorldRotation(): number {
+        return this.snowboard.WorldRotation;
+    }
+
+    public set BoardRotation(value: number) {
+        this.snowboard.Rotation = value;
+    }
+
+    public get BodyWorldRotation(): number {
+        return this.body.WorldRotation;
+    }
+
+    public set BodyRotation(value: number) {
+        this.body.Rotation = value;
+    }
+
+    public get ShiftyInput(): number {
+        return this.shiftyInput;
+    }
+
+    public get ShiftyTargetAngle(): number {
+        return this.shiftyTargetAngle;
+    }
+
+    public set ShiftyTargetAngle(targetAngle: number) {
+        this.shiftyTargetAngle = targetAngle;
+    }
+
+    public set ShiftyAngle(angle: number) {
+        this.shiftyAngle = angle;
+    }
+
+    public get ShiftyAngle(): number {
+        return this.shiftyAngle;
+    }    
+
+    public get ShiftyLerpSpeed(): number {
+        return this.maxShiftyAngle;
+    }
+
+    public get MaxShiftyAngle(): number {
+        return this.maxShiftyAngle;
     }
 
     // #endregion
