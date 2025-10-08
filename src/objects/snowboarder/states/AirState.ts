@@ -42,13 +42,15 @@ export class AirState extends State {
     }
 
     protected override physicsUpdate(deltaTime: number): void {
-        this.vericalVelocity -= 16  * deltaTime;
-        this.height += this.vericalVelocity * deltaTime;
+        const player = this.snowboarder;
 
-        if (this.height <= 0) {
-            this.height = 0;
-            this.vericalVelocity = 0;
-            this.InAir = false;
+        player.VerticalVelocity -= 16  * deltaTime;
+        player.Height += player.VerticalVelocity * deltaTime;
+
+        if (player.Height <= 0) {
+            player.Height = 0;
+            player.VerticalVelocity = 0;
+            player.InAir = false; // This will trigger the player to exit the air state
         }
     }
 

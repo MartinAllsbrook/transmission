@@ -5,9 +5,9 @@ export abstract class State {
     protected snowboarder: Snowboarder;
     protected tricksManager: TricksManager;
 
-
-    constructor(snowboarder: Snowboarder) {
+    constructor(snowboarder: Snowboarder, tricksManager: TricksManager) {
         this.snowboarder = snowboarder;
+        this.tricksManager = tricksManager;
     }
 
     public abstract enter(): void;
