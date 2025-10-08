@@ -1,11 +1,14 @@
+import { ExtraMath } from "../../../math/ExtraMath.ts";
 import { State } from "./State.ts";
 
 export class AirState extends State {
     public override enter(): void {
+        const player = this.snowboarder;
+
         this.switchToAirShifty();
         this.tricksManager.trickStart(
-            this.snowboarder.BoardWorldRotation, 
-            this.snowboarder.Velocity.heading() * 180 / Math.PI
+            player.BoardWorldRotation, 
+            player.Velocity.heading() * 180 / Math.PI
         );
     }
 
@@ -19,19 +22,23 @@ export class AirState extends State {
     }
 
     public override update(deltaTime: number): void {
+        const player = this.snowboarder;
+
         super.update(deltaTime);
 
         this.tricksManager.trickUpdate(
             deltaTime,
-            this.snowboarder.BoardRotation, 
-            this.snowboarder.Velocity.heading() * 180 / Math.PI
+            player.BoardRotation, 
+            player.Velocity.heading() * 180 / Math.PI
         );
     }
 
     protected override shiftyUpdate(deltaTime: number): void {
-        this.snowboarder.ShiftyTargetAngle = this.snowboarder.ShiftyInput * -this.snowboarder.MaxShiftyAngle;
-        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.snowboarder.ShiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
-        this.snowboard.Rotation = this.shiftyAngle;
+        const player = this.snowboarder;
+
+        player.ShiftyTargetAngle = player.ShiftyInput * -player.MaxShiftyAngle;
+        player.ShiftyAngle = ExtraMath.lerpSafe(player.ShiftyAngle, player.ShiftyTargetAngle, player.ShiftyLerpSpeed * deltaTime);
+        player.Rotation = player.ShiftyAngle;
     }
 
     protected override physicsUpdate(deltaTime: number): void {
