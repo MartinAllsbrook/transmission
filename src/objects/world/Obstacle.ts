@@ -3,7 +3,6 @@ import { GameObject, Parent } from "src/objects/GameObject.ts";
 import { CircleCollider } from "src/colliders/CircleCollider.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { World } from "./World.ts";
-import { LayerManager } from "../../rendering/LayerManager.ts";
 import { OffsetContainer } from "../OffsetContainer.ts";
 
 export class Obstacle extends GameObject {
@@ -37,7 +36,7 @@ export class Obstacle extends GameObject {
             this.leafSprites.push(leafSprite);
         }
 
-        const _collider = new CircleCollider(
+        new CircleCollider(
             this,
             new Vector2D(0, -this.stumpSize),
             this.stumpSize,

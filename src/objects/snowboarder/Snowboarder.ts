@@ -95,6 +95,10 @@ export class Snowboarder extends GameObject {
             this.height += 1;
             this.vericalVelocity = this.velocity.magnitude() * 0.0075;
         }
+
+        if (other.layer === "rail" ) {
+            console.log("Hello rail");
+        }
     }
 
     public onCollisionEnd(other: SATCollider): void {

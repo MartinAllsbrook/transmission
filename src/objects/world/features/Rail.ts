@@ -9,7 +9,7 @@ export class Rail extends GameObject {
     private relativeStart: Vector2D = new Vector2D(0, -this.length / 2);
     private relativeEnd: Vector2D = new Vector2D(0, -this.length / 2);
 
-    private collider: RectCollider = new RectCollider(this, new Vector2D(0, 0), new Vector2D(this.wdith, this.length));
+    private collider: RectCollider = new RectCollider(this, new Vector2D(0, 0), new Vector2D(this.wdith, this.length), true, "rail");
 
     constructor(parent: GameObject, position: Vector2D) {
         super(parent, position);
@@ -25,6 +25,13 @@ export class Rail extends GameObject {
         const projection = startToEnd.projectOntoClamped(startToPoint);
         const closestPoint = this.relativeStart.add(projection);
         return localPoint.subtract(closestPoint).magnitude();
+    }
+
+    protected override async createOwnSprites(): Promise<void> {
+        await this.loadSprite("/features/Tube.png", {
+            scale: new Vector2D(2, 4)
+        })
+        return await super.createOwnSprites();
     }
 
     public getDirection(): Vector2D {
