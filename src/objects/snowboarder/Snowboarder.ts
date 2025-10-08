@@ -5,7 +5,6 @@ import { LayerManager } from "../../rendering/LayerManager.ts";
 import { SATCollider } from "../../colliders/SATCollider.ts";
 import { Snowboard } from "./Snowboard.ts";
 import { Body } from "./Body.ts";
-import { ExtraMath } from "../../math/ExtraMath.ts";
 import { Shadow } from "./Shadow.ts";
 import { InputManager } from "../../inputs/InputManager.ts";
 import { TricksManager } from "./TricksManager.ts";
