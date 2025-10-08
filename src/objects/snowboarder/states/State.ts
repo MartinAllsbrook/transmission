@@ -8,6 +8,8 @@ export abstract class State {
     constructor(snowboarder: Snowboarder, tricksManager: TricksManager) {
         this.snowboarder = snowboarder;
         this.tricksManager = tricksManager;
+
+        this.enter();
     }
 
     public abstract enter(): void;
