@@ -3,53 +3,45 @@ import { State } from "./State.ts";
 
 export class AirState extends State {
     public override enter(): void {
-        const player = this.snowboarder;
-
         this.switchToAirShifty();
         this.tricksManager.trickStart(
-            player.BoardWorldRotation, 
-            player.Velocity.heading() * 180 / Math.PI
+            this.snowboarder.BoardWorldRotation, 
+            this.data.velocity.heading() * 180 / Math.PI
         );
     }
 
     private switchToAirShifty() {
-        const player = this.snowboarder;
-
-        player.ShiftyAngle = player.ShiftyAngle * -1;
-        player.Rotation = player.BoardWorldRotation - 90; // Flip for goofy
-        player.BoardRotation = player.ShiftyAngle;
-        player.BodyRotation = 0 + 90; // Flip for goofy
+        this.data.shiftyAngle = this.data.shiftyAngle * -1;
+        this.snowboarder.Rotation = this.snowboarder.BoardWorldRotation - 90; // Flip for goofy
+        this.snowboarder.BoardRotation = this.data.shiftyAngle;
+        this.snowboarder.BodyRotation = 0 + 90; // Flip for goofy
     }
 
     public override update(deltaTime: number): void {
-        const player = this.snowboarder;
-
         super.update(deltaTime);
 
         this.tricksManager.trickUpdate(
             deltaTime,
-            player.BoardRotation, 
-            player.Velocity.heading() * 180 / Math.PI
+            this.snowboarder.BoardRotation, 
+            this.data.velocity.heading() * 180 / Math.PI
         );
     }
 
     protected override shiftyUpdate(deltaTime: number): void {
-        const player = this.snowboarder;
-
-        player.ShiftyTargetAngle = player.ShiftyInput * -player.MaxShiftyAngle;
-        player.ShiftyAngle = ExtraMath.lerpSafe(player.ShiftyAngle, player.ShiftyTargetAngle, player.ShiftyLerpSpeed * deltaTime);
-        player.Rotation = player.ShiftyAngle;
+        this.data.shiftyTargetAngle = this.input.shifty * -this.settings.maxShiftyAngle;
+        this.data.shiftyAngle = ExtraMath.lerpSafe(this.data.shiftyAngle, this.data.shiftyTargetAngle, this.settings.shiftyLerpSpeed * deltaTime);
+        this.snowboarder.Rotation = this.data.shiftyAngle;
     }
 
     protected override physicsUpdate(deltaTime: number): void {
         const player = this.snowboarder;
 
-        player.VerticalVelocity -= 16  * deltaTime;
-        player.Height += player.VerticalVelocity * deltaTime;
+        this.data.verticalVelocity -= 16  * deltaTime;
+        this.data.height += this.data.verticalVelocity * deltaTime;
 
-        if (player.Height <= 0) {
-            player.Height = 0;
-            player.VerticalVelocity = 0;
+        if (this.data.height <= 0) {
+            this.data.height = 0;
+            this.data.verticalVelocity = 0;
             player.InAir = false; // This will trigger the player to exit the air state
         }
     }

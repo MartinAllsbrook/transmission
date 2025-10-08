@@ -11,31 +11,77 @@ import { TricksManager } from "./TricksManager.ts";
 import { State } from "./states/State.ts";
 import { GroundState } from "./states/GroundState.ts";
 import { AirState } from "./states/AirState.ts";
-  
-export class Snowboarder extends GameObject {
-    // Inputs
-    private turnInput: number = 0;
-    private jumpInput: boolean = false;
-    private shiftyInput: number = 0;
-        
-    /** The position of the player in the world, used for world scrolling */
+
+export interface Settings {
+    // Base movement
     
-    // Physics & State
-    private rotationRate: number = 0;
+    // Shifty
+    maxShiftyAngle: number;
+    shiftyLerpSpeed: number;
+}
+
+export interface Inputs {
+    turn: number;
+    jump: boolean;
+    shifty: number;
+}
+
+export interface StateData {
+    // Base movement
+    worldPosition: Vector2D;
+    velocity: Vector2D;
+    rotationRate: number;
     
-    private inAir = false;
-    
-    private state: State;
+    // Height
+    height: number;
+    verticalVelocity: number;
 
     // Shifty
-    public worldPosition: Vector2D = new Vector2D(128, 128);
-    private velocity: Vector2D = new Vector2D(0, 0);
-    private height: number = 0;
-    private verticalVelocity: number = 0;
-    private shiftyTargetAngle: number = 0;
-    private shiftyAngle: number = 0;    
-    private shiftyLerpSpeed: number = 3;
-    private maxShiftyAngle: number = 90;
+    shiftyTargetAngle: number;
+    shiftyAngle: number;
+}
+
+export class Snowboarder extends GameObject {
+    /** TODO: THIS IS **DEPRECIATED** AND WE SHOULD USE PLAYERSTATE INSTEAD */
+    private inAir = false;
+    
+    /** 
+     * The current state of the player, used to update the player and handle state transitions
+     */
+    private playerState: State;
+    
+    /**
+     * Settings of the player
+     */
+    private readonly settings: Settings = {
+        
+        maxShiftyAngle: 90,
+        shiftyLerpSpeed: 3
+    }
+    
+    /**
+     * Inputs to the player, should only be set by InputManager in Player class
+    */
+   private inputs: Inputs = {
+       turn: 0,
+       jump: false,
+       shifty: 0
+    }
+    
+    /**
+     * Shared data about the Player meant to be used by states and components
+    */
+   private data: StateData = {
+       worldPosition: new Vector2D(128, 128),
+       velocity: new Vector2D(0, 0),
+       rotationRate: 0,
+
+        height: 0,
+        verticalVelocity: 0,
+    
+        shiftyTargetAngle: 0,
+        shiftyAngle: 0   
+    }
     
     // Components
     private shadow: Shadow;
@@ -53,7 +99,7 @@ export class Snowboarder extends GameObject {
         this.setupInputs();
 
         this.tricksManager = new TricksManager(this);
-        this.state  = new GroundState(this, this.tricksManager);
+        this.playerState  = new GroundState(this, this.tricksManager, this.inputs, this.settings, this.data);
 
         LayerManager.getLayer("snowboarder")?.attach(this.container);
     }
@@ -62,21 +108,21 @@ export class Snowboarder extends GameObject {
 
     private setupInputs() {
         InputManager.getInput("turn").subscribe((newValue) => {
-            this.turnInput = newValue;
+            this.inputs.turn = newValue;
         });
 
         InputManager.getInput("jump").subscribe((newValue) => {
-            this.jumpInput = newValue;
+            this.inputs.jump = newValue;
         });
 
         InputManager.getInput("shifty").subscribe((newValue) => {
-            this.shiftyInput = newValue;
+            this.inputs.turn = newValue;
         });
     }
 
     public reset() {
-        this.worldPosition.set(new Vector2D(128, 128));
-        this.velocity.set(new Vector2D(0, 0));
+        this.data.worldPosition.set(new Vector2D(128, 128));
+        this.data.velocity.set(new Vector2D(0, 0));
         this.rotation = 0;
 
         this.tricksManager.reset();
@@ -88,17 +134,17 @@ export class Snowboarder extends GameObject {
 
     public onCollisionStart(other: SATCollider): void {
         if (other.layer === "obstacle") {
-            if (this.velocity.magnitude() > 10) {
+            if (this.data.velocity.magnitude() > 10) {
                 Game.endGame("You crashed into an obstacle!");
             }
             
-            this.velocity = this.velocity.multiply(-0.5);
+            this.data.velocity = this.data.velocity.multiply(-0.5);
         }
 
         // If we hit a jump and we're not already in the air, add some height and velocity - wont be used until we enter the air
         if (other.layer === "jump" && !this.InAir) {
-            this.height += 1;
-            this.verticalVelocity = this.velocity.magnitude() * 0.0075;
+            this.data.height += 1;
+            this.data.verticalVelocity = this.data.velocity.magnitude() * 0.0075;
         }
 
         if (other.layer === "rail" ) {
@@ -118,16 +164,16 @@ export class Snowboarder extends GameObject {
     // #region Update
 
     public override update(deltaTime: number): void {
-        if (this.jumpInput && !this.InAir) { // Jump
-            this.verticalVelocity += 4;
+        if (this.inputs.jump && !this.InAir) { // Jump
+            this.data.verticalVelocity += 4;
             this.InAir = true;
         };
         
-        this.state.update(deltaTime);
+        this.playerState.update(deltaTime);
         this.updatePhysics(deltaTime); // 2D physics
 
-        this.scale = new Vector2D(1 + this.height * 0.15, 1 + this.height * 0.15);
-        this.shadow.setEffects(this.height, this.snowboard.WorldRotation);
+        this.scale = new Vector2D(1 + this.data.height * 0.15, 1 + this.data.height * 0.15);
+        this.shadow.setEffects(this.data.height, this.snowboard.WorldRotation);
 
         super.update(deltaTime);
     }
@@ -135,11 +181,11 @@ export class Snowboarder extends GameObject {
     private updatePhysics(deltaTime: number) {
         const turnStrength = 250;
 
-        this.rotation += this.rotationRate * deltaTime * turnStrength;
+        this.rotation += this.data.rotationRate * deltaTime * turnStrength;
 
         // Update position
-        this.worldPosition.set(
-            this.worldPosition.add(this.velocity.multiply(deltaTime)),
+        this.data.worldPosition.set(
+            this.data.worldPosition.add(this.data.velocity.multiply(deltaTime)),
         );
     }
 
@@ -148,7 +194,7 @@ export class Snowboarder extends GameObject {
     // #region Getters & Setters
 
     public override get WorldPosition(): Vector2D {
-        return this.worldPosition.clone();
+        return this.data.worldPosition.clone();
     }
 
     public get InAir(): boolean {
@@ -161,21 +207,25 @@ export class Snowboarder extends GameObject {
         this.inAir = value;
    
         if (this.inAir) {
-            this.state.exit();
-            this.state = new AirState(this, this.tricksManager);
+            this.playerState.exit();
+            this.playerState = new AirState(this, this.tricksManager, this.inputs, this.settings, this.data);
         } else {
-            this.state.exit();
-            this.state = new GroundState(this, this.tricksManager);
+            this.playerState.exit();
+            this.playerState = new GroundState(this, this.tricksManager, this.inputs, this.settings, this.data);
         }     
     }
 
-    public get Velocity(): Vector2D {
-        return this.velocity.clone();
+    public get PhysicalPosition(): Vector2D {
+        return this.data.worldPosition.clone();
     }
 
-    public set Velocity(value: Vector2D) {
-        this.velocity = value.clone();
+    public get Velocity(): Vector2D {
+        return this.data.velocity.clone();
     }
+
+    // public set Velocity(value: Vector2D) {
+    //     this.velocity = value.clone();
+    // }
 
     public get BoardWorldRotation(): number {
         return this.snowboard.WorldRotation;
@@ -193,61 +243,61 @@ export class Snowboarder extends GameObject {
         this.body.Rotation = value;
     }
 
-    public get ShiftyInput(): number {
-        return this.shiftyInput;
-    }
+    // public get ShiftyInput(): number {
+    //     return this.shiftyInput;
+    // }
 
-    public get TurnInput(): number {
-        return this.turnInput;
-    }
+    // public get TurnInput(): number {
+    //     return this.turnInput;
+    // }
 
-    public get ShiftyTargetAngle(): number {
-        return this.shiftyTargetAngle;
-    }
+    // public get ShiftyTargetAngle(): number {
+    //     return this.shiftyTargetAngle;
+    // }
 
-    public set ShiftyTargetAngle(targetAngle: number) {
-        this.shiftyTargetAngle = targetAngle;
-    }
+    // public set ShiftyTargetAngle(targetAngle: number) {
+    //     this.shiftyTargetAngle = targetAngle;
+    // }
 
-    public set ShiftyAngle(angle: number) {
-        this.shiftyAngle = angle;
-    }
+    // public set ShiftyAngle(angle: number) {
+    //     this.shiftyAngle = angle;
+    // }
 
-    public get ShiftyAngle(): number {
-        return this.shiftyAngle;
-    }    
+    // public get ShiftyAngle(): number {
+    //     return this.shiftyAngle;
+    // }    
 
-    public get ShiftyLerpSpeed(): number {
-        return this.maxShiftyAngle;
-    }
+    // public get ShiftyLerpSpeed(): number {
+    //     return this.maxShiftyAngle;
+    // }
 
-    public get MaxShiftyAngle(): number {
-        return this.maxShiftyAngle;
-    }
+    // public get MaxShiftyAngle(): number {
+    //     return this.maxShiftyAngle;
+    // }
 
-    public get VerticalVelocity(): number {
-        return this.verticalVelocity;
-    }
+    // public get VerticalVelocity(): number {
+    //     return this.verticalVelocity;
+    // }
 
-    public set VerticalVelocity(value: number) {
-        this.verticalVelocity = value;
-    }
+    // public set VerticalVelocity(value: number) {
+    //     this.verticalVelocity = value;
+    // }
 
-    public get Height(): number {
-        return this.height;
-    }
+    // public get Height(): number {
+    //     return this.height;
+    // }
 
-    public set Height(value: number) {
-        this.height = value;
-    }
+    // public set Height(value: number) {
+    //     this.height = value;
+    // }
 
-    public get RotationRate(): number {
-        return this.rotationRate;
-    }
+    // public get RotationRate(): number {
+    //     return this.rotationRate;
+    // }
 
-    public set RotationRate(value: number) {
-        this.rotationRate = value;
-    }
+    // public set RotationRate(value: number) {
+    //     this.rotationRate = value;
+    // }
 
     // #endregion
 }
