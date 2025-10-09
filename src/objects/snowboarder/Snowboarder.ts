@@ -206,114 +206,6 @@ export class Snowboarder extends GameObject {
 
     // #endregion
 
-    // #region Air
-
-    // private onEnterAir() {
-    //     this.switchToAirShifty();
-    //     this.tricksManager.trickStart(
-    //         this.snowboard.WorldRotation, 
-    //         this.velocity.heading() * 180 / Math.PI
-    //     );
-    // }
-
-    // private airUpdate(deltaTime: number) {
-    //     this.applyAirShiftyUpdate(deltaTime);
-    //     this.airPhysicsUpdate(deltaTime); 
-    //     this.tricksManager.trickUpdate(
-    //         deltaTime,
-    //         this.snowboard.WorldRotation, 
-    //         this.velocity.heading() * 180 / Math.PI
-    //     );
-    // }
-
-    // private switchToAirShifty() {
-    //     this.shiftyAngle = this.shiftyAngle * -1;
-    //     this.rotation = this.body.WorldRotation - 90; // Flip for goofy
-    //     this.snowboard.Rotation = this.shiftyAngle;
-    //     this.body.Rotation = 0 + 90; // Flip for goofy
-    // }
-
-    // private applyAirShiftyUpdate(deltaTime: number) {
-    //     this.shiftyTargetAngle = this.inputs.shifty * -this.config.shiftyMaxAngle;
-    //     this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.config.shiftyLerpSpeed * deltaTime);
-    //     this.snowboard.Rotation = this.shiftyAngle;
-    // }
-
-    // private airPhysicsUpdate(deltaTime: number) {
-    //     this.verticalVelocity -= this.config.gravityHeightStrength  * deltaTime;
-    //     this.height += this.verticalVelocity * deltaTime;
-
-    //     if (this.height <= 0) {
-    //         this.height = 0;
-    //         this.verticalVelocity = 0;
-    //         this.InAir = false;
-    //     }
-    // }
-
-    // #endregion
-
-    // #region Ground
-
-    // private onEnterGround() {
-    //     this.switchToGroundShifty();
-    //     this.tricksManager.endSpin(
-    //         this.snowboard.WorldRotation, 
-    //         this.velocity.heading() * 180 / Math.PI
-    //     );
-    // }
-
-    // private groundUpdate(deltaTime: number) {
-    //     this.applyGroundShiftyUpdate(deltaTime);
-    //     this.groundPhysicsUpdate(deltaTime);
-    // }
-
-    // private switchToGroundShifty() {
-    //     this.shiftyAngle = this.shiftyAngle * -1;
-    //     this.rotation = this.snowboard.WorldRotation;
-    //     this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
-    //     this.snowboard.Rotation = 0; 
-    // }
-
-    // private applyGroundShiftyUpdate(deltaTime: number) {
-    //     this.shiftyTargetAngle = this.inputs.shifty * this.config.shiftyMaxAngle;
-    //     this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.config.shiftyLerpSpeed * deltaTime);
-    //     this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
-    // }
-    
-    // private groundPhysicsUpdate(deltaTime: number) {
-    //     // Apply gravity
-    //     this.velocity.y += this.config.gravityStrength * deltaTime;
-
-    //     // Rotate
-    //     this.rotationRate += (this.inputs.turn - this.rotationRate) * deltaTime * this.config.rotationStrength;
-        
-    //     const radians = (this.snowboard.WorldRotation) * (Math.PI / 180);
-
-    //     // Normal force
-    //     const forward = Vector2D.fromAngle(radians - Math.PI / 2);
-    //     const direction = this.velocity.normalize();
-    //     const projected = direction.projectOnto(forward);
-    //     const normal = projected.subtract(direction);
-
-    //     const strength = Math.pow((1 - normal.magnitude()), 2) * 0.25 + 1;
-    //     const normalDirection = projected.subtract(direction).normalize().multiply(strength);
-
-    //     this.velocity = this.velocity.add(normalDirection.multiply(deltaTime * this.config.slipStrength));
-
-    //     // Friction
-    //     this.velocity = this.velocity.multiply(
-    //         1 - this.config.frictionStrength * deltaTime,
-    //     );
-    // }
-
-    // #endregion
-
-    // #region Rail
-
-    
-
-    // #endregion
-
     // #region Getters & Setters
 
     public override get WorldPosition(): Vector2D {
@@ -361,30 +253,6 @@ export class Snowboarder extends GameObject {
         this.velocity = value.clone();
     }
 
-    public get BoardWorldRotation(): number {
-        return this.snowboard.WorldRotation;
-    }
-
-    public set BoardRotation(value: number) {
-        this.snowboard.Rotation = value;
-    }
-
-    public get BodyWorldRotation(): number {
-        return this.body.WorldRotation;
-    }
-
-    public set BodyRotation(value: number) {
-        this.body.Rotation = value;
-    }
-
-    public get ShiftyInput(): number {
-        return this.inputs.shifty;
-    }
-
-    public get TurnInput(): number {
-        return this.inputs.turn;
-    }
-
     public get ShiftyTargetAngle(): number {
         return this.shiftyTargetAngle;
     }
@@ -399,14 +267,6 @@ export class Snowboarder extends GameObject {
 
     public get ShiftyAngle(): number {
         return this.shiftyAngle;
-    }    
-
-    public get ShiftyLerpSpeed(): number {
-        return this.config.shiftyLerpSpeed;
-    }
-
-    public get MaxShiftyAngle(): number {
-        return this.config.shiftyMaxAngle;
     }
 
     public get VerticalVelocity(): number {
