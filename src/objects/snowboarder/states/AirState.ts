@@ -1,27 +1,12 @@
 import { ExtraMath } from "../../../math/ExtraMath.ts";
-import { PlayerState, SharedStateData, SnowboarderInfo } from "./PlayerState.ts";
+import { PlayerState } from "./PlayerState.ts";
 
 export class AirState extends PlayerState {
-    private shiftyAngle: number = 0;
-    private shiftyTargetAngle: number = 0;
-    private deltaHeight: number = 0;
-    private height: number = 0;
-    private deltaRotation: number = 0;
-
-    constructor(snowboarderInfo: SnowboarderInfo, sharedStateData: SharedStateData) {
-        super(snowboarderInfo, sharedStateData);
-     
-        this.shiftyAngle = sharedStateData?.shiftyAngle ?? 0;
-        this.shiftyTargetAngle = sharedStateData?.shiftyTargetAngle ?? 0;
-        this.deltaHeight = sharedStateData?.deltaHeight ?? 0;
-        this.height = sharedStateData?.height ?? 0;
-    }
-
     public override enter(): void {
         this.switchToAirShifty();
         this.tricksManager.trickStart(
             this.board.WorldRotation, 
-            this.player.Velocity.heading() * 180 / Math.PI
+            this.velocity.heading() * 180 / Math.PI
         );
     }
 
@@ -36,12 +21,14 @@ export class AirState extends PlayerState {
     }
 
     public override update(deltaTime: number): void {
+
+
         super.update(deltaTime);
 
         this.tricksManager.trickUpdate(
             deltaTime,
             this.board.Rotation, 
-            this.player.Velocity.heading() * 180 / Math.PI
+            this.velocity.heading() * 180 / Math.PI
         );
     }
 
@@ -53,10 +40,10 @@ export class AirState extends PlayerState {
 
     protected override physicsUpdate(deltaTime: number): void {
         this.deltaHeight -= 16  * deltaTime;
-        this.height += this.deltaHeight * deltaTime;
+        this.player.Height += this.deltaHeight * deltaTime;
 
-        if (this.height <= 0) {
-            this.height = 0;
+        if (this.player.Height <= 0) {
+            this.player.Height = 0;
             this.deltaHeight = 0;
             this.player.InAir = false; // This will trigger the player to exit the air state
         }
@@ -65,17 +52,17 @@ export class AirState extends PlayerState {
 
         // Update position
         this.player.PhysicalPosition.set(
-            this.player.PhysicalPosition.add(this.player.Velocity.multiply(deltaTime)),
+            this.player.PhysicalPosition.add(this.velocity.multiply(deltaTime)),
         );
     }
 
-    protected override getSharedStateData(): SharedStateData {
-        return {
-            shiftyAngle: this.shiftyAngle,
-            shiftyTargetAngle: this.shiftyTargetAngle,
-            deltaHeight: this.deltaHeight,
-            height: this.height,
-            deltaRotation: this.deltaRotation,
-        };
-    }
+    // protected override getSharedStateData(): SharedStateData {
+    //     return {
+    //         shiftyAngle: this.shiftyAngle,
+    //         shiftyTargetAngle: this.shiftyTargetAngle,
+    //         deltaHeight: this.deltaHeight,
+    //         height: this.height,
+    //         deltaRotation: this.deltaRotation,
+    //     };
+    // }
 }

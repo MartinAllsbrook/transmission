@@ -1,3 +1,4 @@
+import { Vector2D } from "../../../math/Vector2D.ts";
 import { Body } from "../Body.ts";
 import { Head } from "../Head.ts";
 import { Snowboard } from "../Snowboard.ts";
@@ -15,11 +16,11 @@ export interface SnowboarderInfo {
 }
 
 export interface SharedStateData {
-    shiftyAngle?: number;
-    shiftyTargetAngle?: number;
-    deltaRotation?: number;
-    deltaHeight?: number;
-    height?: number;
+    shiftyAngle: number;
+    shiftyTargetAngle: number;
+    velocity: Vector2D;
+    deltaRotation: number;
+    deltaHeight: number;
 }
 
 export abstract class PlayerState {
@@ -31,10 +32,14 @@ export abstract class PlayerState {
     protected inputs: PlayerInputs;
     protected config: PlayerConfig;
 
-    protected sharedStateData: SharedStateData;
+    protected velocity: Vector2D;
+    protected shiftyAngle: number;
+    protected shiftyTargetAngle: number;
+    protected deltaHeight: number;
+    protected deltaRotation: number;
 
-    constructor(snowboarderInfo: SnowboarderInfo, sharedStateData: SharedStateData) {
-        this.player = snowboarderInfo.player ;
+    constructor(snowboarderInfo: SnowboarderInfo, sharedStateData?: SharedStateData) {
+        this.player = snowboarderInfo.player;
         this.body = snowboarderInfo.body;
         this.head = snowboarderInfo.head;
         this.board = snowboarderInfo.board;
@@ -42,9 +47,21 @@ export abstract class PlayerState {
         this.inputs = snowboarderInfo.inputs;
         this.config = snowboarderInfo.config;
 
-        this.sharedStateData = sharedStateData;
+        if (!sharedStateData) {
+            sharedStateData = {
+                velocity: new Vector2D(0, 0),
+                shiftyAngle: 0,
+                shiftyTargetAngle: 0,
+                deltaHeight: 0,
+                deltaRotation: 0,
+            }
+        }
 
-        this.enter();
+        this.velocity = sharedStateData.velocity;
+        this.shiftyAngle = sharedStateData.shiftyAngle;
+        this.shiftyTargetAngle = sharedStateData.shiftyTargetAngle;
+        this.deltaHeight = sharedStateData.deltaHeight;
+        this.deltaRotation = sharedStateData.deltaRotation;
     }
 
     public abstract enter(): void;
@@ -62,5 +79,17 @@ export abstract class PlayerState {
 
     protected abstract physicsUpdate(deltaTime: number): void 
 
-    protected abstract getSharedStateData(): SharedStateData
+    protected getSharedStateData(): SharedStateData {
+        return {
+            velocity: this.velocity.clone(), // Not sure if this clone is necessary but just in case
+            shiftyAngle: this.shiftyAngle,
+            shiftyTargetAngle: this.shiftyTargetAngle,
+            deltaHeight: this.deltaHeight,
+            deltaRotation: this.deltaRotation,
+        };
+    }
+
+    public get Velocity(): Vector2D {
+        return this.velocity;
+    }
 }

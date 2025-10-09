@@ -66,20 +66,10 @@ export class Snowboarder extends GameObject {
 
     private state: PlayerState;
         
-    /** The position of the player in the world, used for world scrolling */
     public physicalPosition: Vector2D = this.config.startPosition.clone();
-    
-    // Physics & State
-    private velocity: Vector2D = new Vector2D(0, 0);
-    private rotationRate: number = 0;
-    
-    private inAir = false;
-    private verticalVelocity: number = 0;
     private height: number = 0;
-    
-    // Shifty
-    private shiftyTargetAngle: number = 0;
-    private shiftyAngle: number = 0;
+
+    private inAir = false;
     
     // Components
     private shadow: Shadow;
@@ -107,7 +97,8 @@ export class Snowboarder extends GameObject {
             tricksManager: this.tricksManager,
             inputs: this.inputs,
             config: this.config,
-        }, {});
+        });
+
         this.state.enter();
     }
 
@@ -129,8 +120,19 @@ export class Snowboarder extends GameObject {
 
     public reset() {
         this.physicalPosition.set(new Vector2D(128, 128));
-        this.velocity.set(new Vector2D(0, 0));
         this.rotation = 0;
+
+        this.state = new GroundState({
+            player: this,
+            body: this.body,
+            head: this.body.Head,
+            board: this.snowboard,
+            tricksManager: this.tricksManager,
+            inputs: this.inputs,
+            config: this.config,
+        });
+
+        this.state.enter();
 
         this.tricksManager.reset();
     }
@@ -141,17 +143,17 @@ export class Snowboarder extends GameObject {
 
     public onCollisionStart(other: SATCollider): void {
         if (other.layer === "obstacle") {
-            if (this.velocity.magnitude() > 10) {
+            // if (this.velocity.magnitude() > 10) {
                 Game.endGame("You crashed into an obstacle!");
-            }
+            // }
             
-            this.velocity = this.velocity.multiply(-0.5);
+            // this.velocity = this.velocity.multiply(-0.5);
         }
 
         // If we hit a jump and we're not already in the air, add some height and velocity - wont be used until we enter the air
         if (other.layer === "jump" && !this.InAir) {
             this.height += 1;
-            this.verticalVelocity = this.velocity.magnitude() * 0.0075;
+            // this.verticalVelocity = this.velocity.magnitude() * 0.0075;
         }
 
         if (other.layer === "rail" ) {
@@ -171,11 +173,6 @@ export class Snowboarder extends GameObject {
     // #region Update
 
     public override update(deltaTime: number): void {
-        if (this.inputs.jump && !this.InAir) { // Jump
-            this.verticalVelocity += this.config.jumpStrength;
-            this.InAir = true;
-        };
-        
         this.state.update(deltaTime);
         
         // this.updatePhysics(deltaTime); // 2D physics
@@ -229,6 +226,8 @@ export class Snowboarder extends GameObject {
                 inputs: this.inputs,
                 config: this.config,
             }, shared);
+
+            this.state.enter();
         } else {
             const shared = this.state.exit();
 
@@ -241,15 +240,9 @@ export class Snowboarder extends GameObject {
                 inputs: this.inputs,
                 config: this.config,
             }, shared);
+
+            this.state.enter();
         }     
-    }
-
-    public get Velocity(): Vector2D {
-        return this.velocity.clone();
-    }
-
-    public set Velocity(value: Vector2D) {
-        this.velocity = value.clone();
     }
 
     public override get WorldPosition(): Vector2D {
@@ -257,52 +250,20 @@ export class Snowboarder extends GameObject {
     }
 
     public get PhysicalPosition(): Vector2D {
-        return this.physicalPosition.clone();
+        return this.physicalPosition;
     }
 
-    public set PhysicalPosition(value: Vector2D) {
-        this.physicalPosition = value.clone();
+    public get Height(): number {
+        return this.height;
     }
 
-    // public get ShiftyTargetAngle(): number {
-    //     return this.shiftyTargetAngle;
-    // }
+    public set Height(value: number) {
+        this.height = value;
+    }
 
-    // public set ShiftyTargetAngle(targetAngle: number) {
-    //     this.shiftyTargetAngle = targetAngle;
-    // }
-
-    // public set ShiftyAngle(angle: number) {
-    //     this.shiftyAngle = angle;
-    // }
-
-    // public get ShiftyAngle(): number {
-    //     return this.shiftyAngle;
-    // }
-
-    // public get VerticalVelocity(): number {
-    //     return this.verticalVelocity;
-    // }
-
-    // public set VerticalVelocity(value: number) {
-    //     this.verticalVelocity = value;
-    // }
-
-    // public get Height(): number {
-    //     return this.height;
-    // }
-
-    // public set Height(value: number) {
-    //     this.height = value;
-    // }
-
-    // public get RotationRate(): number {
-    //     return this.rotationRate;
-    // }
-
-    // public set RotationRate(value: number) {
-    //     this.rotationRate = value;
-    // }
+    public get Velocity(): Vector2D {
+        return this.state.Velocity;
+    }
 
     // #endregion
 }
