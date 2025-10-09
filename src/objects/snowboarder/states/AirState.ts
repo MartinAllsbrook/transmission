@@ -3,54 +3,44 @@ import { PlayerState } from "./PlayerState.ts";
 
 export class AirState extends PlayerState {
     public override enter(): void {
-        const player = this.player;
-
         this.switchToAirShifty();
         this.tricksManager.trickStart(
-            player.BoardWorldRotation, 
-            player.Velocity.heading() * 180 / Math.PI
+            this.board.WorldRotation, 
+            this.player.Velocity.heading() * 180 / Math.PI
         );
     }
 
     private switchToAirShifty() {
-        const player = this.player;
-
-        player.ShiftyAngle = player.ShiftyAngle * -1;
-        player.Rotation = player.BoardWorldRotation - 90; // Flip for goofy
-        player.BoardRotation = player.ShiftyAngle;
-        player.BodyRotation = 0 + 90; // Flip for goofy
+        this.player.ShiftyAngle = this.player.ShiftyAngle * -1;
+        this.player.Rotation = this.player.BoardWorldRotation - 90; // Flip for goofy
+        this.player.BoardRotation = this.player.ShiftyAngle;
+        this.player.BodyRotation = 0 + 90; // Flip for goofy
     }
 
     public override update(deltaTime: number): void {
-        const player = this.player;
-
         super.update(deltaTime);
 
         this.tricksManager.trickUpdate(
             deltaTime,
-            player.BoardRotation, 
-            player.Velocity.heading() * 180 / Math.PI
+            this.player.BoardRotation, 
+            this.player.Velocity.heading() * 180 / Math.PI
         );
     }
 
     protected override shiftyUpdate(deltaTime: number): void {
-        const player = this.player;
-
-        player.ShiftyTargetAngle = player.ShiftyInput * -player.MaxShiftyAngle;
-        player.ShiftyAngle = ExtraMath.lerpSafe(player.ShiftyAngle, player.ShiftyTargetAngle, player.ShiftyLerpSpeed * deltaTime);
-        player.Rotation = player.ShiftyAngle;
+        this.player.ShiftyTargetAngle = this.player.ShiftyInput * -this.player.MaxShiftyAngle;
+        this.player.ShiftyAngle = ExtraMath.lerpSafe(this.player.ShiftyAngle, this.player.ShiftyTargetAngle, this.player.ShiftyLerpSpeed * deltaTime);
+        this.player.Rotation = this.player.ShiftyAngle;
     }
 
     protected override physicsUpdate(deltaTime: number): void {
-        const player = this.player;
+        this.player.VerticalVelocity -= 16  * deltaTime;
+        this.player.Height += this.player.VerticalVelocity * deltaTime;
 
-        player.VerticalVelocity -= 16  * deltaTime;
-        player.Height += player.VerticalVelocity * deltaTime;
-
-        if (player.Height <= 0) {
-            player.Height = 0;
-            player.VerticalVelocity = 0;
-            player.InAir = false; // This will trigger the player to exit the air state
+        if (this.player.Height <= 0) {
+            this.player.Height = 0;
+            this.player.VerticalVelocity = 0;
+            this.player.InAir = false; // This will trigger the player to exit the air state
         }
     }
 

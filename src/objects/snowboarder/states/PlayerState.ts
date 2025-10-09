@@ -1,7 +1,7 @@
 import { Body } from "../Body.ts";
 import { Head } from "../Head.ts";
 import { Snowboard } from "../Snowboard.ts";
-import { Snowboarder } from "../Snowboarder.ts";
+import { PlayerConfig, PlayerInputs, Snowboarder } from "../Snowboarder.ts";
 import { TricksManager } from "../TricksManager.ts";
 
 export abstract class PlayerState {
@@ -10,7 +10,8 @@ export abstract class PlayerState {
     protected head: Head;
     protected board: Snowboard;
     protected tricksManager: TricksManager;
-
+    protected inputs: PlayerInputs;
+    protected config: PlayerConfig;
 
     constructor(
         snowboarder: Snowboarder, 
@@ -18,12 +19,16 @@ export abstract class PlayerState {
         head: Head, 
         board: Snowboard,
         tricksManager: TricksManager,
+        inputs: PlayerInputs,
+        config: PlayerConfig,
     ) {
         this.player = snowboarder;
         this.body = body;
         this.head = head;
         this.board = board;
         this.tricksManager = tricksManager;
+        this.inputs = inputs;
+        this.config = config;
     }
 
     public abstract enter(): void;
