@@ -10,14 +10,53 @@ import { Shadow } from "./Shadow.ts";
 import { InputManager } from "../../inputs/InputManager.ts";
 import { TricksManager } from "./TricksManager.ts";
   
+export interface PlayerConfig {
+    // Initialization
+    startPosition: Vector2D;
+
+    // 2D Physics
+    frictionStrength: number;
+    gravityStrength: number;
+    slipStrength: number;
+    
+    // Rotation
+    rotationSpeed: number;
+    rotationStrength: number;
+
+    // Height & Air
+    gravityHeightStrength: number;
+    jumpStrength: number;
+
+    // Shifty
+    shiftyLerpSpeed: number;
+    shiftyMaxAngle: number;
+}
+
 export class Snowboarder extends GameObject {
+    private readonly config: PlayerConfig = {
+        startPosition: new Vector2D(128, 128),
+
+        frictionStrength: 0.1, // Raising this lowers top speed (max 1)
+        gravityStrength: 140, // Raising this value makes the game feel faster
+        slipStrength: 325, // Raising this value makes turning more responsive
+        
+        rotationSpeed: 250,
+        rotationStrength: 10,
+
+        gravityHeightStrength: 16,
+        jumpStrength: 4,
+
+        shiftyLerpSpeed: 3, // Higher is snappier
+        shiftyMaxAngle: 90, // Degrees
+    };
+
     // Inputs
     private turnInput: number = 0;
     private jumpInput: boolean = false;
     private shiftyInput: number = 0;
         
     /** The position of the player in the world, used for world scrolling */
-    public worldPosition: Vector2D = new Vector2D(128, 128);
+    public worldPosition: Vector2D = this.config.startPosition.clone();
     
     // Physics & State
     private velocity: Vector2D = new Vector2D(0, 0);
@@ -29,9 +68,7 @@ export class Snowboarder extends GameObject {
     
     // Shifty
     private shiftyTargetAngle: number = 0;
-    private shiftyAngle: number = 0;    
-    private shiftyLerpSpeed: number = 3;
-    private maxShiftyAngle: number = 90;
+    private shiftyAngle: number = 0;
     
     // Components
     private shadow: Shadow;
@@ -142,9 +179,7 @@ export class Snowboarder extends GameObject {
     }
     
     private updatePhysics(deltaTime: number) {
-        const turnStrength = 250;
-
-        this.rotation += this.rotationRate * deltaTime * turnStrength;
+        this.rotation += this.rotationRate * deltaTime * this.config.rotationSpeed;
 
         // Update position
         this.worldPosition.set(
@@ -182,13 +217,13 @@ export class Snowboarder extends GameObject {
     }
 
     private applyAirShiftyUpdate(deltaTime: number) {
-        this.shiftyTargetAngle = this.shiftyInput * -this.maxShiftyAngle;
-        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
+        this.shiftyTargetAngle = this.shiftyInput * -this.config.shiftyMaxAngle;
+        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.config.shiftyLerpSpeed * deltaTime);
         this.snowboard.Rotation = this.shiftyAngle;
     }
 
     private airPhysicsUpdate(deltaTime: number) {
-        this.verticalVelocity -= 16  * deltaTime;
+        this.verticalVelocity -= this.config.gravityHeightStrength  * deltaTime;
         this.height += this.verticalVelocity * deltaTime;
 
         if (this.height <= 0) {
@@ -223,21 +258,17 @@ export class Snowboarder extends GameObject {
     }
 
     private applyGroundShiftyUpdate(deltaTime: number) {
-        this.shiftyTargetAngle = this.shiftyInput * this.maxShiftyAngle;
-        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
+        this.shiftyTargetAngle = this.shiftyInput * this.config.shiftyMaxAngle;
+        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.config.shiftyLerpSpeed * deltaTime);
         this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
     }
     
     private groundPhysicsUpdate(deltaTime: number) {
-        const frictionStrength = 0.1; // Raising this lowers top speed (max 1)
-        const gravityStrength = 140; // Raising this value makes the game feel faster
-        const slipStrength = 325; // Raising this value makes turning more responsive
-
         // Apply gravity
-        this.velocity.y += gravityStrength * deltaTime;
+        this.velocity.y += this.config.gravityStrength * deltaTime;
 
         // Rotate
-        this.rotationRate += (this.turnInput - this.rotationRate) * deltaTime * 10;
+        this.rotationRate += (this.turnInput - this.rotationRate) * deltaTime * this.config.rotationStrength;
         
         const radians = (this.snowboard.WorldRotation) * (Math.PI / 180);
 
@@ -250,11 +281,11 @@ export class Snowboarder extends GameObject {
         const strength = Math.pow((1 - normal.magnitude()), 2) * 0.25 + 1;
         const normalDirection = projected.subtract(direction).normalize().multiply(strength);
 
-        this.velocity = this.velocity.add(normalDirection.multiply(deltaTime * slipStrength));
+        this.velocity = this.velocity.add(normalDirection.multiply(deltaTime * this.config.slipStrength));
 
         // Friction
         this.velocity = this.velocity.multiply(
-            1 - frictionStrength * deltaTime,
+            1 - this.config.frictionStrength * deltaTime,
         );
     }
 
@@ -338,11 +369,11 @@ export class Snowboarder extends GameObject {
     }    
 
     public get ShiftyLerpSpeed(): number {
-        return this.maxShiftyAngle;
+        return this.config.shiftyLerpSpeed;
     }
 
     public get MaxShiftyAngle(): number {
-        return this.maxShiftyAngle;
+        return this.config.shiftyMaxAngle;
     }
 
     public get VerticalVelocity(): number {
