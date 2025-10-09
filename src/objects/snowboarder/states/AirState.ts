@@ -12,7 +12,10 @@ export class AirState extends PlayerState {
 
     private switchToAirShifty() {
         this.player.ShiftyAngle = this.player.ShiftyAngle * -1;
-        this.player.Rotation = this.player.BoardWorldRotation - 90; // Flip for goofy
+
+        console.log(this.player.BoardWorldRotation)
+
+        this.player.Rotation = this.player.BodyWorldRotation - 90; // Flip for goofy
         this.player.BoardRotation = this.player.ShiftyAngle;
         this.player.BodyRotation = 0 + 90; // Flip for goofy
     }
@@ -30,7 +33,7 @@ export class AirState extends PlayerState {
     protected override shiftyUpdate(deltaTime: number): void {
         this.player.ShiftyTargetAngle = this.player.ShiftyInput * -this.player.MaxShiftyAngle;
         this.player.ShiftyAngle = ExtraMath.lerpSafe(this.player.ShiftyAngle, this.player.ShiftyTargetAngle, this.player.ShiftyLerpSpeed * deltaTime);
-        this.player.Rotation = this.player.ShiftyAngle;
+        this.player.BoardRotation = this.player.ShiftyAngle;
     }
 
     protected override physicsUpdate(deltaTime: number): void {

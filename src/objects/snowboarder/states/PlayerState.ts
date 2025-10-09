@@ -29,6 +29,8 @@ export abstract class PlayerState {
         this.tricksManager = tricksManager;
         this.inputs = inputs;
         this.config = config;
+
+        this.enter();
     }
 
     public abstract enter(): void;

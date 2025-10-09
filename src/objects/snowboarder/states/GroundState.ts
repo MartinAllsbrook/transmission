@@ -30,7 +30,10 @@ export class GroundState extends PlayerState {
         const slipStrength = 325; // Raising this value makes turning more responsive
 
         // Apply gravity
-        this.player.Velocity.y += gravityStrength * deltaTime;
+        this.player.Velocity = new Vector2D(
+            this.player.Velocity.x,
+            this.player.Velocity.y + gravityStrength * deltaTime,
+        )
 
         // Rotate
         this.player.RotationRate += (this.player.TurnInput - this.player.RotationRate) * deltaTime * 10;
