@@ -18,13 +18,13 @@ export class GroundState extends PlayerState {
         this.board.Rotation = 0; 
     }
 
-    public override update(deltaTime: number): void {
+    public override update(deltaTime: number): void {        
+        super.update(deltaTime);
+        
         if (this.inputs.jump) {
             this.deltaHeight += this.config.jumpStrength;
             this.player.InAir = true;
         }
-
-        super.update(deltaTime);
     }
 
     public override shiftyUpdate(deltaTime: number): void {
@@ -67,8 +67,6 @@ export class GroundState extends PlayerState {
         this.player.PhysicalPosition.set(
             this.player.PhysicalPosition.add(this.velocity.multiply(deltaTime)),
         );
-
-        console.log(this.velocity.magnitude(), this.player.PhysicalPosition);
     }
 
     // protected override getSharedStateData(): SharedStateData {

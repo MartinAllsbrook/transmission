@@ -66,11 +66,11 @@ export class Snowboarder extends GameObject {
 
     private state: PlayerState;
         
-    public physicalPosition: Vector2D = this.config.startPosition.clone();
+    private physicalPosition: Vector2D = this.config.startPosition.clone();
     private height: number = 0;
 
-    private inAir = false;
-    
+    private inAir: boolean = false;
+
     // Components
     private shadow: Shadow;
     private snowboard: Snowboard;
@@ -121,6 +121,8 @@ export class Snowboarder extends GameObject {
     public reset() {
         this.physicalPosition.set(new Vector2D(128, 128));
         this.rotation = 0;
+        this.height = 0;
+        this.inAir = false;
 
         this.state = new GroundState({
             player: this,
@@ -174,40 +176,16 @@ export class Snowboarder extends GameObject {
 
     public override update(deltaTime: number): void {
         this.state.update(deltaTime);
-        
-        // this.updatePhysics(deltaTime); // 2D physics
-
-        // const speed = this.velocity.magnitude();
-        // if (speed > 300) {
-        //     this.timeGoingFast += deltaTime;
-        // } else if (this.timeGoingFast > 2) {
-        //     const points = Math.floor(this.timeGoingFast * 10);
-        //     this.addScore(points);
-        //     this.timeGoingFast = 0;
-        // }
 
         this.scale = new Vector2D(1 + this.height * 0.15, 1 + this.height * 0.15);
         this.shadow.setEffects(this.height, this.snowboard.WorldRotation);
 
         super.update(deltaTime);
     }
-    
-    // private updatePhysics(deltaTime: number) {
-    //     this.rotation += this.rotationRate * deltaTime * this.config.rotationSpeed;
-
-    //     // Update position
-    //     this.physicalPosition.set(
-    //         this.physicalPosition.add(this.velocity.multiply(deltaTime)),
-    //     );
-    // }
 
     // #endregion
 
     // #region Getters & Setters
-
-    public get InAir(): boolean {
-        return this.inAir;
-    }
 
     public set InAir(value: boolean) {
         if (this.inAir === value) return;

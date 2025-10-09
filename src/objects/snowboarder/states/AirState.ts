@@ -21,8 +21,6 @@ export class AirState extends PlayerState {
     }
 
     public override update(deltaTime: number): void {
-
-
         super.update(deltaTime);
 
         this.tricksManager.trickUpdate(
