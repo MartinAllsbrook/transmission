@@ -1,10 +1,10 @@
 import { ExtraMath } from "../../../math/ExtraMath.ts";
 import { Vector2D } from "../../../math/Vector2D.ts";
-import { State } from "./State.ts";
+import { PlayerState } from "./PlayerState.ts";
 
-export class GroundState extends State {
+export class GroundState extends PlayerState {
     public override enter(): void {
-        const player = this.snowboarder;
+        const player = this.player;
 
         this.switchToGroundShifty();
         this.tricksManager.endSpin(
@@ -14,7 +14,7 @@ export class GroundState extends State {
     }
 
     private switchToGroundShifty() {
-        const player = this.snowboarder;
+        const player = this.player;
 
         player.ShiftyAngle = player.ShiftyAngle * -1;
         player.Rotation = player.BoardWorldRotation;
@@ -23,7 +23,7 @@ export class GroundState extends State {
     }
 
     public override shiftyUpdate(deltaTime: number): void {
-        const player = this.snowboarder;
+        const player = this.player;
 
         player.ShiftyTargetAngle = player.ShiftyInput * player.MaxShiftyAngle;
         player.ShiftyAngle = ExtraMath.lerpSafe(player.ShiftyAngle, player.ShiftyTargetAngle, player.ShiftyLerpSpeed * deltaTime);
@@ -31,7 +31,7 @@ export class GroundState extends State {
     }
 
     public override physicsUpdate(deltaTime: number): void {
-        const player = this.snowboarder;
+        const player = this.player;
         
         const frictionStrength = 0.1; // Raising this lowers top speed (max 1)
         const gravityStrength = 140; // Raising this value makes the game feel faster

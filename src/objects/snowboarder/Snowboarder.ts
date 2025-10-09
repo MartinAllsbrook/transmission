@@ -158,7 +158,7 @@ export class Snowboarder extends GameObject {
 
     public override update(deltaTime: number): void {
         if (this.inputs.jump && !this.InAir) { // Jump
-            this.verticalVelocity += 4;
+            this.verticalVelocity += this.config.jumpStrength;
             this.InAir = true;
         };
         
