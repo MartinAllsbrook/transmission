@@ -156,107 +156,107 @@ export class Snowboarder extends GameObject {
 
     // #region Air
 
-    // private onEnterAir() {
-    //     this.switchToAirShifty();
-    //     this.tricksManager.trickStart(
-    //         this.snowboard.WorldRotation, 
-    //         this.velocity.heading() * 180 / Math.PI
-    //     );
-    // }
+    private onEnterAir() {
+        this.switchToAirShifty();
+        this.tricksManager.trickStart(
+            this.snowboard.WorldRotation, 
+            this.velocity.heading() * 180 / Math.PI
+        );
+    }
 
-    // private airUpdate(deltaTime: number) {
-    //     this.applyAirShiftyUpdate(deltaTime);
-    //     this.airPhysicsUpdate(deltaTime); 
-    //     this.tricksManager.trickUpdate(
-    //         deltaTime,
-    //         this.snowboard.WorldRotation, 
-    //         this.velocity.heading() * 180 / Math.PI
-    //     );
-    // }
+    private airUpdate(deltaTime: number) {
+        this.applyAirShiftyUpdate(deltaTime);
+        this.airPhysicsUpdate(deltaTime); 
+        this.tricksManager.trickUpdate(
+            deltaTime,
+            this.snowboard.WorldRotation, 
+            this.velocity.heading() * 180 / Math.PI
+        );
+    }
 
-    // private switchToAirShifty() {
-    //     this.shiftyAngle = this.shiftyAngle * -1;
-    //     this.rotation = this.body.WorldRotation - 90; // Flip for goofy
-    //     this.snowboard.Rotation = this.shiftyAngle;
-    //     this.body.Rotation = 0 + 90; // Flip for goofy
-    // }
+    private switchToAirShifty() {
+        this.shiftyAngle = this.shiftyAngle * -1;
+        this.rotation = this.body.WorldRotation - 90; // Flip for goofy
+        this.snowboard.Rotation = this.shiftyAngle;
+        this.body.Rotation = 0 + 90; // Flip for goofy
+    }
 
-    // private applyAirShiftyUpdate(deltaTime: number) {
-    //     this.shiftyTargetAngle = this.shiftyInput * -this.maxShiftyAngle;
-    //     this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
-    //     this.snowboard.Rotation = this.shiftyAngle;
-    // }
+    private applyAirShiftyUpdate(deltaTime: number) {
+        this.shiftyTargetAngle = this.shiftyInput * -this.maxShiftyAngle;
+        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
+        this.snowboard.Rotation = this.shiftyAngle;
+    }
 
-    // private airPhysicsUpdate(deltaTime: number) {
-    //     this.verticalVelocity -= 16  * deltaTime;
-    //     this.height += this.verticalVelocity * deltaTime;
+    private airPhysicsUpdate(deltaTime: number) {
+        this.verticalVelocity -= 16  * deltaTime;
+        this.height += this.verticalVelocity * deltaTime;
 
-    //     if (this.height <= 0) {
-    //         this.height = 0;
-    //         this.verticalVelocity = 0;
-    //         this.InAir = false;
-    //     }
-    // }
+        if (this.height <= 0) {
+            this.height = 0;
+            this.verticalVelocity = 0;
+            this.InAir = false;
+        }
+    }
 
     // #endregion
 
     // #region Ground
 
-    // private onEnterGround() {
-    //     this.switchToGroundShifty();
-    //     this.tricksManager.endSpin(
-    //         this.snowboard.WorldRotation, 
-    //         this.velocity.heading() * 180 / Math.PI
-    //     );
-    // }
+    private onEnterGround() {
+        this.switchToGroundShifty();
+        this.tricksManager.endSpin(
+            this.snowboard.WorldRotation, 
+            this.velocity.heading() * 180 / Math.PI
+        );
+    }
 
-    // private groundUpdate(deltaTime: number) {
-    //     this.applyGroundShiftyUpdate(deltaTime);
-    //     this.groundPhysicsUpdate(deltaTime);
-    // }
+    private groundUpdate(deltaTime: number) {
+        this.applyGroundShiftyUpdate(deltaTime);
+        this.groundPhysicsUpdate(deltaTime);
+    }
 
-    // private switchToGroundShifty() {
-    //     this.shiftyAngle = this.shiftyAngle * -1;
-    //     this.rotation = this.snowboard.WorldRotation;
-    //     this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
-    //     this.snowboard.Rotation = 0; 
-    // }
+    private switchToGroundShifty() {
+        this.shiftyAngle = this.shiftyAngle * -1;
+        this.rotation = this.snowboard.WorldRotation;
+        this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
+        this.snowboard.Rotation = 0; 
+    }
 
-    // private applyGroundShiftyUpdate(deltaTime: number) {
-    //     this.shiftyTargetAngle = this.shiftyInput * this.maxShiftyAngle;
-    //     this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
-    //     this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
-    // }
+    private applyGroundShiftyUpdate(deltaTime: number) {
+        this.shiftyTargetAngle = this.shiftyInput * this.maxShiftyAngle;
+        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.shiftyLerpSpeed * deltaTime);
+        this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
+    }
     
-    // private groundPhysicsUpdate(deltaTime: number) {
-    //     const frictionStrength = 0.1; // Raising this lowers top speed (max 1)
-    //     const gravityStrength = 140; // Raising this value makes the game feel faster
-    //     const slipStrength = 325; // Raising this value makes turning more responsive
+    private groundPhysicsUpdate(deltaTime: number) {
+        const frictionStrength = 0.1; // Raising this lowers top speed (max 1)
+        const gravityStrength = 140; // Raising this value makes the game feel faster
+        const slipStrength = 325; // Raising this value makes turning more responsive
 
-    //     // Apply gravity
-    //     this.velocity.y += gravityStrength * deltaTime;
+        // Apply gravity
+        this.velocity.y += gravityStrength * deltaTime;
 
-    //     // Rotate
-    //     this.rotationRate += (this.turnInput - this.rotationRate) * deltaTime * 10;
+        // Rotate
+        this.rotationRate += (this.turnInput - this.rotationRate) * deltaTime * 10;
         
-    //     const radians = (this.snowboard.WorldRotation) * (Math.PI / 180);
+        const radians = (this.snowboard.WorldRotation) * (Math.PI / 180);
 
-    //     // Normal force
-    //     const forward = Vector2D.fromAngle(radians - Math.PI / 2);
-    //     const direction = this.velocity.normalize();
-    //     const projected = direction.projectOnto(forward);
-    //     const normal = projected.subtract(direction);
+        // Normal force
+        const forward = Vector2D.fromAngle(radians - Math.PI / 2);
+        const direction = this.velocity.normalize();
+        const projected = direction.projectOnto(forward);
+        const normal = projected.subtract(direction);
 
-    //     const strength = Math.pow((1 - normal.magnitude()), 2) * 0.25 + 1;
-    //     const normalDirection = projected.subtract(direction).normalize().multiply(strength);
+        const strength = Math.pow((1 - normal.magnitude()), 2) * 0.25 + 1;
+        const normalDirection = projected.subtract(direction).normalize().multiply(strength);
 
-    //     this.velocity = this.velocity.add(normalDirection.multiply(deltaTime * slipStrength));
+        this.velocity = this.velocity.add(normalDirection.multiply(deltaTime * slipStrength));
 
-    //     // Friction
-    //     this.velocity = this.velocity.multiply(
-    //         1 - frictionStrength * deltaTime,
-    //     );
-    // }
+        // Friction
+        this.velocity = this.velocity.multiply(
+            1 - frictionStrength * deltaTime,
+        );
+    }
 
     // #endregion
 
