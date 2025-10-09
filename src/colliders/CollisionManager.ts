@@ -1,21 +1,23 @@
 import { SATCollider } from "./SATCollider.ts";
 
-export type CollisionLayer = "default" | "player" | "obstacle" | "jump";
+export type CollisionLayer = "default" | "player" | "obstacle" | "jump" | "rail";
 
 export const LAYERS: CollisionLayer[] = [
     "default",
     "player",
     "obstacle",
     "jump",
+    "rail",
 ];
 
 // Developer-defined collision matrix. Columns correspond to LAYERS by index.
 const collisionMatrix: boolean[][] = [
-    //  Default     Player      Obstacle    Feature
+    // Default Player Obstacle Jump
     [false], // Default
     [false, false], // Player
     [false, true, false], // Obstacle
-    [false, true, false, false], // Feature
+    [false, true, false, false], // Jump
+    [false, true, false, false, false], // Rails
 ];
 
 export class CollisionManager {

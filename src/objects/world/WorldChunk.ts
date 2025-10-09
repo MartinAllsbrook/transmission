@@ -3,6 +3,7 @@ import { Obstacle } from "src/objects/world/Obstacle.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { Jump } from "./Jump.ts";
 import { World } from "./World.ts";
+import { Rail } from "./features/Rail.ts";
 
 export class WorldChunk extends GameObject {
     chunkPosition: Vector2D;
@@ -33,6 +34,10 @@ export class WorldChunk extends GameObject {
             this.createRandomJump();
         }
 
+        if (Math.random() < 0.1) {
+            this.createRandomRail();
+        }
+
         for (let i = 0; i < 4; i++) {
             this.createRandomObstacle();
         }
@@ -45,9 +50,9 @@ export class WorldChunk extends GameObject {
 
         const worldPosition = this.WorldPosition.add(new Vector2D(x, y));
 
-        // if (this.world.distanceToTrail(worldPosition) < 192) {
-        //     return;
-        // }
+        if (this.world.distanceToTrail(worldPosition) < 192) {
+            return;
+        }
 
         new Obstacle(this, new Vector2D(x, y), this.world)
     }
@@ -57,6 +62,13 @@ export class WorldChunk extends GameObject {
         const y = Math.random() * this.size.y;
 
         new Jump(this, new Vector2D(x, y));
+    }
+
+    private createRandomRail() {
+        const x = Math.random() * this.size.x;
+        const y = Math.random() * this.size.y;
+
+        new Rail(this, new Vector2D(x, y));
     }
 
     protected override async createOwnSprites(): Promise<void> {
