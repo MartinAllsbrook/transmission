@@ -32,6 +32,12 @@ export interface PlayerConfig {
     shiftyMaxAngle: number;
 }
 
+export class PlayerInputs {
+    turn: number = 0; // -1 to 1
+    jump: boolean = false;
+    shifty: number = 0; // -1 to 1
+}
+
 export class Snowboarder extends GameObject {
     private readonly config: PlayerConfig = {
         startPosition: new Vector2D(128, 128),
@@ -50,10 +56,11 @@ export class Snowboarder extends GameObject {
         shiftyMaxAngle: 90, // Degrees
     };
 
-    // Inputs
-    private turnInput: number = 0;
-    private jumpInput: boolean = false;
-    private shiftyInput: number = 0;
+    private inputs: PlayerInputs = {
+        turn: 0,
+        jump: false,
+        shifty: 0,
+    }
         
     /** The position of the player in the world, used for world scrolling */
     public worldPosition: Vector2D = this.config.startPosition.clone();
@@ -94,15 +101,15 @@ export class Snowboarder extends GameObject {
 
     private setupInputs() {
         InputManager.getInput("turn").subscribe((newValue) => {
-            this.turnInput = newValue;
+            this.inputs.turn = newValue;
         });
 
         InputManager.getInput("jump").subscribe((newValue) => {
-            this.jumpInput = newValue;
+            this.inputs.jump = newValue;
         });
 
         InputManager.getInput("shifty").subscribe((newValue) => {
-            this.shiftyInput = newValue;
+            this.inputs.shifty = newValue;
         });
     }
 
@@ -150,7 +157,7 @@ export class Snowboarder extends GameObject {
     // #region Update
 
     public override update(deltaTime: number): void {
-        if (this.jumpInput && !this.InAir) { // Jump
+        if (this.inputs.jump && !this.InAir) { // Jump
             this.verticalVelocity += 4;
             this.InAir = true;
         };
@@ -217,7 +224,7 @@ export class Snowboarder extends GameObject {
     }
 
     private applyAirShiftyUpdate(deltaTime: number) {
-        this.shiftyTargetAngle = this.shiftyInput * -this.config.shiftyMaxAngle;
+        this.shiftyTargetAngle = this.inputs.shifty * -this.config.shiftyMaxAngle;
         this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.config.shiftyLerpSpeed * deltaTime);
         this.snowboard.Rotation = this.shiftyAngle;
     }
@@ -258,7 +265,7 @@ export class Snowboarder extends GameObject {
     }
 
     private applyGroundShiftyUpdate(deltaTime: number) {
-        this.shiftyTargetAngle = this.shiftyInput * this.config.shiftyMaxAngle;
+        this.shiftyTargetAngle = this.inputs.shifty * this.config.shiftyMaxAngle;
         this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.config.shiftyLerpSpeed * deltaTime);
         this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
     }
@@ -268,7 +275,7 @@ export class Snowboarder extends GameObject {
         this.velocity.y += this.config.gravityStrength * deltaTime;
 
         // Rotate
-        this.rotationRate += (this.turnInput - this.rotationRate) * deltaTime * this.config.rotationStrength;
+        this.rotationRate += (this.inputs.turn - this.rotationRate) * deltaTime * this.config.rotationStrength;
         
         const radians = (this.snowboard.WorldRotation) * (Math.PI / 180);
 
@@ -345,11 +352,11 @@ export class Snowboarder extends GameObject {
     }
 
     public get ShiftyInput(): number {
-        return this.shiftyInput;
+        return this.inputs.shifty;
     }
 
     public get TurnInput(): number {
-        return this.turnInput;
+        return this.inputs.turn;
     }
 
     public get ShiftyTargetAngle(): number {
