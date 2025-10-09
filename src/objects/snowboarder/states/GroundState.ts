@@ -5,14 +5,14 @@ import { PlayerState, SharedStateData, SnowboarderInfo } from "./PlayerState.ts"
 export class GroundState extends PlayerState {
     private shiftyAngle: number;
     private shiftyTargetAngle: number;
-    private rotationRate: number;
+    private deltaRotation: number;
 
     constructor(snowboarderInfo: SnowboarderInfo, sharedStateData: SharedStateData) {
         super(snowboarderInfo, sharedStateData);
 
         this.shiftyAngle = sharedStateData?.shiftyAngle ?? 0;
         this.shiftyTargetAngle = sharedStateData?.shiftyTargetAngle ?? 0;
-        this.rotationRate = sharedStateData?.rotationRate ?? 0;
+        this.deltaRotation = sharedStateData?.deltaRotation ?? 0;
     }
     
     public override enter(): void {
@@ -44,7 +44,7 @@ export class GroundState extends PlayerState {
         )
 
         // Rotate
-        this.rotationRate += (this.inputs.turn - this.rotationRate) * deltaTime * 10;
+        this.deltaRotation += (this.inputs.turn - this.deltaRotation) * deltaTime * 10;
         
         const radians = (this.board.WorldRotation) * (Math.PI / 180);
 
@@ -63,13 +63,20 @@ export class GroundState extends PlayerState {
         this.player.Velocity = this.player.Velocity.multiply(
             1 - this.config.frictionStrength * deltaTime,
         );
+
+        this.player.Rotation += this.deltaRotation * deltaTime * this.config.rotationSpeed;
+
+        // Update position
+        this.player.PhysicalPosition.set(
+            this.player.PhysicalPosition.add(this.player.Velocity.multiply(deltaTime)),
+        );
     }
 
     protected override getSharedStateData(): SharedStateData {
         return {
             shiftyAngle: this.shiftyAngle,
             shiftyTargetAngle: this.shiftyTargetAngle,
-            rotationRate: this.rotationRate
+            deltaRotation: this.deltaRotation
         };
     }
 }

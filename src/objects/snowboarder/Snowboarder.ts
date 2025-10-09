@@ -67,7 +67,7 @@ export class Snowboarder extends GameObject {
     private state: PlayerState;
         
     /** The position of the player in the world, used for world scrolling */
-    public worldPosition: Vector2D = this.config.startPosition.clone();
+    public physicalPosition: Vector2D = this.config.startPosition.clone();
     
     // Physics & State
     private velocity: Vector2D = new Vector2D(0, 0);
@@ -128,7 +128,7 @@ export class Snowboarder extends GameObject {
     }
 
     public reset() {
-        this.worldPosition.set(new Vector2D(128, 128));
+        this.physicalPosition.set(new Vector2D(128, 128));
         this.velocity.set(new Vector2D(0, 0));
         this.rotation = 0;
 
@@ -178,7 +178,7 @@ export class Snowboarder extends GameObject {
         
         this.state.update(deltaTime);
         
-        this.updatePhysics(deltaTime); // 2D physics
+        // this.updatePhysics(deltaTime); // 2D physics
 
         // const speed = this.velocity.magnitude();
         // if (speed > 300) {
@@ -195,23 +195,18 @@ export class Snowboarder extends GameObject {
         super.update(deltaTime);
     }
     
-    private updatePhysics(deltaTime: number) {
-        this.rotation += this.rotationRate * deltaTime * this.config.rotationSpeed;
+    // private updatePhysics(deltaTime: number) {
+    //     this.rotation += this.rotationRate * deltaTime * this.config.rotationSpeed;
 
-        // Update position
-        this.worldPosition.set(
-            this.worldPosition.add(this.velocity.multiply(deltaTime)),
-        );
-    }
+    //     // Update position
+    //     this.physicalPosition.set(
+    //         this.physicalPosition.add(this.velocity.multiply(deltaTime)),
+    //     );
+    // }
 
     // #endregion
 
     // #region Getters & Setters
-
-    public override get WorldPosition(): Vector2D {
-        return this.worldPosition.clone();
-    }
-
 
     public get InAir(): boolean {
         return this.inAir;
@@ -255,6 +250,18 @@ export class Snowboarder extends GameObject {
 
     public set Velocity(value: Vector2D) {
         this.velocity = value.clone();
+    }
+
+    public override get WorldPosition(): Vector2D {
+        return this.physicalPosition.clone();
+    }
+
+    public get PhysicalPosition(): Vector2D {
+        return this.physicalPosition.clone();
+    }
+
+    public set PhysicalPosition(value: Vector2D) {
+        this.physicalPosition = value.clone();
     }
 
     // public get ShiftyTargetAngle(): number {

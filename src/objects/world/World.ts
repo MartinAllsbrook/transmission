@@ -38,8 +38,8 @@ export class World extends GameObject {
 
         // TODO: Idk if this is needed
         // Move world origin
-        this.position.x = -(this.player.worldPosition.x);
-        this.position.y = -(this.player.worldPosition.y);
+        this.position.x = -(this.player.PhysicalPosition.x);
+        this.position.y = -(this.player.PhysicalPosition.y);
     }
 
     public distanceToTrail(position: Vector2D): number {
@@ -57,8 +57,8 @@ export class World extends GameObject {
 
     public override update(deltaTime: number): void {
         // Move world origin
-        this.position.x = -(this.player.worldPosition.x);
-        this.position.y = -(this.player.worldPosition.y);
+        this.position.x = -(this.player.PhysicalPosition.x);
+        this.position.y = -(this.player.PhysicalPosition.y);
 
         this.chunkPosition = new Vector2D(
             Math.floor((this.position.x / this.chunkSize.x) + 1),
@@ -69,8 +69,8 @@ export class World extends GameObject {
         this.updateChunks();
         this.updateTrails();
         this.treesContainer.updateMaskPosition(
-            this.player.worldPosition.x,
-            this.player.worldPosition.y,
+            this.player.PhysicalPosition.x,
+            this.player.PhysicalPosition.y,
         );
     }
 

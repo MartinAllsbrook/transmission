@@ -6,6 +6,7 @@ export class AirState extends PlayerState {
     private shiftyTargetAngle: number = 0;
     private deltaHeight: number = 0;
     private height: number = 0;
+    private deltaRotation: number = 0;
 
     constructor(snowboarderInfo: SnowboarderInfo, sharedStateData: SharedStateData) {
         super(snowboarderInfo, sharedStateData);
@@ -59,6 +60,13 @@ export class AirState extends PlayerState {
             this.deltaHeight = 0;
             this.player.InAir = false; // This will trigger the player to exit the air state
         }
+
+        this.player.Rotation += this.deltaRotation * deltaTime * this.config.rotationSpeed;
+
+        // Update position
+        this.player.PhysicalPosition.set(
+            this.player.PhysicalPosition.add(this.player.Velocity.multiply(deltaTime)),
+        );
     }
 
     protected override getSharedStateData(): SharedStateData {
@@ -66,7 +74,8 @@ export class AirState extends PlayerState {
             shiftyAngle: this.shiftyAngle,
             shiftyTargetAngle: this.shiftyTargetAngle,
             deltaHeight: this.deltaHeight,
-            height: this.height
+            height: this.height,
+            deltaRotation: this.deltaRotation,
         };
     }
 }

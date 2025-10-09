@@ -17,7 +17,7 @@ export interface SnowboarderInfo {
 export interface SharedStateData {
     shiftyAngle?: number;
     shiftyTargetAngle?: number;
-    rotationRate?: number;
+    deltaRotation?: number;
     deltaHeight?: number;
     height?: number;
 }
