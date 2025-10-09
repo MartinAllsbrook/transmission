@@ -8,7 +8,7 @@ import { Body } from "./Body.ts";
 import { Shadow } from "./Shadow.ts";
 import { InputManager } from "../../inputs/InputManager.ts";
 import { TricksManager } from "./TricksManager.ts";
-import { PlayerState } from "./states/PlayerState.ts";
+import { PlayerState, StateName } from "./states/PlayerState.ts";
 import { GroundState } from "./states/GroundState.ts";
 import { AirState } from "./states/AirState.ts";
   
@@ -69,8 +69,6 @@ export class Snowboarder extends GameObject {
     private physicalPosition: Vector2D = this.config.startPosition.clone();
     private height: number = 0;
 
-    private inAir: boolean = false;
-
     // Components
     private shadow: Shadow;
     private snowboard: Snowboard;
@@ -122,7 +120,6 @@ export class Snowboarder extends GameObject {
         this.physicalPosition.set(new Vector2D(128, 128));
         this.rotation = 0;
         this.height = 0;
-        this.inAir = false;
 
         this.state = new GroundState({
             player: this,
@@ -152,11 +149,11 @@ export class Snowboarder extends GameObject {
             // this.velocity = this.velocity.multiply(-0.5);
         }
 
-        // If we hit a jump and we're not already in the air, add some height and velocity - wont be used until we enter the air
-        if (other.layer === "jump" && !this.InAir) {
-            this.height += 1;
-            // this.verticalVelocity = this.velocity.magnitude() * 0.0075;
-        }
+        // // If we hit a jump and we're not already in the air, add some height and velocity - wont be used until we enter the air
+        // if (other.layer === "jump" && !this.InAir) {
+        //     this.height += 1;
+        //     // this.verticalVelocity = this.velocity.magnitude() * 0.0075;
+        // }
 
         if (other.layer === "rail" ) {
             console.log("Hello rail");
@@ -164,10 +161,10 @@ export class Snowboarder extends GameObject {
     }
 
     public onCollisionEnd(other: SATCollider): void {
-        // At the end of a jump if the player isnt in the air, put them in the air
-        if (other.layer === "jump" && !this.InAir) {
-            this.InAir = true;
-        }
+        // // At the end of a jump if the player isnt in the air, put them in the air
+        // if (other.layer === "jump" && !this.InAir) {
+        //     this.InAir = true;
+        // }
     }
 
     // #endregion
@@ -187,42 +184,6 @@ export class Snowboarder extends GameObject {
 
     // #region Getters & Setters
 
-    public set InAir(value: boolean) {
-        if (this.inAir === value) return;
-
-        this.inAir = value;
-   
-        if (this.inAir) {
-            const shared = this.state.exit();
-
-            this.state = new AirState({
-                player: this,
-                body: this.body,
-                head: this.body.Head,
-                board: this.snowboard,
-                tricksManager: this.tricksManager,
-                inputs: this.inputs,
-                config: this.config,
-            }, shared);
-
-            this.state.enter();
-        } else {
-            const shared = this.state.exit();
-
-            this.state = new GroundState({
-                player: this,
-                body: this.body,
-                head: this.body.Head,
-                board: this.snowboard,
-                tricksManager: this.tricksManager,
-                inputs: this.inputs,
-                config: this.config,
-            }, shared);
-
-            this.state.enter();
-        }     
-    }
-
     public override get WorldPosition(): Vector2D {
         return this.physicalPosition.clone();
     }
@@ -241,6 +202,39 @@ export class Snowboarder extends GameObject {
 
     public get Velocity(): Vector2D {
         return this.state.Velocity;
+    }
+
+    public set State(newState: StateName) {
+        switch (newState) {
+            case "ground":
+                this.state = new GroundState({
+                    player: this,
+                    body: this.body,
+                    head: this.body.Head,
+                    board: this.snowboard,
+                    tricksManager: this.tricksManager,
+                    inputs: this.inputs,
+                    config: this.config,
+                }, this.state.exit());
+                this.state.enter();
+                break;
+            case "air":
+                this.state = new AirState({
+                    player: this,
+                    body: this.body,
+                    head: this.body.Head,
+                    board: this.snowboard,
+                    tricksManager: this.tricksManager,
+                    inputs: this.inputs,
+                    config: this.config,
+                }, this.state.exit());
+                this.state.enter();
+                break;
+        }
+    }
+
+    public get StateName(): StateName {
+        return this.state.StateName;
     }
 
     // #endregion

@@ -1,6 +1,6 @@
 import { ExtraMath } from "../../../math/ExtraMath.ts";
 import { Vector2D } from "../../../math/Vector2D.ts";
-import { PlayerState } from "./PlayerState.ts";
+import { PlayerState, StateName } from "./PlayerState.ts";
 
 export class GroundState extends PlayerState {
     public override enter(): void {
@@ -18,14 +18,7 @@ export class GroundState extends PlayerState {
         this.board.Rotation = 0; 
     }
 
-    public override update(deltaTime: number): void {        
-        super.update(deltaTime);
-        
-        if (this.inputs.jump) {
-            this.deltaHeight += this.config.jumpStrength;
-            this.player.InAir = true;
-        }
-    }
+    // #region Update
 
     public override shiftyUpdate(deltaTime: number): void {
         this.shiftyTargetAngle = this.inputs.shifty * this.config.shiftyMaxAngle;
@@ -69,11 +62,16 @@ export class GroundState extends PlayerState {
         );
     }
 
-    // protected override getSharedStateData(): SharedStateData {
-    //     return {
-    //         shiftyAngle: this.shiftyAngle,
-    //         shiftyTargetAngle: this.shiftyTargetAngle,
-    //         deltaRotation: this.deltaRotation
-    //     };
-    // }
+    protected override checkTransitions(): StateName | void {
+        if (this.inputs.jump) {
+            this.deltaHeight += this.config.jumpStrength;
+            return "air";
+        }
+    }
+
+    public override get StateName(): StateName {
+        return "ground";
+    }
+
+    // #endregion
 }

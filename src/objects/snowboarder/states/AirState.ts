@@ -1,5 +1,5 @@
 import { ExtraMath } from "../../../math/ExtraMath.ts";
-import { PlayerState } from "./PlayerState.ts";
+import { PlayerState, StateName } from "./PlayerState.ts";
 
 export class AirState extends PlayerState {
     public override enter(): void {
@@ -40,18 +40,24 @@ export class AirState extends PlayerState {
         this.deltaHeight -= 16  * deltaTime;
         this.player.Height += this.deltaHeight * deltaTime;
 
-        if (this.player.Height <= 0) {
-            this.player.Height = 0;
-            this.deltaHeight = 0;
-            this.player.InAir = false; // This will trigger the player to exit the air state
-        }
-
         this.player.Rotation += this.deltaRotation * deltaTime * this.config.rotationSpeed;
 
         // Update position
         this.player.PhysicalPosition.set(
             this.player.PhysicalPosition.add(this.velocity.multiply(deltaTime)),
         );
+    }
+
+    protected override checkTransitions(): StateName | void {
+        if (this.player.Height <= 0) {
+            this.player.Height = 0;
+            this.deltaHeight = 0;
+            return "ground";
+        }
+    }
+
+    public override get StateName(): StateName {
+        return "air";
     }
 
     // protected override getSharedStateData(): SharedStateData {

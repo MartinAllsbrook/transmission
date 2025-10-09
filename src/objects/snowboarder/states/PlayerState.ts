@@ -5,6 +5,8 @@ import { Snowboard } from "../Snowboard.ts";
 import { PlayerConfig, PlayerInputs, Snowboarder } from "../Snowboarder.ts";
 import { TricksManager } from "../TricksManager.ts";
 
+export type StateName = "ground" | "air" | "rail";
+
 export interface SnowboarderInfo {
     player: Snowboarder, 
     body: Body, 
@@ -69,15 +71,22 @@ export abstract class PlayerState {
     public update(deltaTime: number): void {
         this.shiftyUpdate(deltaTime);
         this.physicsUpdate(deltaTime);
+
+        const newState = this.checkTransitions();
+        if (newState) {
+            this.player.State = newState;
+        }
     }
+    
+    protected abstract shiftyUpdate(deltaTime: number): void
+    
+    protected abstract physicsUpdate(deltaTime: number): void 
+    
+    protected abstract checkTransitions(): StateName | void;
 
     public exit(): SharedStateData {
         return this.getSharedStateData();
     }
-
-    protected abstract shiftyUpdate(deltaTime: number): void
-
-    protected abstract physicsUpdate(deltaTime: number): void 
 
     protected getSharedStateData(): SharedStateData {
         return {
@@ -92,4 +101,6 @@ export abstract class PlayerState {
     public get Velocity(): Vector2D {
         return this.velocity;
     }
+
+    public abstract get StateName(): StateName;
 }

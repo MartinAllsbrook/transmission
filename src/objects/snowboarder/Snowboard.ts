@@ -25,7 +25,7 @@ export class Snowboard extends GameObject {
     }
 
     private updateTrail() {
-        if (this.snowboarder.InAir) return;
+        if (this.snowboarder.StateName !== "ground") return;
 
         SnowboarderTrail.instance?.addTrailPoint(
             this.WorldPosition,
