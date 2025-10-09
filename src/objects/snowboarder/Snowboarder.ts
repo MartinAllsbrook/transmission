@@ -99,15 +99,15 @@ export class Snowboarder extends GameObject {
         LayerManager.getLayer("snowboarder")?.attach(this.container);
         this.tricksManager = new TricksManager(this);
 
-        this.state = new GroundState(
-            this,
-            this.body,
-            this.body.Head,
-            this.snowboard,
-            this.tricksManager,
-            this.inputs,
-            this.config,
-        );
+        this.state = new GroundState({
+            player: this,
+            body: this.body,
+            head: this.body.Head,
+            board: this.snowboard,
+            tricksManager: this.tricksManager,
+            inputs: this.inputs,
+            config: this.config,
+        }, {});
         this.state.enter();
     }
 
@@ -223,25 +223,29 @@ export class Snowboarder extends GameObject {
         this.inAir = value;
    
         if (this.inAir) {
-            this.state = new AirState(
-                this,
-                this.body,
-                this.body.Head,
-                this.snowboard,
-                this.tricksManager,
-                this.inputs,
-                this.config,
-            );
+            const shared = this.state.exit();
+
+            this.state = new AirState({
+                player: this,
+                body: this.body,
+                head: this.body.Head,
+                board: this.snowboard,
+                tricksManager: this.tricksManager,
+                inputs: this.inputs,
+                config: this.config,
+            }, shared);
         } else {
-            this.state = new GroundState(
-                this,
-                this.body,
-                this.body.Head,
-                this.snowboard,
-                this.tricksManager,
-                this.inputs,
-                this.config,
-            );
+            const shared = this.state.exit();
+
+            this.state = new GroundState({
+                player: this,
+                body: this.body,
+                head: this.body.Head,
+                board: this.snowboard,
+                tricksManager: this.tricksManager,
+                inputs: this.inputs,
+                config: this.config,
+            }, shared);
         }     
     }
 
@@ -253,45 +257,45 @@ export class Snowboarder extends GameObject {
         this.velocity = value.clone();
     }
 
-    public get ShiftyTargetAngle(): number {
-        return this.shiftyTargetAngle;
-    }
+    // public get ShiftyTargetAngle(): number {
+    //     return this.shiftyTargetAngle;
+    // }
 
-    public set ShiftyTargetAngle(targetAngle: number) {
-        this.shiftyTargetAngle = targetAngle;
-    }
+    // public set ShiftyTargetAngle(targetAngle: number) {
+    //     this.shiftyTargetAngle = targetAngle;
+    // }
 
-    public set ShiftyAngle(angle: number) {
-        this.shiftyAngle = angle;
-    }
+    // public set ShiftyAngle(angle: number) {
+    //     this.shiftyAngle = angle;
+    // }
 
-    public get ShiftyAngle(): number {
-        return this.shiftyAngle;
-    }
+    // public get ShiftyAngle(): number {
+    //     return this.shiftyAngle;
+    // }
 
-    public get VerticalVelocity(): number {
-        return this.verticalVelocity;
-    }
+    // public get VerticalVelocity(): number {
+    //     return this.verticalVelocity;
+    // }
 
-    public set VerticalVelocity(value: number) {
-        this.verticalVelocity = value;
-    }
+    // public set VerticalVelocity(value: number) {
+    //     this.verticalVelocity = value;
+    // }
 
-    public get Height(): number {
-        return this.height;
-    }
+    // public get Height(): number {
+    //     return this.height;
+    // }
 
-    public set Height(value: number) {
-        this.height = value;
-    }
+    // public set Height(value: number) {
+    //     this.height = value;
+    // }
 
-    public get RotationRate(): number {
-        return this.rotationRate;
-    }
+    // public get RotationRate(): number {
+    //     return this.rotationRate;
+    // }
 
-    public set RotationRate(value: number) {
-        this.rotationRate = value;
-    }
+    // public set RotationRate(value: number) {
+    //     this.rotationRate = value;
+    // }
 
     // #endregion
 }

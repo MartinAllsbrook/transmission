@@ -1,8 +1,20 @@
 import { ExtraMath } from "../../../math/ExtraMath.ts";
 import { Vector2D } from "../../../math/Vector2D.ts";
-import { PlayerState } from "./PlayerState.ts";
+import { PlayerState, SharedStateData, SnowboarderInfo } from "./PlayerState.ts";
 
 export class GroundState extends PlayerState {
+    private shiftyAngle: number;
+    private shiftyTargetAngle: number;
+    private rotationRate: number;
+
+    constructor(snowboarderInfo: SnowboarderInfo, sharedStateData: SharedStateData) {
+        super(snowboarderInfo, sharedStateData);
+
+        this.shiftyAngle = sharedStateData?.shiftyAngle ?? 0;
+        this.shiftyTargetAngle = sharedStateData?.shiftyTargetAngle ?? 0;
+        this.rotationRate = sharedStateData?.rotationRate ?? 0;
+    }
+    
     public override enter(): void {
         this.switchToGroundShifty();
         this.tricksManager.endSpin(
@@ -12,16 +24,16 @@ export class GroundState extends PlayerState {
     }
 
     private switchToGroundShifty() {
-        this.player.ShiftyAngle = this.player.ShiftyAngle * -1;
+        this.shiftyAngle = this.shiftyAngle * -1;
         this.player.Rotation = this.board.WorldRotation;
-        this.body.Rotation = this.player.ShiftyAngle + 90; // Flip for goofy
+        this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
         this.board.Rotation = 0; 
     }
 
     public override shiftyUpdate(deltaTime: number): void {
-        this.player.ShiftyTargetAngle = this.inputs.shifty * this.config.shiftyMaxAngle;
-        this.player.ShiftyAngle = ExtraMath.lerpSafe(this.player.ShiftyAngle, this.player.ShiftyTargetAngle, this.config.shiftyLerpSpeed * deltaTime);
-        this.body.Rotation = this.player.ShiftyAngle + 90; // Flip for goofy
+        this.shiftyTargetAngle = this.inputs.shifty * this.config.shiftyMaxAngle;
+        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.config.shiftyLerpSpeed * deltaTime);
+        this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
     }
 
     public override physicsUpdate(deltaTime: number): void {
@@ -32,7 +44,7 @@ export class GroundState extends PlayerState {
         )
 
         // Rotate
-        this.player.RotationRate += (this.inputs.turn - this.player.RotationRate) * deltaTime * 10;
+        this.rotationRate += (this.inputs.turn - this.rotationRate) * deltaTime * 10;
         
         const radians = (this.board.WorldRotation) * (Math.PI / 180);
 
@@ -53,7 +65,11 @@ export class GroundState extends PlayerState {
         );
     }
 
-    public override exit(): void {
-
+    protected override getSharedStateData(): SharedStateData {
+        return {
+            shiftyAngle: this.shiftyAngle,
+            shiftyTargetAngle: this.shiftyTargetAngle,
+            rotationRate: this.rotationRate
+        };
     }
 }

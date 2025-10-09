@@ -1,7 +1,21 @@
 import { ExtraMath } from "../../../math/ExtraMath.ts";
-import { PlayerState } from "./PlayerState.ts";
+import { PlayerState, SharedStateData, SnowboarderInfo } from "./PlayerState.ts";
 
 export class AirState extends PlayerState {
+    private shiftyAngle: number = 0;
+    private shiftyTargetAngle: number = 0;
+    private deltaHeight: number = 0;
+    private height: number = 0;
+
+    constructor(snowboarderInfo: SnowboarderInfo, sharedStateData: SharedStateData) {
+        super(snowboarderInfo, sharedStateData);
+     
+        this.shiftyAngle = sharedStateData?.shiftyAngle ?? 0;
+        this.shiftyTargetAngle = sharedStateData?.shiftyTargetAngle ?? 0;
+        this.deltaHeight = sharedStateData?.deltaHeight ?? 0;
+        this.height = sharedStateData?.height ?? 0;
+    }
+
     public override enter(): void {
         this.switchToAirShifty();
         this.tricksManager.trickStart(
@@ -11,12 +25,12 @@ export class AirState extends PlayerState {
     }
 
     private switchToAirShifty() {
-        this.player.ShiftyAngle = this.player.ShiftyAngle * -1;
+        this.shiftyAngle = this.shiftyAngle * -1;
 
         console.log(this.board.WorldRotation)
 
         this.player.Rotation = this.body.WorldRotation - 90; // Flip for goofy
-        this.board.Rotation = this.player.ShiftyAngle;
+        this.board.Rotation = this.shiftyAngle;
         this.body.Rotation = 0 + 90; // Flip for goofy
     }
 
@@ -31,23 +45,28 @@ export class AirState extends PlayerState {
     }
 
     protected override shiftyUpdate(deltaTime: number): void {
-        this.player.ShiftyTargetAngle = this.inputs.shifty * -this.config.shiftyMaxAngle;
-        this.player.ShiftyAngle = ExtraMath.lerpSafe(this.player.ShiftyAngle, this.player.ShiftyTargetAngle, this.config.shiftyLerpSpeed * deltaTime);
-        this.board.Rotation = this.player.ShiftyAngle;
+        this.shiftyTargetAngle = this.inputs.shifty * -this.config.shiftyMaxAngle;
+        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.config.shiftyLerpSpeed * deltaTime);
+        this.board.Rotation = this.shiftyAngle;
     }
 
     protected override physicsUpdate(deltaTime: number): void {
-        this.player.VerticalVelocity -= 16  * deltaTime;
-        this.player.Height += this.player.VerticalVelocity * deltaTime;
+        this.deltaHeight -= 16  * deltaTime;
+        this.height += this.deltaHeight * deltaTime;
 
-        if (this.player.Height <= 0) {
-            this.player.Height = 0;
-            this.player.VerticalVelocity = 0;
+        if (this.height <= 0) {
+            this.height = 0;
+            this.deltaHeight = 0;
             this.player.InAir = false; // This will trigger the player to exit the air state
         }
     }
 
-    public override exit(): void {
-
+    protected override getSharedStateData(): SharedStateData {
+        return {
+            shiftyAngle: this.shiftyAngle,
+            shiftyTargetAngle: this.shiftyTargetAngle,
+            deltaHeight: this.deltaHeight,
+            height: this.height
+        };
     }
 }
