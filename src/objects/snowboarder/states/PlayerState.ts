@@ -1,3 +1,4 @@
+import { SATCollider } from "../../../colliders/SATCollider.ts";
 import { Vector2D } from "../../../math/Vector2D.ts";
 import { Body } from "../Body.ts";
 import { Head } from "../Head.ts";
@@ -73,9 +74,8 @@ export abstract class PlayerState {
         this.physicsUpdate(deltaTime);
 
         const newState = this.checkTransitions();
-        if (newState) {
-            this.player.State = newState;
-        }
+        if (newState) this.player.State = newState;
+        
     }
     
     protected abstract shiftyUpdate(deltaTime: number): void
@@ -83,6 +83,12 @@ export abstract class PlayerState {
     protected abstract physicsUpdate(deltaTime: number): void 
     
     protected abstract checkTransitions(): StateName | void;
+
+    public onCollisionEnter(_other: SATCollider): void {}
+
+    public onCollisionStay(_other: SATCollider): void {}
+
+    public onCollisionExit(_other: SATCollider): void {}
 
     public exit(): SharedStateData {
         return this.getSharedStateData();

@@ -1,6 +1,5 @@
 import { GameObject, Parent } from "../GameObject.ts";
 import { Vector2D } from "../../math/Vector2D.ts";
-import Game from "islands/Game.tsx";
 import { LayerManager } from "../../rendering/LayerManager.ts";
 import { SATCollider } from "../../colliders/SATCollider.ts";
 import { Snowboard } from "./Snowboard.ts";
@@ -140,31 +139,16 @@ export class Snowboarder extends GameObject {
 
     // #region Collisions
 
-    public onCollisionStart(other: SATCollider): void {
-        if (other.layer === "obstacle") {
-            // if (this.velocity.magnitude() > 10) {
-                Game.endGame("You crashed into an obstacle!");
-            // }
-            
-            // this.velocity = this.velocity.multiply(-0.5);
-        }
-
-        // // If we hit a jump and we're not already in the air, add some height and velocity - wont be used until we enter the air
-        // if (other.layer === "jump" && !this.InAir) {
-        //     this.height += 1;
-        //     // this.verticalVelocity = this.velocity.magnitude() * 0.0075;
-        // }
-
-        if (other.layer === "rail" ) {
-            console.log("Hello rail");
-        }
+    public onCollisionEnter(other: SATCollider): void {
+        this.state.onCollisionEnter(other);
     }
 
-    public onCollisionEnd(other: SATCollider): void {
-        // // At the end of a jump if the player isnt in the air, put them in the air
-        // if (other.layer === "jump" && !this.InAir) {
-        //     this.InAir = true;
-        // }
+    public onCollisionStay(other: SATCollider): void {
+        this.state.onCollisionStay(other);
+    }
+
+    public onCollisionExit(other: SATCollider): void {
+        this.state.onCollisionExit(other);
     }
 
     // #endregion
@@ -230,6 +214,11 @@ export class Snowboarder extends GameObject {
                 }, this.state.exit());
                 this.state.enter();
                 break;
+            case "rail":
+                console.warn("Rail state not implemented yet.");
+                break;
+            default:
+                throw new Error(`Unknown state: ${newState}`);
         }
     }
 

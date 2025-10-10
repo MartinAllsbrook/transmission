@@ -1,8 +1,12 @@
+import Game from "islands/Game.tsx";
+import { SATCollider } from "../../../colliders/SATCollider.ts";
 import { ExtraMath } from "../../../math/ExtraMath.ts";
 import { Vector2D } from "../../../math/Vector2D.ts";
 import { PlayerState, StateName } from "./PlayerState.ts";
 
 export class GroundState extends PlayerState {
+    private switchToAir: boolean = false;
+
     public override enter(): void {
         this.switchToGroundShifty();
         this.tricksManager.endSpin(
@@ -63,6 +67,10 @@ export class GroundState extends PlayerState {
     }
 
     protected override checkTransitions(): StateName | void {
+        if (this.switchToAir) {
+            this.switchToAir = false;
+            return "air";
+        }
         if (this.inputs.jump) {
             this.deltaHeight += this.config.jumpStrength;
             return "air";
@@ -74,4 +82,28 @@ export class GroundState extends PlayerState {
     }
 
     // #endregion
+
+    //#region Collisions
+
+    public override onCollisionEnter(other: SATCollider): void {
+        if (other.layer === "obstacle") {
+            Game.endGame("You crashed into an tree, watch out!");
+        }
+
+        if (other.layer === "jump") {
+            // TODO: I wonder if there's a better way to handle this
+            // This is adding vertical speed but it wont be used until we enter the air state
+            this.deltaHeight = this.velocity.magnitude() * 0.0075;
+        }
+
+        if (other.layer === "rail") {
+            Game.endGame("You crashed into a rail, jump to get onto rails!");
+        }
+    }
+
+    public override onCollisionExit(_other: SATCollider): void {
+        this.switchToAir = true;
+    }
+
+    //#endregion
 }
