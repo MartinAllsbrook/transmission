@@ -31,19 +31,24 @@ export class RailState extends PlayerState {
     protected override physicsUpdate(deltaTime: number): void {
         if (this.rail) {
             const railDirection = this.rail.getDirection();
+            const normal = railDirection.perpendicular().normalize();            
             const playerDirection = this.velocity.normalize();
-            const alignment = railDirection.dot(playerDirection);
-            const normal = railDirection.perpendicular().normalize();
-            if (alignment < 0.99) {
-                // Move playerDirection towards railDirection using the normal
-                const correctionStrength = (1 - alignment) * this.config.railCorrectionStrength;
-                this.velocity = this.velocity.add(normal.multiply(correctionStrength));
-            }
+            const misalignment = normal.dot(playerDirection);
+            
+            const sign = misalignment < 0 ? 1 : -1; // Flip sign so correction pushes player toward rail center
+
+            // Move playerDirection towards railDirection using the normal
+            const correctionStrength = sign * this.config.railCorrectionStrength;
+            this.velocity = this.velocity.add(normal.multiply(correctionStrength));
         }
 
 
         this.player.Rotation += this.deltaRotation * deltaTime * this.config.rotationSpeed;
 
+        // Gravity & Friction
+        this.velocity.y += this.config.gravityStrength * deltaTime
+        this.velocity = this.velocity.multiply(1 - this.config.frictionStrength * deltaTime);
+        
         // Update position
         this.player.PhysicalPosition.set(
             this.player.PhysicalPosition.add(this.velocity.multiply(deltaTime)),

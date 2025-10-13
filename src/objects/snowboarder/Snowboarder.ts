@@ -10,6 +10,7 @@ import { TricksManager } from "./TricksManager.ts";
 import { PlayerState, StateName } from "./states/PlayerState.ts";
 import { GroundState } from "./states/GroundState.ts";
 import { AirState } from "./states/AirState.ts";
+import { RailState } from "./states/RailState.ts";
   
 export interface PlayerConfig {
     // Initialization
@@ -59,7 +60,7 @@ export class Snowboarder extends GameObject {
         shiftyLerpSpeed: 3, // Higher is snappier
         shiftyMaxAngle: 90, // Degrees
 
-        railCorrectionStrength: 30, // Higher is more corrective
+        railCorrectionStrength: 2, // Higher is more corrective
     };
 
     private inputs: PlayerInputs = {
@@ -220,7 +221,16 @@ export class Snowboarder extends GameObject {
                 this.state.enter();
                 break;
             case "rail":
-                console.warn("Rail state not implemented yet.");
+                this.state = new RailState({
+                    player: this,
+                    body: this.body,
+                    head: this.body.Head,
+                    board: this.snowboard,
+                    tricksManager: this.tricksManager,
+                    inputs: this.inputs,
+                    config: this.config,
+                }, this.state.exit());
+                this.state.enter();
                 break;
             default:
                 throw new Error(`Unknown state: ${newState}`);

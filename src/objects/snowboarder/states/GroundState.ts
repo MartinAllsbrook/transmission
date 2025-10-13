@@ -41,10 +41,7 @@ export class GroundState extends PlayerState {
 
     protected override physicsUpdate(deltaTime: number): void {
         // Apply gravity
-        this.velocity = new Vector2D(
-            this.velocity.x,
-            this.velocity.y + this.config.gravityStrength * deltaTime,
-        )
+        this.velocity.y += this.config.gravityStrength * deltaTime
 
         // Rotate
         this.deltaRotation += (this.inputs.turn - this.deltaRotation) * deltaTime * 10;
@@ -63,9 +60,7 @@ export class GroundState extends PlayerState {
         this.velocity = this.velocity.add(normalDirection.multiply(deltaTime * this.config.slipStrength));
 
         // Friction
-        this.velocity = this.velocity.multiply(
-            1 - this.config.frictionStrength * deltaTime,
-        );
+        this.velocity = this.velocity.multiply(1 - this.config.frictionStrength * deltaTime);
 
         this.player.Rotation += this.deltaRotation * deltaTime * this.config.rotationSpeed;
 
