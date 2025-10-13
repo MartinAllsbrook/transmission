@@ -31,6 +31,9 @@ export interface PlayerConfig {
     // Shifty
     shiftyLerpSpeed: number;
     shiftyMaxAngle: number;
+
+    // Rail
+    railCorrectionStrength: number;
 }
 
 export class PlayerInputs {
@@ -55,6 +58,8 @@ export class Snowboarder extends GameObject {
 
         shiftyLerpSpeed: 3, // Higher is snappier
         shiftyMaxAngle: 90, // Degrees
+
+        railCorrectionStrength: 30, // Higher is more corrective
     };
 
     private inputs: PlayerInputs = {

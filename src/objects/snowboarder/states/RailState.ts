@@ -1,9 +1,11 @@
 import { SATCollider } from "../../../colliders/SATCollider.ts";
 import { ExtraMath } from "../../../math/ExtraMath.ts";
+import { Rail } from "../../world/features/Rail.ts";
 import { PlayerState, StateName } from "./PlayerState.ts";
 
 export class RailState extends PlayerState {
     private exitRail: boolean = false;
+    private rail: Rail | null = null;
 
     public override enter(): void {
         this.switchToRailShifty();
@@ -27,6 +29,18 @@ export class RailState extends PlayerState {
     }
 
     protected override physicsUpdate(deltaTime: number): void {
+        if (this.rail) {
+            const railDirection = this.rail.getDirection();
+            const playerDirection = this.velocity.normalize();
+            const alignment = railDirection.dot(playerDirection);
+            const normal = railDirection.perpendicular().normalize();
+            if (alignment < 0.99) {
+                // Move playerDirection towards railDirection using the normal
+                const correctionStrength = (1 - alignment) * this.config.railCorrectionStrength;
+                this.velocity = this.velocity.add(normal.multiply(correctionStrength));
+            }
+        }
+
 
         this.player.Rotation += this.deltaRotation * deltaTime * this.config.rotationSpeed;
 
@@ -46,6 +60,12 @@ export class RailState extends PlayerState {
         if (this.exitRail) {
             this.exitRail = false;
             return "air";
+        }
+    }
+
+    public override onCollisionStay(other: SATCollider): void {
+        if (other.layer === "rail") {
+            this.rail = other.Host as Rail;
         }
     }
 
