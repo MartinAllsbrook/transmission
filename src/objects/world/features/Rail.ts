@@ -3,11 +3,11 @@ import { Vector2D } from "../../../math/Vector2D.ts";
 import { GameObject } from "../../GameObject.ts";
 
 export class Rail extends GameObject {
-    private length: number = 64;
-    private wdith: number  = 16;
+    private length: number = 256;
+    private wdith: number  = 32;
 
     private relativeStart: Vector2D = new Vector2D(0, -this.length / 2);
-    private relativeEnd: Vector2D = new Vector2D(0, -this.length / 2);
+    private relativeEnd: Vector2D = new Vector2D(0, this.length / 2);
 
     private collider: RectCollider = new RectCollider(this, new Vector2D(0, 0), new Vector2D(this.wdith, this.length), true, "rail");
 

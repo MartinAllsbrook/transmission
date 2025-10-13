@@ -34,9 +34,9 @@ export class WorldChunk extends GameObject {
             this.createRandomJump();
         }
 
-        // if (Math.random() < 0.1) {
-        //     this.createRandomRail();
-        // }
+        if (Math.random() < 0.2) {
+            this.createRandomRail();
+        }
 
         for (let i = 0; i < 4; i++) {
             this.createRandomObstacle();

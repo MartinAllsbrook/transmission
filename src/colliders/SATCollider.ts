@@ -163,4 +163,8 @@ export abstract class SATCollider {
             this.debugShape = null;
         }
     }
+
+    public get Host(): GameObject {
+        return this.host;
+    }
 }
