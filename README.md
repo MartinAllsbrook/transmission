@@ -29,7 +29,7 @@ The project also uses [Fresh](https://fresh.deno.dev/) (Deno's full-stack web fr
 Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/transmission.git
+git clone https://github.com/MartinAllsbrook/transmission.git
 cd transmission
 ```
 
