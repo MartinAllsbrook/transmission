@@ -25,7 +25,7 @@ export class Snowboard extends GameObject {
     }
 
     private updateTrail() {
-        if (this.snowboarder.InAir) return;
+        if (this.snowboarder.StateName !== "ground") return;
 
         SnowboarderTrail.instance?.addTrailPoint(
             this.WorldPosition,
@@ -46,12 +46,16 @@ export class Snowboard extends GameObject {
             "player",
         );
 
-        collider.onCollisionStart((other) => {
-            this.snowboarder.onCollisionStart(other);
+        collider.onCollisionEnter((other) => {
+            this.snowboarder.onCollisionEnter(other);
         });
 
-        collider.onCollisionEnd((other) => {
-            this.snowboarder.onCollisionEnd(other);
+        collider.onCollisionStay((other) => {
+            this.snowboarder.onCollisionStay(other);
+        });
+
+        collider.onCollisionExit((other) => {
+            this.snowboarder.onCollisionExit(other);
         });
     }
 }

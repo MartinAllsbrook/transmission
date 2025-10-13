@@ -19,4 +19,8 @@ export class Body extends GameObject {
     protected override async createOwnSprites(): Promise<void> {
         await this.loadSprite("/snowboarder/Body.png");
     }
+
+    public get Head(): Head {
+        return this.head;
+    }
 }

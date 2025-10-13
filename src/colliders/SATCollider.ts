@@ -142,15 +142,15 @@ export abstract class SATCollider {
         }
     }
 
-    public onCollisionStart(callback: (other: SATCollider) => void): void {
+    public onCollisionEnter(callback: (other: SATCollider) => void): void {
         this.onStartCallbacks.push(callback);
     }
 
-    public onCollisionWhile(callback: (other: SATCollider) => void): void {
+    public onCollisionStay(callback: (other: SATCollider) => void): void {
         this.whileCallbacks.push(callback);
     }
 
-    public onCollisionEnd(callback: (other: SATCollider) => void): void {
+    public onCollisionExit(callback: (other: SATCollider) => void): void {
         this.onEndCallbacks.push(callback);
     }
 
