@@ -16,9 +16,13 @@ export class GroundState extends PlayerState {
     }
 
     private switchToGroundShifty() {
-        this.shiftyAngle = this.shiftyAngle * -1;
+        // Rotation of the root object now matches the board
         this.player.Rotation = this.board.WorldRotation;
-        this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
+
+        // Rotation of the body is now offset to match the now flipped shifty. 90 is for the base stance of the body 
+        this.body.Rotation = (this.shiftyAngle * -1) + 90; 
+
+        // Reset board rotation because it is now handled by the root object
         this.board.Rotation = 0; 
     }
 
@@ -27,7 +31,8 @@ export class GroundState extends PlayerState {
     public override shiftyUpdate(deltaTime: number): void {
         this.shiftyTargetAngle = this.inputs.shifty * this.config.shiftyMaxAngle;
         this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.config.shiftyLerpSpeed * deltaTime);
-        this.body.Rotation = this.shiftyAngle + 90; // Flip for goofy
+        
+        this.body.Rotation = (this.shiftyAngle * -1) + 90; // Flip for goofy
     }
 
     public override physicsUpdate(deltaTime: number): void {
