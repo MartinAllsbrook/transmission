@@ -34,7 +34,11 @@ export class AirState extends PlayerState {
 
     protected override shiftyUpdate(deltaTime: number): void {
         this.shiftyTargetAngle = this.inputs.shifty * this.config.shiftyMaxAngle;
-        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.config.shiftyLerpSpeed * deltaTime);
+        this.shiftyAngle = ExtraMath.lerpSafe(
+            this.shiftyAngle, 
+            this.shiftyTargetAngle, 
+            this.config.shiftyLerpSpeed * deltaTime
+        );
         
         this.board.Rotation = this.shiftyAngle;
     }
@@ -42,6 +46,10 @@ export class AirState extends PlayerState {
     protected override physicsUpdate(deltaTime: number): void {
         this.deltaHeight -= 16  * deltaTime;
         this.player.Height += this.deltaHeight * deltaTime;
+        
+        if (this.player.Height < 0) {
+            this.player.Height = 0;
+        }
 
         this.player.Rotation += this.deltaRotation * deltaTime * this.config.rotationSpeed;
 

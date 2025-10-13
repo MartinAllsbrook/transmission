@@ -28,14 +28,18 @@ export class GroundState extends PlayerState {
 
     // #region Update
 
-    public override shiftyUpdate(deltaTime: number): void {
+    protected override shiftyUpdate(deltaTime: number): void {
         this.shiftyTargetAngle = this.inputs.shifty * this.config.shiftyMaxAngle;
-        this.shiftyAngle = ExtraMath.lerpSafe(this.shiftyAngle, this.shiftyTargetAngle, this.config.shiftyLerpSpeed * deltaTime);
+        this.shiftyAngle = ExtraMath.lerpSafe(
+            this.shiftyAngle, 
+            this.shiftyTargetAngle, 
+            this.config.shiftyLerpSpeed * deltaTime
+        );
         
         this.body.Rotation = (this.shiftyAngle * -1) + 90; // Flip for goofy
     }
 
-    public override physicsUpdate(deltaTime: number): void {
+    protected override physicsUpdate(deltaTime: number): void {
         // Apply gravity
         this.velocity = new Vector2D(
             this.velocity.x,
