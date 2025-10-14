@@ -7,6 +7,7 @@ import { Container } from "pixi.js";
 import { Trails } from "./trails/Trails.ts";
 import { TreesContainer } from "./TreesContainer.ts";
 import { LayerManager } from "../../rendering/LayerManager.ts";
+import { SnowParticles } from "./snow/SnowParticles.ts";
 
 export class World extends GameObject {
     player: Snowboarder;
@@ -35,6 +36,9 @@ export class World extends GameObject {
         this.trails = new Trails(this);
 
         LayerManager.getLayer("foreground")?.attach(this.treesContainer.container);
+
+        new SnowParticles(this);
+
 
         // TODO: Idk if this is needed
         // Move world origin
