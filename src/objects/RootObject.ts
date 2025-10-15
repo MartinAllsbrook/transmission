@@ -1,7 +1,12 @@
 import { GameObject, Parent } from "./GameObject.ts";
 import { Vector2D } from "../math/Vector2D.ts";
+import { Snowboarder } from "./snowboarder/Snowboarder.ts";
+import { World } from "./world/World.ts";
 
 export class RootObject extends GameObject {
+    private player: Snowboarder;
+    private world: World;
+    
     public static offset: Vector2D = new Vector2D(
         globalThis.innerWidth / 2,
         globalThis.innerHeight / 2.618,
@@ -13,21 +18,18 @@ export class RootObject extends GameObject {
             new Vector2D(globalThis.innerWidth / 2, globalThis.innerHeight / 2.618),
         );
 
-        // new Snow(this);
+        this.player = new Snowboarder(this);
+        this.world = new World(this, this.player);
 
         this.AutoCenter = false;
     }
 
-    // /**
-    //  * ### Debugging use only
-    //  * Adds a visual element directly to the offset container
-    //  * @param visual - The visual element to add
-    //  */
-    // public addVisual(visual: Container) {
-    //     this.container.addChild(visual);
-    // }
-
     public override get WorldPosition(): Vector2D {
         return new Vector2D(0, 0);
+    }
+
+    public reset() {
+        this.player.reset();
+        this.world.reset();
     }
 }

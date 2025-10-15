@@ -1,13 +1,14 @@
 import { Component } from "preact";
+import { Signal } from "@preact/signals";
+
 import { Application } from "pixi.js";
-import { Snowboarder } from "src/objects/snowboarder/Snowboarder.ts";
-import { World } from "src/objects/world/World.ts";
-import { CollisionManager } from "src/colliders/CollisionManager.ts";
+
 import { RootObject } from "src/objects/RootObject.ts";
 import { GameOverScreen } from "./GameOverScreen.tsx";
+
+import { CollisionManager } from "src/colliders/CollisionManager.ts";
 import { LayerManager } from "src/rendering/LayerManager.ts";
 import { TextManager } from "src/scoring/TextManager.ts";
-import { Signal } from "@preact/signals";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -21,12 +22,6 @@ export default class Game extends Component {
 
     /** The the root container of the game, also used to center the game on the screen */
     private static rootObject?: RootObject;
-
-    /** The main world object, moves the scene */
-    private static world?: World;
-
-    /** The main player object */
-    private static player?: Snowboarder;
 
     override componentDidMount() {
         // Only run on client side
@@ -81,10 +76,7 @@ export default class Game extends Component {
         // Root object made before layers so that it is the lowest "layer"
         Game.rootObject = new RootObject(Game.app);
         LayerManager.initialize(Game.app);
-        
         TextManager.initialize(Game.rootObject);
-        Game.player = new Snowboarder(Game.rootObject);
-        Game.world = new World(Game.rootObject, Game.player);
     }
 
     /**
@@ -104,7 +96,7 @@ export default class Game extends Component {
     private gameLoop(deltaMS: number) {
         const deltaTime = deltaMS / 1000; // Convert ms to s
 
-        if (!Game.app || !Game.rootObject || !Game.player) throw new Error("Game not properly initialized");
+        if (!Game.app || !Game.rootObject) throw new Error("Game not properly initialized");
 
         Game.rootObject.update(deltaTime); // This will also update all child gameobjects
         CollisionManager.checkCollisions();
@@ -127,11 +119,9 @@ export default class Game extends Component {
     public static resetGame = () => {
         Game.deathMessage = undefined;
         Game.gameOver.value = false;
+        
         this.app?.ticker.start();
-        console.log(this.world)
-        Game.world?.reset();
-
-        this.player?.reset();
+        Game.rootObject?.reset();
     }
 
     // #endregion
