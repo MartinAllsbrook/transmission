@@ -2,6 +2,7 @@ import { GameObject, Parent } from "./GameObject.ts";
 import { Vector2D } from "../math/Vector2D.ts";
 import { Snowboarder } from "./snowboarder/Snowboarder.ts";
 import { World } from "./world/World.ts";
+import { TextManager } from "../scoring/TextManager.ts";
 
 export class RootObject extends GameObject {
     private player: Snowboarder;
@@ -18,6 +19,7 @@ export class RootObject extends GameObject {
             new Vector2D(globalThis.innerWidth / 2, globalThis.innerHeight / 2.618),
         );
 
+        TextManager.initialize(this);
         this.player = new Snowboarder(this);
         this.world = new World(this, this.player);
 

@@ -76,7 +76,6 @@ export default class Game extends Component {
         // Root object made before layers so that it is the lowest "layer"
         Game.rootObject = new RootObject(Game.app);
         LayerManager.initialize(Game.app);
-        TextManager.initialize(Game.rootObject);
     }
 
     /**
