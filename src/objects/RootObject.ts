@@ -24,7 +24,7 @@ export class RootObject extends GameObject {
         this.player = new Snowboarder(this);
         this.world = new World(this, this.player);
 
-        new Snow(this.world);
+        new Snow(this, this.world);
 
         this.AutoCenter = false;
     }

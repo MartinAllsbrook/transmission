@@ -115,7 +115,6 @@ export class World extends GameObject {
                         chunkCoord,
                         this.chunkSize,
                     );
-                    // Chunk will automatically call createSprite() via queueMicrotask
                 }
             }
         }

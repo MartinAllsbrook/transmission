@@ -36,7 +36,7 @@ export class SnowParticles extends GameObject{
         // Add particles
         const texture = await Assets.load("/Snowflake.png");
         
-        for (let i = 0; i < 60; ++i) {
+        for (let i = 0; i < 100; ++i) {
             const particle = new Particle({
                 texture,
                 x: Math.random() * this.size,
@@ -64,7 +64,7 @@ export class SnowParticles extends GameObject{
         
         for (const snowParticle of this.particles) {
             const a = time + snowParticle.phaseOffset;
-            snowParticle.particle.x += (Math.cos(a))* 0.1;
+            snowParticle.particle.x += (Math.cos(a)) * 0.1;
             snowParticle.particle.y -= 2 * (Math.sin(2 * a)) * 0.1;
         }
     }
