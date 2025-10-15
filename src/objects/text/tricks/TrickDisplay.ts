@@ -1,4 +1,5 @@
 import { Vector2D } from "../../../math/Vector2D.ts";
+import { LayerManager } from "../../../rendering/LayerManager.ts";
 import { GameObject } from "../../GameObject.ts";
 import { TrickExecution, LandTrickPopup } from "./LandTrickPopup.ts";
 import { TrickPopup } from "./TrickPopup.ts";
@@ -12,6 +13,8 @@ export class TrickDisplay extends GameObject {
         super(root, location);
 
         this.container.label = "TrickDisplay";
+
+        LayerManager.getLayer("ui")?.attach(this.container);
     }
 
     // Value Tricks

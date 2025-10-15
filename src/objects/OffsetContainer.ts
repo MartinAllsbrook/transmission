@@ -1,6 +1,7 @@
 import { GameObject, Parent } from "./GameObject.ts";
 import { Vector2D } from "../math/Vector2D.ts";
 import { SnowParticles } from "./world/snow/SnowParticles.ts";
+import { Snow } from "./world/snow/Snow.ts";
 
 export class OffsetContainer extends GameObject {
     public static offset: Vector2D = new Vector2D(
@@ -14,7 +15,8 @@ export class OffsetContainer extends GameObject {
             new Vector2D(globalThis.innerWidth / 2, globalThis.innerHeight / 2.618),
         );
 
-            
+        // new Snow(this);
+
         this.AutoCenter = false;
     }
 

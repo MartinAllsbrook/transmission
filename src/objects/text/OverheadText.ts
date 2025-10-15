@@ -1,6 +1,7 @@
 import { Text, TextStyle } from "pixi.js";
 import { GameObject, Parent } from "../GameObject.ts";
 import { Vector2D } from "../../math/Vector2D.ts";
+import { LayerManager } from "../../rendering/LayerManager.ts";
 
 export class OverheadText  extends GameObject {
     private text: string;
@@ -22,6 +23,8 @@ export class OverheadText  extends GameObject {
         this.color = color;
         this.textSize = size;
         this.lifetime = lifetime;
+
+        LayerManager.getLayer("ui")?.attach(this.container);
     }
 
     protected override async createOwnSprites(): Promise<void> {

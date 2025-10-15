@@ -1,6 +1,7 @@
+import { Vector2D } from "../../../math/Vector2D.ts";
 import { GameObject } from "../../GameObject.ts";
 
-import { ParticleContainer, Particle, Texture, Assets } from 'pixi.js';
+import { ParticleContainer, Particle, Assets, IRenderLayer } from 'pixi.js';
 
 interface SnowParticle {
     particle: Particle;
@@ -9,12 +10,18 @@ interface SnowParticle {
 
 export class SnowParticles extends GameObject{
     private particles: SnowParticle[] = [];
-    
-    constructor(parent: GameObject){
-        super(parent);
+    private size: number;
+    private layer?: IRenderLayer;
+
+    constructor(parent: GameObject, size: number, position: Vector2D, layer?: IRenderLayer){
+        super(parent, position);
+        this.size = size;
+        this.layer = layer;
     }
 
     protected override async createOwnSprites(): Promise<void> {
+        this.layer?.attach(this.container);
+        
         // Create a particle container with default options
         const container = new ParticleContainer({
             // this is the default, but we show it here for clarity
@@ -32,8 +39,8 @@ export class SnowParticles extends GameObject{
         for (let i = 0; i < 100; ++i) {
             const particle = new Particle({
                 texture,
-                x: Math.random() * 800,
-                y: Math.random() * 600,
+                x: Math.random() * this.size,
+                y: Math.random() * this.size,
             });
             
             const snowParticle: SnowParticle = {

@@ -4,6 +4,7 @@ import { GameObject } from "../../GameObject.ts";
 import { OffsetContainer } from "../../OffsetContainer.ts";
 import { ScoreText } from "./ScoreText.ts";
 import { FadingText } from "../FadingText.ts";
+import { LayerManager } from "../../../rendering/LayerManager.ts";
 
 export class ScoringDisplay extends GameObject {
     
@@ -21,6 +22,8 @@ export class ScoringDisplay extends GameObject {
 
         this.score = new ScoreText(this, "0");
         this.container.label = "ScoreDisplay";
+
+        LayerManager.getLayer("ui")?.attach(this.container);
 
     }
 
