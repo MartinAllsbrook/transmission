@@ -1,17 +1,13 @@
 import { Component } from "preact";
-import { Application, Graphics } from "pixi.js";
-
+import { Application } from "pixi.js";
 import { Snowboarder } from "src/objects/snowboarder/Snowboarder.ts";
 import { World } from "src/objects/world/World.ts";
 import { CollisionManager } from "src/colliders/CollisionManager.ts";
-import { OffsetContainer } from "src/objects/OffsetContainer.ts";
+import { RootObject } from "src/objects/RootObject.ts";
 import { GameOverScreen } from "./GameOverScreen.tsx";
-import { StatDisplay } from "../components/StatDisplay.tsx";
 import { LayerManager } from "src/rendering/LayerManager.ts";
 import { TextManager } from "src/scoring/TextManager.ts";
 import { Signal } from "@preact/signals";
-import { CatmullRomSpline } from "src/math/splines/CatmullRomSpline.ts";
-import { Vector2D } from "src/math/Vector2D.ts";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -24,7 +20,7 @@ export default class Game extends Component {
     private static gameOver: Signal<boolean> = new Signal(false);
 
     /** The the root container of the game, also used to center the game on the screen */
-    private static rootObject?: OffsetContainer;
+    private static rootObject?: RootObject;
 
     /** The main world object, moves the scene */
     private static world?: World;
@@ -83,7 +79,7 @@ export default class Game extends Component {
         if (!Game.app) throw new Error("PixiJS application not initialized");
 
         // Root object made before layers so that it is the lowest "layer"
-        Game.rootObject = new OffsetContainer(Game.app);
+        Game.rootObject = new RootObject(Game.app);
         LayerManager.initialize(Game.app);
         
         TextManager.initialize(Game.rootObject);

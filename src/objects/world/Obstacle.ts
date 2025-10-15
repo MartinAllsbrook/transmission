@@ -3,7 +3,7 @@ import { GameObject, Parent } from "src/objects/GameObject.ts";
 import { CircleCollider } from "src/colliders/CircleCollider.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { World } from "./World.ts";
-import { OffsetContainer } from "../OffsetContainer.ts";
+import { RootObject } from "../RootObject.ts";
 
 export class Obstacle extends GameObject {
     private leafSprites: Sprite[] = [];
@@ -69,7 +69,7 @@ export class Obstacle extends GameObject {
         });
 
         const showDistance = 256;
-        const distance = this.ScreenPosition.subtract(OffsetContainer.offset).magnitude()
+        const distance = this.ScreenPosition.subtract(RootObject.offset).magnitude()
         if (distance <= showDistance) {
             if (!this.showingWarning) {
                 this.showingWarning = true;

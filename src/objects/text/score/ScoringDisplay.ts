@@ -1,7 +1,7 @@
 import { TextStyle } from "pixi.js";
 import { Vector2D } from "../../../math/Vector2D.ts";
 import { GameObject } from "../../GameObject.ts";
-import { OffsetContainer } from "../../OffsetContainer.ts";
+import { RootObject } from "../../RootObject.ts";
 import { ScoreText } from "./ScoreText.ts";
 import { FadingText } from "../FadingText.ts";
 import { LayerManager } from "../../../rendering/LayerManager.ts";
@@ -13,7 +13,7 @@ export class ScoringDisplay extends GameObject {
     private score: ScoreText;
     private points: FadingText[] = [];
 
-    constructor(root: OffsetContainer, padding: Vector2D = new Vector2D(128, 64)) {
+    constructor(root: RootObject, padding: Vector2D = new Vector2D(128, 64)) {
         const scrrenSize = new Vector2D(globalThis.innerWidth, globalThis.innerHeight);
         const position = new Vector2D(-scrrenSize.x / 2 + padding.x, scrrenSize.y / 2 - padding.y); // Bottom-left corner
 
