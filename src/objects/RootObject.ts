@@ -3,6 +3,7 @@ import { Vector2D } from "../math/Vector2D.ts";
 import { Snowboarder } from "./snowboarder/Snowboarder.ts";
 import { World } from "./world/World.ts";
 import { TextManager } from "../scoring/TextManager.ts";
+import { Snow } from "./world/snow/Snow.ts";
 
 export class RootObject extends GameObject {
     private player: Snowboarder;
@@ -22,6 +23,8 @@ export class RootObject extends GameObject {
         TextManager.initialize(this);
         this.player = new Snowboarder(this);
         this.world = new World(this, this.player);
+
+        new Snow(this.world);
 
         this.AutoCenter = false;
     }
