@@ -1,5 +1,5 @@
 import { Vector2D } from "src/math/Vector2D.ts";
-import { GameObject } from "src/objects/GameObject.ts";
+import { GameObject } from "../../framework/GameObject.ts";
 import { Container, Graphics } from "pixi.js";
 import { LayerManager } from "../../rendering/LayerManager.ts";
 

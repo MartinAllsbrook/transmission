@@ -1,6 +1,6 @@
 import { CatmullRomSpline } from "../../../math/splines/CatmullRomSpline.ts";
 import { Vector2D } from "../../../math/Vector2D.ts";
-import { GameObject } from "../../GameObject.ts";
+import { GameObject } from "../../../framework/GameObject.ts";
 import { ExtraMath } from "../../../math/ExtraMath.ts";
 import { World } from "../World.ts";
 import { Graphics } from "pixi.js";

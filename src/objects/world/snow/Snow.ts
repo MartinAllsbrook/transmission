@@ -1,4 +1,4 @@
-import { GameObject } from "../../GameObject.ts";
+import { GameObject } from "../../../framework/GameObject.ts";
 import { RootObject } from "../../RootObject.ts";
 import { World } from "../World.ts";
 import { SnowLayer } from "./SnowLayer.ts";

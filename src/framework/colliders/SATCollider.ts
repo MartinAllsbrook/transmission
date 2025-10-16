@@ -1,4 +1,4 @@
-import { GameObject } from "src/objects/GameObject.ts";
+import { GameObject } from "../framework/GameObject.ts";
 import {
     CollisionLayer,
     CollisionManager,

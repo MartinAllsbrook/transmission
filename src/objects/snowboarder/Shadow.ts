@@ -1,5 +1,5 @@
 import { Graphics } from "pixi.js";
-import { GameObject, Parent } from "../GameObject.ts";
+import { GameObject, Parent } from "../../framework/GameObject.ts";
 import { LayerManager } from "../../rendering/LayerManager.ts";
 import { Vector2D } from "../../math/Vector2D.ts";
 

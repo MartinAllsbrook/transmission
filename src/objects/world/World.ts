@@ -1,4 +1,4 @@
-import { GameObject, Parent } from "../GameObject.ts";
+import { GameObject, Parent } from "../../framework/GameObject.ts";
 import { WorldChunk } from "./WorldChunk.ts";
 import { Snowboarder } from "../snowboarder/Snowboarder.ts";
 import { Vector2D } from "src/math/Vector2D.ts";

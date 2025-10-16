@@ -1,6 +1,6 @@
 import { Graphics } from "pixi.js";
 import { Range, SATCollider } from "./SATCollider.ts";
-import { GameObject } from "src/objects/GameObject.ts";
+import { GameObject } from "../framework/GameObject.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { CollisionLayer } from "./CollisionManager.ts";
 import Game from "../../islands/Game.tsx";

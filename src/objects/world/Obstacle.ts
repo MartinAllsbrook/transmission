@@ -1,5 +1,5 @@
 import { Sprite } from "pixi.js";
-import { GameObject, Parent } from "src/objects/GameObject.ts";
+import { GameObject, Parent } from "../../framework/GameObject.ts";
 import { CircleCollider } from "src/colliders/CircleCollider.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { World } from "./World.ts";

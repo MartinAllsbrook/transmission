@@ -1,4 +1,4 @@
-import { GameObject } from "src/objects/GameObject.ts";
+import { GameObject } from "../../framework/GameObject.ts";
 import { Obstacle } from "src/objects/world/Obstacle.ts";
 import { Vector2D } from "src/math/Vector2D.ts";
 import { Jump } from "./Jump.ts";

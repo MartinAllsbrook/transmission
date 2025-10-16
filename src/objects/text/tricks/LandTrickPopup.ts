@@ -1,6 +1,6 @@
 import { TextStyle } from "pixi.js";
 import { RichText } from "../RichText.ts";
-import { GameObject } from "../../GameObject.ts";
+import { GameObject } from "../../../framework/GameObject.ts";
 
 export type TrickExecution = "Poor" | "Okay" | "Good" | "Perfect";
 

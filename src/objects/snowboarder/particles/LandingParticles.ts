@@ -1,5 +1,5 @@
 import { Assets, Particle, ParticleContainer } from "pixi.js";
-import { GameObject } from "../../GameObject.ts";
+import { GameObject } from "../../../framework/GameObject.ts";
 import { ExtraMath } from "../../../math/ExtraMath.ts";
 
 interface LandingParticle {

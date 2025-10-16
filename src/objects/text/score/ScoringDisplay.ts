@@ -1,6 +1,6 @@
 import { TextStyle } from "pixi.js";
 import { Vector2D } from "../../../math/Vector2D.ts";
-import { GameObject } from "../../GameObject.ts";
+import { GameObject } from "../../../framework/GameObject.ts";
 import { RootObject } from "../../RootObject.ts";
 import { ScoreText } from "./ScoreText.ts";
 import { FadingText } from "../FadingText.ts";
