@@ -93,4 +93,15 @@ export class ExtraMath {
         return Math.max(0, Math.min(1, scaled));
     }
     
+    /**
+     * Clamps a number to be within the specified range [min, max].
+     *
+     * @param value - The number to clamp.
+     * @param min - The minimum allowable value.
+     * @param max - The maximum allowable value.
+     * @returns The clamped value.
+     */
+    public static clamp(value: number, min: number, max: number): number {
+        return Math.max(min, Math.min(max, value));
+    }
 }

@@ -24,7 +24,6 @@ export class SnowParticles extends GameObject{
         
         // Create a particle container with default options
         const container = new ParticleContainer({
-            // this is the default, but we show it here for clarity
             dynamicProperties: {
                 position: true, // Allow dynamic position changes (default)
                 scale: false, // Static scale for extra performance
@@ -52,7 +51,7 @@ export class SnowParticles extends GameObject{
 
             container.addParticle(particle);
         }
-        
+
         // Add container to the Pixi stage
         this.container.addChild(container);
 

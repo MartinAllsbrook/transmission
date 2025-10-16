@@ -11,6 +11,7 @@ import { PlayerState, StateName } from "./states/PlayerState.ts";
 import { GroundState } from "./states/GroundState.ts";
 import { AirState } from "./states/AirState.ts";
 import { RailState } from "./states/RailState.ts";
+import { LandingParticles } from "./particles/LandingParticles.ts";
   
 export interface PlayerConfig {
     // Initialization
@@ -101,6 +102,12 @@ export class Snowboarder extends GameObject {
             inputs: this.inputs,
             config: this.config,
         });
+
+        const landingParticles = new LandingParticles(this);
+        
+        setTimeout(() => {
+            landingParticles.playParticles(4);
+        }, 2000);
 
         this.state.enter();
     }
