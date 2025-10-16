@@ -1,10 +1,11 @@
+import { ExtraMath } from "framework";
+
 import { TrickDisplay } from "../text/tricks/TrickDisplay.ts";
 import { Snowboarder } from "./Snowboarder.ts";
 import { UpdatingText } from "../text/UpdatingText.ts";
 import { TrickPopup } from "../text/tricks/TrickPopup.ts";
 import { ScoringDisplay } from "../text/score/ScoringDisplay.ts";
 import { TextManager } from "../../scoring/TextManager.ts";
-import { ExtraMath } from "../../math/ExtraMath.ts";
 
 export class TricksManager {
     private snowboarder: Snowboarder;

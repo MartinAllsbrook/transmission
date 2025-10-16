@@ -1,7 +1,5 @@
 import Game from "islands/Game.tsx";
-import { SATCollider } from "../../../colliders/SATCollider.ts";
-import { ExtraMath } from "../../../math/ExtraMath.ts";
-import { Vector2D } from "../../../math/Vector2D.ts";
+import { SATCollider, ExtraMath, Vector2D } from "framework";
 import { PlayerState, StateName } from "./PlayerState.ts";
 
 export class GroundState extends PlayerState {

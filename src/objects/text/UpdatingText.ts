@@ -1,6 +1,5 @@
 import { BitmapFont, BitmapText, Text } from "pixi.js";
-import { GameObject } from "../../framework/GameObject.ts";
-import { Vector2D } from "../../math/Vector2D.ts";
+import { GameObject, Vector2D } from "framework";
 
 export class UpdatingText extends GameObject {
     private title: string;

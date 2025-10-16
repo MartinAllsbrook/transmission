@@ -1,4 +1,4 @@
-import { GameObject } from "../../framework/GameObject.ts";
+import { GameObject } from "framework";
 import { Head } from "./Head.ts";
 import { Snowboarder } from "./Snowboarder.ts";
 

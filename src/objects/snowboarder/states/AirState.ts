@@ -1,7 +1,6 @@
 import Game from "islands/Game.tsx";
-import { ExtraMath } from "../../../math/ExtraMath.ts";
+import { ExtraMath, SATCollider } from "framework";
 import { PlayerState, StateName } from "./PlayerState.ts";
-import { SATCollider } from "../../../colliders/SATCollider.ts";
 
 export class AirState extends PlayerState {
     private overRail: boolean = false;

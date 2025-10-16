@@ -1,5 +1,5 @@
 import { Graphics, TextStyle } from "pixi.js";
-import { GameObject } from "../../../framework/GameObject.ts";
+import { GameObject } from "framework";
 import { RichText } from "../RichText.ts";
 
 export class TrickPopup extends RichText {

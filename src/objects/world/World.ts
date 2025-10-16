@@ -1,12 +1,11 @@
-import { GameObject, Parent } from "../../framework/GameObject.ts";
+import { Container } from "pixi.js";
+import { GameObject, Parent, LayerManager, Vector2D } from "framework";
+
 import { WorldChunk } from "./WorldChunk.ts";
 import { Snowboarder } from "../snowboarder/Snowboarder.ts";
-import { Vector2D } from "src/math/Vector2D.ts";
 import { SnowboarderTrail } from "../snowboarder/SnowbarderTrail.ts";
-import { Container } from "pixi.js";
 import { Trails } from "./trails/Trails.ts";
 import { TreesContainer } from "./TreesContainer.ts";
-import { LayerManager } from "../../rendering/LayerManager.ts";
 
 export class World extends GameObject {
     player: Snowboarder;

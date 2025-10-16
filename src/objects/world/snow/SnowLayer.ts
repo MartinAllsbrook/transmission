@@ -1,6 +1,4 @@
-import { Vector2D } from "../../../math/Vector2D.ts";
-import { LayerManager } from "../../../rendering/LayerManager.ts";
-import { GameObject } from "../../../framework/GameObject.ts";
+import { Vector2D, LayerManager, GameObject } from "framework";
 import { SnowParticles } from "./SnowParticles.ts";
 
 export class SnowLayer extends GameObject {

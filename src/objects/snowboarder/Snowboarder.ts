@@ -1,11 +1,9 @@
 import { GameObject, Parent } from "../../framework/GameObject.ts";
-import { Vector2D } from "../../math/Vector2D.ts";
-import { LayerManager } from "../../rendering/LayerManager.ts";
-import { SATCollider } from "../../colliders/SATCollider.ts";
+import { Vector2D, LayerManager, SATCollider, InputManager } from "framework";
+
 import { Snowboard } from "./Snowboard.ts";
 import { Body } from "./Body.ts";
 import { Shadow } from "./Shadow.ts";
-import { InputManager } from "../../inputs/InputManager.ts";
 import { TricksManager } from "./TricksManager.ts";
 import { PlayerState, StateName } from "./states/PlayerState.ts";
 import { GroundState } from "./states/GroundState.ts";

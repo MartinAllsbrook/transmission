@@ -1,6 +1,5 @@
-import { GameObject } from "../../framework/GameObject.ts";
+import { GameObject, Vector2D } from "framework";
 import { Obstacle } from "src/objects/world/Obstacle.ts";
-import { Vector2D } from "src/math/Vector2D.ts";
 import { Jump } from "./Jump.ts";
 import { World } from "./World.ts";
 import { Rail } from "./features/Rail.ts";

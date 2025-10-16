@@ -1,4 +1,4 @@
-import { GameObject } from "../framework/GameObject.ts";
+import { GameObject } from "framework";
 import { OverheadText } from "../objects/text/OverheadText.ts";
 import { ScoringDisplay } from "../objects/text/score/ScoringDisplay.ts";
 import { TrickDisplay } from "../objects/text/tricks/TrickDisplay.ts";

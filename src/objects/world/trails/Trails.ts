@@ -1,16 +1,12 @@
-import { CatmullRomSpline } from "../../../math/splines/CatmullRomSpline.ts";
-import { Vector2D } from "../../../math/Vector2D.ts";
-import { GameObject } from "../../../framework/GameObject.ts";
-import { ExtraMath } from "../../../math/ExtraMath.ts";
+import { CatmullRomSpline, Vector2D, GameObject, ExtraMath } from "framework";
 import { World } from "../World.ts";
-import { Graphics } from "pixi.js";
 
 export class Trails extends GameObject {
     private spline: CatmullRomSpline;
     private world: World;
     // private debugGraphics: Graphics;
 
-    constructor(parent: World, startingPoint: Vector2D = new Vector2D(128, 128), width: number = 10, resolution: number = 10) {
+    constructor(parent: World, startingPoint: Vector2D = new Vector2D(128, 128)) {
         super(parent);
 
         const initialPoints: Vector2D[] = [];

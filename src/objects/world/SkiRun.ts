@@ -1,8 +1,5 @@
-import { BezierSpline } from "../../math/splines/BezierSpline.ts";
-import { GameObject } from "../../framework/GameObject.ts";
-import { Vector2D } from "../../math/Vector2D.ts";
+import { BezierSpline, GameObject, Vector2D, LayerManager } from "framework";
 import { Graphics } from "pixi.js";
-import { LayerManager } from "../../rendering/LayerManager.ts";
 
 export class SkiRun extends GameObject {
     private spline: BezierSpline;

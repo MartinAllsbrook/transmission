@@ -1,7 +1,7 @@
 import { Application, Assets, Container, Sprite } from "pixi.js";
-import { Vector2D } from "src/math/Vector2D.ts";
-import { SATCollider } from "../colliders/SATCollider.ts";
-import { LayerManager } from "../rendering/LayerManager.ts";
+import { Vector2D } from "./math/Vector2D.ts";
+import { SATCollider } from "./colliders/SATCollider.ts";
+import { LayerManager } from "./rendering/LayerManager.ts";
 
 export type Parent = Application | GameObject;
 
