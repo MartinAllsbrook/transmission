@@ -43,6 +43,8 @@ export class GameInstance {
         });
 
         this.container.appendChild(this.app.canvas);
+
+
     }
 
     private setupGame() {
@@ -50,10 +52,20 @@ export class GameInstance {
     }
 
     private startGameLoop() {
-        // Game loop logic goes here
+        this.app.ticker.add((ticker) => {
+            this.gameLoop(ticker.deltaMS);
+        });
+    }
+
+    private gameLoop(deltaTimeMS: number) {
+        this.root.update(deltaTimeMS / 1000);
     }
 
     public resetGame() {
         // Reset game logic goes here
+    }
+
+    public get Root(): GameRoot {
+        return this.root;
     }
 }

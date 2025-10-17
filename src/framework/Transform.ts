@@ -7,11 +7,11 @@ export interface TransformOptions {
 }
 
 export class Transform {
-    parent?: Transform;
+    private parent?: Transform;
 
-    position: Vector2D;
-    rotation: number;
-    scale: Vector2D;
+    private position: Vector2D;
+    private rotation: number;
+    private scale: Vector2D;
 
     constructor(parent?: Transform, options?: TransformOptions) {
         this.parent = parent;

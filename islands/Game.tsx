@@ -6,7 +6,8 @@ import { Application } from "pixi.js";
 import { RootObject } from "src/objects/RootObject.ts";
 import { GameOverScreen } from "./GameOverScreen.tsx";
 
-import { GameInstance } from "framework";
+import { GameInstance, Vector2D } from "framework";
+import { TestObject } from "src/TestObject.ts";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -22,11 +23,19 @@ export default class Game extends Component {
     /** The the root container of the game, also used to center the game on the screen */
     private static rootObject?: RootObject;
 
-    override componentDidMount() {
-        // Only run on client side
-        if (typeof window !== "undefined") {
-            this.game = new GameInstance(this.gameContainer!);    
-        }
+    override async componentDidMount() {
+        if (typeof window === "undefined") return; // Only run on client side
+
+        this.game = new GameInstance(this.gameContainer!); 
+        await this.game.init()
+
+        new TestObject(this.game.Root, this.game.Root);
+        const camera = this.game.Root.Camera;
+
+        camera.Transform.Position = new Vector2D(
+            -globalThis.innerWidth / 2, 
+            -globalThis.innerHeight / 2
+        );
     }
 
     override componentWillUnmount() {
