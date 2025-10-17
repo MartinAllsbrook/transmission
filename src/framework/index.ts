@@ -1,4 +1,5 @@
 // Re-export main classes
+export { GameInstance } from './GameInstance.ts';
 export { GameObject } from './GameObject.ts';
 export type { Parent } from './GameObject.ts';
 
