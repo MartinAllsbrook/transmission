@@ -15,7 +15,7 @@ export class GameInstance {
 
         this.app = this.createPixiApp();
 
-        this.root = new GameRoot();
+        this.root = new GameRoot(this.app.stage);
     } 
     
     private createPixiApp(): Application {

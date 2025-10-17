@@ -2,6 +2,7 @@ import { Application, Assets, Container, Sprite } from "pixi.js";
 import { Vector2D } from "./math/Vector2D.ts";
 import { SATCollider } from "./colliders/SATCollider.ts";
 import { LayerManager } from "./rendering/LayerManager.ts";
+import { Transform } from "./Transform.ts";
 
 export type Parent = Application | GameObject;
 
@@ -9,6 +10,10 @@ export type Parent = Application | GameObject;
  * Base class for all game objects in the game.
  */
 export abstract class GameObject {
+    private transform: Transform;
+
+
+
     protected position: Vector2D;
     protected rotation: number;
     scale: Vector2D;
@@ -32,6 +37,8 @@ export abstract class GameObject {
         rotation: number = 0,
         scale: Vector2D = new Vector2D(1, 1),
     ) {
+        this.transform = new Transform(); // TODO: Finish this!!!!
+
         this.position = position;
         this.rotation = rotation;
         this.scale = scale;
@@ -297,5 +304,9 @@ export abstract class GameObject {
             this.rotation = value;
         }
         this.syncTransform();
+    }
+
+    public get Transform(): Transform {
+        return this.transform;
     }
 }
