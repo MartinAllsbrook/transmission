@@ -1,6 +1,6 @@
-import { Graphics } from "pixi.js";
 import { Vector2D } from "../Vector2D.ts";
-import { World } from "../../objects/world/World.ts";
+// import { Graphics } from "pixi.js";
+// import { World } from "../../objects/world/World.ts";
 
 /**
  * A Catmull-Rom spline implementation that provides smooth interpolation through any number of control points.
@@ -410,35 +410,35 @@ export class CatmullRomSplineOld {
         return closestPoint ? { point: closestPoint, t: closestT } : null;
     }
 
-    public drawDebug(world: World): Graphics {
-        // Draw the spline using PixiJS
-        const graphics = new Graphics();
-        world.addVisual(graphics);
+    // public drawDebug(world: World): Graphics {
+    //     // Draw the spline using PixiJS
+    //     const graphics = new Graphics();
+    //     world.addVisual(graphics);
 
-        // Get points along the spline
-        const splinePoints = this.samplePoints(50);
+    //     // Get points along the spline
+    //     const splinePoints = this.samplePoints(50);
 
-        // Draw the curve
-        graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
+    //     // Draw the curve
+    //     graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
         
-        for (let i = 1; i < splinePoints.length; i++) {
-            graphics.lineTo(splinePoints[i].x, splinePoints[i].y);
-        }
-        graphics.stroke({width: 4, color: 0xff0000}); // Red line, 2px width
+    //     for (let i = 1; i < splinePoints.length; i++) {
+    //         graphics.lineTo(splinePoints[i].x, splinePoints[i].y);
+    //     }
+    //     graphics.stroke({width: 4, color: 0xff0000}); // Red line, 2px width
 
-        for (const controlPoint of this.controlPoints){
-            graphics.circle(controlPoint.x, controlPoint.y, 10)
-            graphics.fill({color: 0x00ff00});
-        }
+    //     for (const controlPoint of this.controlPoints){
+    //         graphics.circle(controlPoint.x, controlPoint.y, 10)
+    //         graphics.fill({color: 0x00ff00});
+    //     }
 
-        return graphics;
+    //     return graphics;
 
 
-        // // Draw control point markers
-        // for (const point of controlPoints) {
-        //     graphics.beginFill(0x0000ff); // Blue circles for control points
-        //     graphics.drawCircle(point.x, point.y, 3);
-        //     graphics.endFill();
-        // }
-    }
+    //     // // Draw control point markers
+    //     // for (const point of controlPoints) {
+    //     //     graphics.beginFill(0x0000ff); // Blue circles for control points
+    //     //     graphics.drawCircle(point.x, point.y, 3);
+    //     //     graphics.endFill();
+    //     // }
+    // }
 }

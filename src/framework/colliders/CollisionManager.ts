@@ -53,11 +53,11 @@ export class CollisionManager {
     }
 
     static checkCollisions() {
-        for (const collider of this.colliders) {
-            if (collider.debugging) {
-                collider.updateDebugShape();
-            }
-        }
+        // for (const collider of this.colliders) {
+        //     if (collider.debugging) {
+        //         collider.updateDebugShape();
+        //     }
+        // }
 
         for (let i = 0; i < this.colliders.length; i++) {
             for (let j = i + 1; j < this.colliders.length; j++) {

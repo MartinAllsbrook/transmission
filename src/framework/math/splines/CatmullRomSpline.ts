@@ -1,7 +1,6 @@
-import { Graphics } from "pixi.js";
 import { Vector2D } from "../Vector2D.ts";
-import { World } from "../../objects/world/World.ts";
-import { GameObject } from "../../framework/GameObject.ts";
+// import { Graphics } from "pixi.js";
+// import { World } from "../../objects/world/World.ts";
 
 /**
  * A Catmull-Rom spline implementation that requires explicit definition of all control points.
@@ -483,42 +482,42 @@ export class CatmullRomSpline {
         return closestPoint ? { point: closestPoint, t: closestT } : null;
     }
 
-    public drawDebug(world: World): Graphics {
-        // Draw the spline using PixiJS
-        const graphics = new Graphics();
-        world.addVisual(graphics);
+    // public drawDebug(world: World): Graphics {
+    //     // Draw the spline using PixiJS
+    //     const graphics = new Graphics();
+    //     world.addVisual(graphics);
 
-        if (this.controlPoints.length < 4) {
-            return graphics; // Nothing to draw
-        }
+    //     if (this.controlPoints.length < 4) {
+    //         return graphics; // Nothing to draw
+    //     }
 
-        // Get points along the interpolated spline
-        const splinePoints = this.samplePoints(50);
+    //     // Get points along the interpolated spline
+    //     const splinePoints = this.samplePoints(50);
 
-        if (splinePoints.length > 0) {
-            // Draw the curve
-            graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
+    //     if (splinePoints.length > 0) {
+    //         // Draw the curve
+    //         graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
             
-            for (let i = 1; i < splinePoints.length; i++) {
-                graphics.lineTo(splinePoints[i].x, splinePoints[i].y);
-            }
-            graphics.stroke({width: 4, color: 0xff0000}); // Red line, 4px width
-        }
+    //         for (let i = 1; i < splinePoints.length; i++) {
+    //             graphics.lineTo(splinePoints[i].x, splinePoints[i].y);
+    //         }
+    //         graphics.stroke({width: 4, color: 0xff0000}); // Red line, 4px width
+    //     }
 
-        // Draw all control points (green for tangent points, blue for interpolated points)
-        for (let i = 0; i < this.controlPoints.length; i++) {
-            const controlPoint = this.controlPoints[i];
-            graphics.circle(controlPoint.x, controlPoint.y, 8);
+    //     // Draw all control points (green for tangent points, blue for interpolated points)
+    //     for (let i = 0; i < this.controlPoints.length; i++) {
+    //         const controlPoint = this.controlPoints[i];
+    //         graphics.circle(controlPoint.x, controlPoint.y, 8);
             
-            // First and last points are tangent control points (green)
-            // Middle points are interpolated through (blue)
-            if (i === 0 || i === this.controlPoints.length - 1) {
-                graphics.fill({color: 0x00ff00}); // Green for tangent control points
-            } else {
-                graphics.fill({color: 0x0000ff}); // Blue for interpolated points
-            }
-        }
+    //         // First and last points are tangent control points (green)
+    //         // Middle points are interpolated through (blue)
+    //         if (i === 0 || i === this.controlPoints.length - 1) {
+    //             graphics.fill({color: 0x00ff00}); // Green for tangent control points
+    //         } else {
+    //             graphics.fill({color: 0x0000ff}); // Blue for interpolated points
+    //         }
+    //     }
 
-        return graphics;
-    }
+    //     return graphics;
+    // }
 }

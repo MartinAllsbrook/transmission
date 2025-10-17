@@ -1,9 +1,7 @@
-import { Graphics } from "pixi.js";
 import { Range, SATCollider } from "./SATCollider.ts";
 import { CollisionLayer } from "./CollisionManager.ts";
-import { GameObject } from "../framework/GameObject.ts";
+import { GameObject } from "../GameObject.ts";
 import { Vector2D } from "../math/Vector2D.ts";
-import Game from "../../islands/Game.tsx";
 
 /**
  * Simple collider class that uses SAT for square collision detection - May expand in the future
@@ -23,31 +21,31 @@ export class RectCollider extends SATCollider {
 
         this.size = size;
 
-        if (this.debugging) {
-            this.createDebugShape();
-        }
+        // if (this.debugging) {
+        //     this.createDebugShape();
+        // }
     }
 
-    protected createDebugShape(): void {
-        this.debugShape = new Graphics()
-            .rect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y)
-            .stroke({ width: 1, color: 0x00ff00, alpha: 0.5 });
+    // protected override createDebugShape(): void {
+    //     this.debugShape = new Graphics()
+    //         .rect(-this.size.x / 2, -this.size.y / 2, this.size.x, this.size.y)
+    //         .stroke({ width: 1, color: 0x00ff00, alpha: 0.5 });
 
-        Game.app?.stage.addChild(this.debugShape);
-        if (!Game.app?.stage) console.error("No stage found in Game.app");
+    //     Game.app?.stage.addChild(this.debugShape);
+    //     if (!Game.app?.stage) console.error("No stage found in Game.app");
 
-        this.updateDebugShape();
-    }
+    //     this.updateDebugShape();
+    // }
 
-    public override updateDebugShape(): void {
-        if (this.debugShape) {
-            this.debugShape.position.set(
-                this.Position.x,
-                this.Position.y,
-            );
-            this.debugShape.rotation = this.Rotation;
-        }
-    }
+    // public override updateDebugShape(): void {
+    //     if (this.debugShape) {
+    //         this.debugShape.position.set(
+    //             this.Position.x,
+    //             this.Position.y,
+    //         );
+    //         this.debugShape.rotation = this.Rotation;
+    //     }
+    // }
 
     protected getVertices(): Vector2D[] {
         const halfWidth = this.size.x / 2;

@@ -1,10 +1,8 @@
-import { GameObject } from "../framework/GameObject.ts";
-import {
-    CollisionLayer,
-    CollisionManager,
-} from "src/colliders/CollisionManager.ts";
-import { Vector2D } from "src/math/Vector2D.ts";
 import { Graphics } from "pixi.js";
+
+import { GameObject } from "../GameObject.ts";
+import { CollisionLayer, CollisionManager } from "./CollisionManager.ts";
+import { Vector2D } from "../math/Vector2D.ts";
 
 export interface Range {
     min: number;
@@ -58,15 +56,15 @@ export abstract class SATCollider {
 
     // #region Abstract Methods
 
-    /**
-     * Draws the debugging shape of the collider and adds it to the host gameobject
-     */
-    protected abstract createDebugShape(): void;
+    // /**
+    //  * Draws the debugging shape of the collider and adds it to the host gameobject
+    //  */
+    // protected abstract createDebugShape(): void;
 
-    /**
-     * Updates the debugging shape's position based on the host gameobject's position
-     */
-    public abstract updateDebugShape(): void;
+    // /**
+    //  * Updates the debugging shape's position based on the host gameobject's position
+    //  */
+    // public abstract updateDebugShape(): void;
 
     /**
      * Gets the positions of the vertices of the collider

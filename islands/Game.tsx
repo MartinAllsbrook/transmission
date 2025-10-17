@@ -6,9 +6,7 @@ import { Application } from "pixi.js";
 import { RootObject } from "src/objects/RootObject.ts";
 import { GameOverScreen } from "./GameOverScreen.tsx";
 
-import { CollisionManager } from "src/colliders/CollisionManager.ts";
-import { LayerManager } from "src/rendering/LayerManager.ts";
-import { TextManager } from "src/scoring/TextManager.ts";
+import { CollisionManager,  LayerManager} from "framework";
 
 export default class Game extends Component {
     /** Reference to the game container div */
