@@ -1,5 +1,6 @@
 import { Container } from "pixi.js";
 import { Camera } from "./Camera.ts";
+import { GameObject } from "./GameObject.ts";
 
 export class GameRoot {
     private stage: Container;
@@ -40,4 +41,16 @@ export class GameRoot {
     public setActiveCamera(camera: Camera) {
         this.camera = camera;
     }
+    
+    public addChild(child: GameObject) {
+        // TODO: Implement this
+    }
+
+    public removeChild(child: GameObject) {
+        // TODO: Implement this
+    }
+
+    public get Transform(): undefined {
+        return undefined;
+    } 
 }

@@ -1,6 +1,6 @@
 import { Vector2D } from "./math/Vector2D.ts";
 
-interface TransformDefaults {
+export interface TransformOptions {
     position?: Vector2D;
     rotation?: number;
     scale?: Vector2D;
@@ -13,12 +13,12 @@ export class Transform {
     rotation: number;
     scale: Vector2D;
 
-    constructor(parent?: Transform, defaults?: TransformDefaults) {
+    constructor(parent?: Transform, options?: TransformOptions) {
         this.parent = parent;
 
-        this.position = defaults?.position || new Vector2D(0, 0);
-        this.rotation = defaults?.rotation || 0;
-        this.scale = defaults?.scale || new Vector2D(1, 1);
+        this.position = options?.position || new Vector2D(0, 0);
+        this.rotation = options?.rotation || 0;
+        this.scale = options?.scale || new Vector2D(1, 1);
     }
 
     //#region Position
