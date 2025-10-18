@@ -7,10 +7,10 @@ export class GroundState extends PlayerState {
 
     public override enter(): void {
         this.switchToGroundShifty();
-        this.tricksManager.endSpin(
-            this.board.Transform.WorldRotation, 
-            this.velocity.heading() * 180 / Math.PI
-        );
+        // this.tricksManager.endSpin(
+        //     this.board.Transform.WorldRotation, 
+        //     this.velocity.heading() * 180 / Math.PI
+        // );
     }
 
     private switchToGroundShifty() {
@@ -18,26 +18,31 @@ export class GroundState extends PlayerState {
         this.player.Transform.Rotation = this.board.Transform.WorldRotation;
 
         // Rotation of the body is now offset to match the now flipped shifty. 90 is for the base stance of the body 
-        this.body.Transform.Rotation = (this.shiftyAngle * -1) + 90; 
+        this.body.Transform.Rotation.Deg = (this.player.ShiftyAngle.Deg * -1) + 90; 
 
         // Reset board rotation because it is now handled by the root object
-        this.board.Transform.Rotation = 0; 
+        this.board.Transform.Rotation.Deg = 0; 
     }
 
     // #region Update
 
-    protected override shiftyUpdate(deltaTime: number): void {
-        this.shiftyTargetAngle = this.inputs.shifty * PLAYER_CONFIG.shiftyMaxAngle;
-        this.shiftyAngle = ExtraMath.lerpSafe(
-            this.shiftyAngle, 
-            this.shiftyTargetAngle, 
+    public override update(_deltaTime: number): void {
+        this.shiftyUpdate(_deltaTime);
+        this.physicsUpdate(_deltaTime);
+    }
+
+    protected shiftyUpdate(deltaTime: number): void {
+        const shiftyTargetAngle = this.player.ShiftyInput.Value * PLAYER_CONFIG.shiftyMaxAngle;
+        this.player.ShiftyAngle.Deg = ExtraMath.lerpSafe(
+            this.player.ShiftyAngle.Deg, 
+            shiftyTargetAngle, 
             PLAYER_CONFIG.shiftyLerpSpeed * deltaTime
         );
         
         this.body.Transform.Rotation = (this.shiftyAngle * -1) + 90; // Flip for goofy
     }
 
-    protected override physicsUpdate(deltaTime: number): void {
+    protected physicsUpdate(deltaTime: number): void {
         // Apply gravity
         this.velocity.y += PLAYER_CONFIG.gravityStrength * deltaTime
 

@@ -1,8 +1,9 @@
+import { Angle } from "./math/Angle.ts";
 import { Vector2D } from "./math/Vector2D.ts";
 
 export interface TransformOptions {
     position?: Vector2D;
-    rotation?: number;
+    rotation?: Angle;
     scale?: Vector2D;
 }
 
@@ -10,14 +11,14 @@ export class Transform {
     private parent?: Transform;
 
     private position: Vector2D;
-    private rotation: number;
+    private rotation: Angle;
     private scale: Vector2D;
 
     constructor(parent?: Transform, options?: TransformOptions) {
         this.parent = parent;
 
         this.position = options?.position || new Vector2D(0, 0);
-        this.rotation = options?.rotation || 0;
+        this.rotation = options?.rotation || new Angle(0);
         this.scale = options?.scale || new Vector2D(1, 1);
     }
 
@@ -55,27 +56,27 @@ export class Transform {
 
     //#region Rotation
 
-    public get Rotation(): number {
-        return this.rotation;
+    public get Rotation(): Angle {
+        return this.rotation.clone();
     }
 
-    public set Rotation(value: number) {
-        this.rotation = value;
+    public set Rotation(value: Angle) {
+        this.rotation.set(value);
     }
 
-    public get WorldRotation(): number {
+    public get WorldRotation(): Angle {
         if (this.parent) {
-            return this.parent.WorldRotation + this.rotation;
+            return new Angle(this.parent.WorldRotation.Rad + this.rotation.Rad);
         } else {
-            return this.rotation;
+            return this.rotation.clone();
         }
     }
 
-    public set WorldRotation(value: number) {
+    public set WorldRotation(value: Angle) {
         if (this.parent) {
-            this.rotation = value - this.parent.WorldRotation;
+            this.rotation = new Angle(value.Rad - this.parent.WorldRotation.Rad);
         } else {
-            this.rotation = value;
+            this.rotation = value.clone();
         }
     }
 

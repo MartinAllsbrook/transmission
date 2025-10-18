@@ -16,6 +16,14 @@ export class Angle {
         return new Angle(radians);
     }
 
+    public set(value: Angle): void {
+        this.value = value.value;
+    }
+
+    public clone(): Angle {
+        return new Angle(this.value);
+    }
+
     public get Deg(): number {
         return this.value * (180 / Math.PI);
     }

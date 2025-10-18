@@ -34,5 +34,31 @@ export class Player extends GameObject {
         this.state.update(deltaTime);
     }
 
+    public get ShiftyInput(): ValueInput {
+        return this.shiftyInput;
+    }
 
+    public set Velocity(velocity: Vector2D) {
+        this.velocity = velocity;
+    }
+
+    public get Velocity(): Vector2D {
+        return this.velocity;
+    }
+
+    public set RotationSpeed(rotationSpeed: Angle) {
+        this.rotationSpeed = rotationSpeed;
+    }
+
+    public get RotationSpeed(): Angle {
+        return this.rotationSpeed;
+    }
+
+    public set ShiftyAngle(shiftyAngle: Angle) {
+        this.shiftyAngle = shiftyAngle;
+    }
+
+    public get ShiftyAngle(): Angle {
+        return this.shiftyAngle;
+    }
 }
