@@ -7,10 +7,10 @@ export class AirState extends PlayerState {
 
     public override enter(): void {
         this.switchToAirShifty();
-        this.tricksManager.trickStart(
-            this.board.Transform.WorldRotation, 
-            this.velocity.heading() * 180 / Math.PI
-        );
+        // this.tricksManager.trickStart(
+        //     this.board.Transform.WorldRotation, 
+        //     this.velocity.heading() * 180 / Math.PI
+        // );
     }
 
     private switchToAirShifty() {
