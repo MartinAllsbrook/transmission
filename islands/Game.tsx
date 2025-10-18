@@ -3,7 +3,7 @@ import { Signal } from "@preact/signals";
 
 import { GameOverScreen } from "./GameOverScreen.tsx";
 
-import { GameInstance } from "framework";
+import { GameInstance, Vector2D } from "framework";
 import { Player } from "src/game/player/Player.ts";
 import { TestObject } from "src/game/TestObject.ts";
 import { Tree } from "src/game/world/obstacles/Tree.ts";
@@ -23,8 +23,12 @@ export default class Game extends Component {
         await this.game.init()
 
         new Player(this.game.Root, this.game.Root);
-        new TestObject(this.game.Root, this.game.Root);
-        new Tree(this.game.Root, this.game.Root);
+        new TestObject(this.game.Root, this.game.Root, {
+            position: new Vector2D(-100, 100)
+        });
+        new Tree(this.game.Root, this.game.Root, {
+            position: new Vector2D(200, 200)
+        });
     }
 
     override componentWillUnmount() {

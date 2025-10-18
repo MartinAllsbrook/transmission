@@ -1,4 +1,4 @@
-import { BooleanInput, GameObject, ValueInput, Vector2D } from "framework";
+import { BooleanInput, GameObject, SATCollider, ValueInput, Vector2D } from "framework";
 
 import { Body } from "./Body.ts";
 import { Board } from "./Board.ts";
@@ -33,6 +33,30 @@ export class Player extends GameObject {
     protected override update(deltaTime: number): void {
         this.state.update(deltaTime);
     }
+
+    //#region Collison Handling
+
+    public onCollisionEnter(other: SATCollider): void {
+        console.log("Enter");
+
+        this.state.onCollisionEnter(other);
+    }
+
+    public onCollisionStay(other: SATCollider): void {
+        console.log("Stay");
+        
+        this.state.onCollisionStay(other);
+    }
+
+    public onCollisionExit(other: SATCollider): void {
+        console.log("Exit");
+        
+        this.state.onCollisionExit(other);
+    }
+
+    //#endregion
+
+    //#region Getters & Setters
 
     public get ShiftyInput(): ValueInput {
         return this.shiftyInput;
@@ -69,4 +93,6 @@ export class Player extends GameObject {
     public get ShiftyAngle(): Angle {
         return this.shiftyAngle;
     }
+
+    //#endregion
 }
