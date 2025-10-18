@@ -80,6 +80,6 @@ export class VectorInput extends Input<Vector2> {
                 (this.downKeysSet.size > 0 ? 1 : 0),
         };
 
-        this.setValue(newValue);
+        this.Value = newValue;
     }
 }

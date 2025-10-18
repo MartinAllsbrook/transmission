@@ -1,7 +1,9 @@
 // Re-export main classes
 export { GameInstance } from './GameInstance.ts';
 export { GameObject } from './GameObject.ts';
-export type { Parent } from './GameObject.ts';
+export { GameRoot } from './GameRoot.ts';
+export { Transform } from './Transform.ts';
+export { Camera } from './Camera.ts';
 
 // Re-export colliders
 export { CircleCollider } from './colliders/CircleCollider.ts';

@@ -4,7 +4,7 @@ import { Signal } from "@preact/signals";
 import { GameOverScreen } from "./GameOverScreen.tsx";
 
 import { GameInstance } from "framework";
-import { TestObject } from "src/TestObject.ts";
+import { Player } from "src/game/player/Player.ts";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -20,7 +20,7 @@ export default class Game extends Component {
         this.game = new GameInstance(this.gameContainer!); 
         await this.game.init()
 
-        new TestObject(this.game.Root, this.game.Root);
+        new Player(this.game.Root, this.game.Root);
     }
 
     override componentWillUnmount() {

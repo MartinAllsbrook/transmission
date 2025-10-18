@@ -21,6 +21,9 @@ export class GameRoot {
         this.ui = new Container();
         this.stage.addChild(this.ui);
 
+        this.world.label = "World";
+        this.ui.label = "UI";
+
         this.camera = new Camera();
     }
 
@@ -28,7 +31,7 @@ export class GameRoot {
         this.syncWorldToCamera();
 
         for (const child of this.children) {
-            child.update(deltaTime);
+            child.baseUpdate(deltaTime);
         }
     }
 

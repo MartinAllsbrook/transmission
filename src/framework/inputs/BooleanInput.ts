@@ -13,7 +13,7 @@ export class BooleanInput extends Input<boolean> {
         if (this.keys.includes(key)) {
             this.pressedKeys.add(key);
 
-            this.setValue(true);
+            this.Value = true;
         }
     }
 
@@ -23,7 +23,7 @@ export class BooleanInput extends Input<boolean> {
 
             // Only set to false if no keys are pressed
             if (this.pressedKeys.size === 0) {
-                this.setValue(false);
+                this.Value = false;
             }
         }
     }

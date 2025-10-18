@@ -41,6 +41,6 @@ export class ValueInput extends Input<number> {
         // Value is -1, 0, or 1 based on key presses
         const newValue = (this.positiveKeysPressed.size > 0 ? 1 : 0) -
             (this.negativeKeysPressed.size > 0 ? 1 : 0);
-        this.setValue(newValue);
+        this.Value = newValue;
     }
 }

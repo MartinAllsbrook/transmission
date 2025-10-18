@@ -9,6 +9,8 @@ import { GameRoot } from "./GameRoot.ts";
  * Base class for all game objects in the game.
  */
 export abstract class GameObject {
+    public abstract get Name(): string;
+
     protected parent: GameObject | GameRoot;
     protected root: GameRoot;
     private children: GameObject[] = [];
@@ -27,21 +29,111 @@ export abstract class GameObject {
         transformOptions?: TransformOptions
     ) {
         this.parent = parent;
+        this.root = root;
+
         this.parent.addChild(this);
         this.transform = new Transform(parent.Transform, transformOptions);
 
-        this.root = root;
-        this.root.addContainer(this.container);
-
+        this.setUpContainer();
         this.syncTransform();
-
-        this.Start();
+        this.start();
     }
 
-    protected Start(): void {
-        // To be optionally overridden by subclasses
+    private setUpContainer(): void {
+        this.container.label = this.Name;
+        this.root.addContainer(this.container);
     }
-    
+
+    protected start(): void {}
+
+    public baseUpdate(deltaTime: number): void {
+        this.update(deltaTime);
+        
+        for (const child of this.children) {
+            child.baseUpdate(deltaTime);
+        }
+        
+        this.syncTransform();
+    }
+
+    /**
+     * Method to update the game object each frame. Called with the time delta since the last frame.
+     * @param deltaTime Time in milliseconds since the last frame.
+     */
+    protected update(_deltaTime: number): void {}
+
+    /**
+     * Updates the container's position, rotation, and scale to match the game object's properties.
+     */
+    private syncTransform() {
+        this.container.position.set(
+            this.transform.WorldPosition.x, 
+            this.transform.WorldPosition.y
+        );
+        this.container.rotation = this.transform.Rotation;
+        this.container.scale.set(
+            this.transform.WorldScale.x, 
+            this.transform.WorldScale.y
+        );
+    }
+
+    /**
+     * Adds a child game object to this game object.
+     * @param child The child game object to add.
+     */
+    public addChild(child: GameObject): void {
+        this.children.push(child);
+        
+        // // If this parent has already had createSprite() called, immediately add the child's container
+        // // Otherwise, it will be added when this parent's createSprite() is called
+        // if (this.spriteCreated && !this.container.children.includes(child.container)) {
+        //     this.container.addChild(child.container);
+        // }
+    }
+
+    public getChildrenByName(string: string): GameObject[] {
+        return this.children.filter((child) => child.Name === string);
+    }
+
+    public removeChild(child: GameObject): void {
+        const index = this.children.indexOf(child);
+        if (index > -1) {
+            this.children.splice(index, 1);
+        } else {
+            console.warn("Attempted to remove a child that does not exist on this parent.");
+        }
+    }
+
+    /**
+     * Adds a collider to this game object.
+     * @param collider The collider to add to this game object.
+     */
+    public addCollider(collider: SATCollider): void {
+        this.colliders.push(collider);
+    }
+
+    /**
+     * Destroys the game object, its children, and associated resources.
+     */
+    public destroy(): void {
+        // Remove from parent's children array
+        this.parent.removeChild(this);
+
+        // Destroy all children
+        const childrenCopy = [...this.children];
+        childrenCopy.forEach((child) => child.destroy());
+
+        // Destroy all colliders
+        this.colliders.forEach((collider) => collider.destroy());
+        this.colliders = [];
+
+        // Destroy graphics container
+        this.container.destroy({ children: true });
+
+        // Mark as destroyed
+        this.destroyed = true;
+    }
+
     protected async loadSprite(url: string, options?: {
         scale?: Vector2D;
         rotation?: number;
@@ -89,88 +181,6 @@ export abstract class GameObject {
             this.container.addChild(sprite);
 
         return sprite;
-    }
-
-    /**
-     * Method to update the game object each frame. Called with the time delta since the last frame.
-     * @param deltaTime Time in milliseconds since the last frame.
-     */
-    public update(_deltaTime: number): void {
-        this.syncTransform();
-
-        for (const child of this.children) {
-            child.update(_deltaTime);
-        }
-    }
-
-    /**
-     * Updates the container's position, rotation, and scale to match the game object's properties.
-     */
-    private syncTransform() {
-        this.container.position.set(
-            this.transform.WorldPosition.x, 
-            this.transform.WorldPosition.y
-        );
-        this.container.rotation = this.transform.Rotation;
-        this.container.scale.set(
-            this.transform.WorldScale.x, 
-            this.transform.WorldScale.y
-        );
-    }
-
-    /**
-     * Adds a child game object to this game object.
-     * @param child The child game object to add.
-     */
-    public addChild(child: GameObject): void {
-        this.children.push(child);
-        
-        // // If this parent has already had createSprite() called, immediately add the child's container
-        // // Otherwise, it will be added when this parent's createSprite() is called
-        // if (this.spriteCreated && !this.container.children.includes(child.container)) {
-        //     this.container.addChild(child.container);
-        // }
-    }
-
-
-    public removeChild(child: GameObject): void {
-        const index = this.children.indexOf(child);
-        if (index > -1) {
-            this.children.splice(index, 1);
-        } else {
-            console.warn("Attempted to remove a child that does not exist on this parent.");
-        }
-    }
-
-
-    /**
-     * Adds a collider to this game object.
-     * @param collider The collider to add to this game object.
-     */
-    public addCollider(collider: SATCollider): void {
-        this.colliders.push(collider);
-    }
-
-    /**
-     * Destroys the game object, its children, and associated resources.
-     */
-    public destroy(): void {
-        // Remove from parent's children array
-        this.parent.removeChild(this);
-
-        // Destroy all children
-        const childrenCopy = [...this.children];
-        childrenCopy.forEach((child) => child.destroy());
-
-        // Destroy all colliders
-        this.colliders.forEach((collider) => collider.destroy());
-        this.colliders = [];
-
-        // Destroy graphics container
-        this.container.destroy({ children: true });
-
-        // Mark as destroyed
-        this.destroyed = true;
     }
 
     public get Destroyed(): boolean {
