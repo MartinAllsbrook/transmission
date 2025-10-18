@@ -26,19 +26,15 @@ export abstract class SATCollider {
     private onExitCallbacks: ((other: SATCollider) => void)[] = [];
 
     // Debugging
-    public debugging: boolean;
     protected debugShape: Graphics | null = null;
-
 
     constructor(
         host: GameObject,
-        position: Vector2D,
-        debugging: boolean = false,
         layer: CollisionLayer = "default",
+        position: Vector2D = new Vector2D(0, 0),
     ) {
         this.position = position;
         this.host = host;
-        this.debugging = debugging;
         this.layer = layer;
 
         host.addCollider(this);
@@ -48,15 +44,20 @@ export abstract class SATCollider {
 
     // #region Abstract Methods
 
-    // /**
-    //  * Draws the debugging shape of the collider and adds it to the host gameobject
-    //  */
-    // protected abstract createDebugShape(): void;
+    public abstract createDebugShape(): void;
 
-    // /**
-    //  * Updates the debugging shape's position based on the host gameobject's position
-    //  */
-    // public abstract updateDebugShape(): void;
+    public updateDebugShape(): void {
+        if (CollisionManager.Debugging && !this.debugShape) {
+            this.createDebugShape();
+        }
+    }
+
+    public removeDebugShape(): void {
+        if (this.debugShape) {
+            this.debugShape.destroy();
+            this.debugShape = null;
+        } 
+    }
 
     /**
      * Gets the positions of the vertices of the collider

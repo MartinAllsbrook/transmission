@@ -184,4 +184,8 @@ export abstract class GameObject {
     public get Transform(): Transform {
         return this.transform;
     }
+
+    public get Root(): GameRoot {
+        return this.root;
+    }
 }

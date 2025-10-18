@@ -3,6 +3,7 @@ import { Range, SATCollider } from "./SATCollider.ts";
 import { GameObject } from "../GameObject.ts";
 import { Vector2D } from "../math/Vector2D.ts";
 import { CollisionLayer } from "./CollisionManager.ts";
+import { Graphics } from "pixi.js";
 // import Game from "../../islands/Game.tsx";
 
 export class CircleCollider extends SATCollider {
@@ -11,12 +12,11 @@ export class CircleCollider extends SATCollider {
 
     constructor(
         host: GameObject,
-        position: Vector2D,
-        radius: number,
-        debugging: boolean = false,
         layer: CollisionLayer = "default",
+        radius: number,
+        position: Vector2D,
     ) {
-        super(host, position, debugging, layer);
+        super(host, layer, position);
 
         this.radius = radius;
 
@@ -25,24 +25,27 @@ export class CircleCollider extends SATCollider {
         // }
     }
 
-    // protected createDebugShape(): void {
-    //     this.debugShape = new Graphics()
-    //         .circle(0, 0, this.radius)
-    //         .stroke({ width: 1, color: 0x00ff00, alpha: 0.5 });
+    public createDebugShape(): void {
+        this.debugShape = new Graphics()
+            .circle(0, 0, this.radius)
+            .stroke({ width: 1, color: 0x00ff00, alpha: 0.5 });
 
-    //     Game.app?.stage.addChild(this.debugShape);
+        this.debugShape.label = "CircleCollider Debug Shape";
+        this.host.Root.addContainer(this.debugShape);
 
-    //     this.updateDebugShape();
-    // }
+        this.updateDebugShape();
+    }
 
-    // public override updateDebugShape(): void {
-    //     if (this.debugShape) {
-    //         this.debugShape.position.set(
-    //             this.Position.x,
-    //             this.Position.y,
-    //         );
-    //     }
-    // }
+    public override updateDebugShape(): void {
+        super.updateDebugShape();
+
+        if (this.debugShape) {
+            this.debugShape.position.set(
+                this.WorldPosition.x,
+                this.WorldPosition.y,
+            );
+        }
+    }
 
     protected getVertices(): Vector2D[] {
         // Circles don't have vertices, but we can return the center as a single "vertex"

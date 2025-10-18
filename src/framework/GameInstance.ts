@@ -1,5 +1,6 @@
 import { Application } from "pixi.js";
 import { GameRoot } from "./GameRoot.ts";
+import { CollisionManager } from "./colliders/CollisionManager.ts";
 
 export class GameInstance {
     private app: Application;
@@ -59,6 +60,7 @@ export class GameInstance {
 
     private gameLoop(deltaTimeMS: number) {
         this.root.update(deltaTimeMS / 1000);
+        CollisionManager.update();
     }
 
     public resetGame() {

@@ -10,7 +10,7 @@ export const LAYERS: CollisionLayer[] = [
     "rail",
 ];
 
-// Developer-defined collision matrix. Columns correspond to LAYERS by index.
+// Columns correspond to LAYERS by index.
 const collisionMatrix: boolean[][] = [
     // Default Player Obstacle Jump
     [false], // Default 
@@ -21,19 +21,24 @@ const collisionMatrix: boolean[][] = [
 ];
 
 export class CollisionManager {
-    static colliders: SATCollider[] = [];
+    private static debugging: boolean = true;
+    private static colliders: SATCollider[] = [];
 
-    static addCollider(collider: SATCollider) {
+    public static addCollider(collider: SATCollider) {
         this.colliders.push(collider);
     }
 
-    static removeCollider(collider: SATCollider) {
+    public static removeCollider(collider: SATCollider) {
         const index = this.colliders.indexOf(collider);
         if (index > -1) {
             this.colliders.splice(index, 1);
         }
     }
 
+    /**
+     * Determines if two collision layers should check for collisions based on the collision matrix
+     * @returns - Whether the two layers should check for collisions
+     */
     private static shouldLayersCollide(
         layerA: CollisionLayer,
         layerB: CollisionLayer,
@@ -52,13 +57,14 @@ export class CollisionManager {
         return aToB || bToA;
     }
 
-    static checkCollisions() {
-        // for (const collider of this.colliders) {
-        //     if (collider.debugging) {
-        //         collider.updateDebugShape();
-        //     }
-        // }
+    public static update() {
+        if (this.debugging) 
+            this.updateDebugShapes();
 
+        this.checkCollisions();
+    }
+
+    private static checkCollisions() {
         for (let i = 0; i < this.colliders.length; i++) {
             for (let j = i + 1; j < this.colliders.length; j++) {
                 const colliderA = this.colliders[i];
@@ -76,4 +82,41 @@ export class CollisionManager {
             }
         }
     }
+
+    //#region Debugging
+
+    private static updateDebugShapes() {
+        for (const collider of this.colliders) {
+            collider.updateDebugShape();
+        }
+    }
+
+    private static createDebugShapes() {
+        for (const collider of this.colliders) {
+            collider.createDebugShape();
+        }
+    }
+
+    private static removeDebugShapes() {
+        for (const collider of this.colliders) {
+            collider.removeDebugShape();
+        }
+    }
+
+    public static set Debugging(value: boolean) {
+        if (this.debugging === value) return;
+
+        if (value)
+            this.createDebugShapes();
+        else
+            this.removeDebugShapes();
+
+        this.debugging = value;
+    }
+
+    public static get Debugging(): boolean {
+        return this.debugging;
+    }
+
+    //#endregion
 }
