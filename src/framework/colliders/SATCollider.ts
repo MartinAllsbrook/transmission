@@ -13,38 +13,30 @@ export abstract class SATCollider {
     /** Named collision layer for filter-based checks */
     public readonly layer: CollisionLayer;
 
-    /** The center of the collider relative to it's parent gameobject */
-    protected relativePosition: Vector2D;
-
-    /** The gameobject this collider is attached to */
+    // Hosting
+    protected position: Vector2D;
     protected host: GameObject;
     
     /** Set of colliders this collider is currently colliding with */
     private currentlyColliding: Set<SATCollider> = new Set();
 
-    /** Callbacks to be called when this collider collides with another */
-    private onStartCallbacks: ((other: SATCollider) => void)[] = [];
-    
-    /** Callbacks to be called while this collider is colliding with another */
-    private whileCallbacks: ((other: SATCollider) => void)[] = [];
+    // Collision event callbacks
+    private onEnterCallbacks: ((other: SATCollider) => void)[] = [];
+    private onStayCallbacks: ((other: SATCollider) => void)[] = [];
+    private onExitCallbacks: ((other: SATCollider) => void)[] = [];
 
-    /** Callbacks to be called when this collider stops colliding with another */
-    private onEndCallbacks: ((other: SATCollider) => void)[] = [];
-
-    /** Weather to draw the debugging shape of this collider */
+    // Debugging
     public debugging: boolean;
-
-    /** The debugging shape of the collider */
     protected debugShape: Graphics | null = null;
 
 
     constructor(
         host: GameObject,
-        relativePosition: Vector2D,
+        position: Vector2D,
         debugging: boolean = false,
         layer: CollisionLayer = "default",
     ) {
-        this.relativePosition = relativePosition;
+        this.position = position;
         this.host = host;
         this.debugging = debugging;
         this.layer = layer;
@@ -112,8 +104,8 @@ export abstract class SATCollider {
     }
 
     /** The world position of the collider */
-    get Position(): Vector2D {
-        return this.relativePosition.add(this.host.ScreenPosition);
+    get WorldPosition(): Vector2D {
+        return this.position.add(this.host.Transform.WorldPosition);
     }
 
     // #region Event System
@@ -121,11 +113,11 @@ export abstract class SATCollider {
     public colliding(other: SATCollider): void {
         if (!this.currentlyColliding.has(other)) {
             this.currentlyColliding.add(other);
-            for (const callback of this.onStartCallbacks) {
+            for (const callback of this.onEnterCallbacks) {
                 callback(other);
             }
         } else {
-            for (const callback of this.whileCallbacks) {
+            for (const callback of this.onStayCallbacks) {
                 callback(other);
             }
         }
@@ -134,22 +126,22 @@ export abstract class SATCollider {
     public notColliding(other: SATCollider): void {
         if (this.currentlyColliding.has(other)) {
             this.currentlyColliding.delete(other);
-            for (const callback of this.onEndCallbacks) {
+            for (const callback of this.onExitCallbacks) {
                 callback(other);
             }
         }
     }
 
     public onCollisionEnter(callback: (other: SATCollider) => void): void {
-        this.onStartCallbacks.push(callback);
+        this.onEnterCallbacks.push(callback);
     }
 
     public onCollisionStay(callback: (other: SATCollider) => void): void {
-        this.whileCallbacks.push(callback);
+        this.onStayCallbacks.push(callback);
     }
 
     public onCollisionExit(callback: (other: SATCollider) => void): void {
-        this.onEndCallbacks.push(callback);
+        this.onExitCallbacks.push(callback);
     }
 
     // #endregion

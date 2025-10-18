@@ -50,24 +50,26 @@ export class RectCollider extends SATCollider {
     protected getVertices(): Vector2D[] {
         const halfWidth = this.size.x / 2;
         const halfHeight = this.size.y / 2;
-        const cos = Math.cos(this.Rotation);
-        const sin = Math.sin(this.Rotation);
+        const rotation = this.host.Transform.WorldRotation.Rad;
+
+        const cos = Math.cos(rotation);
+        const sin = Math.sin(rotation);
         return [
             new Vector2D(
-                this.Position.x + -halfWidth * cos - -halfHeight * sin,
-                this.Position.y + -halfWidth * sin + -halfHeight * cos,
+                this.WorldPosition.x + -halfWidth * cos - -halfHeight * sin,
+                this.WorldPosition.y + -halfWidth * sin + -halfHeight * cos,
             ),
             new Vector2D(
-                this.Position.x + halfWidth * cos - -halfHeight * sin,
-                this.Position.y + halfWidth * sin + -halfHeight * cos,
+                this.WorldPosition.x + halfWidth * cos - -halfHeight * sin,
+                this.WorldPosition.y + halfWidth * sin + -halfHeight * cos,
             ),
             new Vector2D(
-                this.Position.x + halfWidth * cos - halfHeight * sin,
-                this.Position.y + halfWidth * sin + halfHeight * cos,
+                this.WorldPosition.x + halfWidth * cos - halfHeight * sin,
+                this.WorldPosition.y + halfWidth * sin + halfHeight * cos,
             ),
             new Vector2D(
-                this.Position.x + -halfWidth * cos - halfHeight * sin,
-                this.Position.y + -halfWidth * sin + halfHeight * cos,
+                this.WorldPosition.x + -halfWidth * cos - halfHeight * sin,
+                this.WorldPosition.y + -halfWidth * sin + halfHeight * cos,
             ),
         ];
     }
@@ -103,9 +105,5 @@ export class RectCollider extends SATCollider {
         }
 
         return { min, max };
-    }
-
-    protected get Rotation(): number {
-        return this.host.WorldRotation * (Math.PI / 180);
     }
 }

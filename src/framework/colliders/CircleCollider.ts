@@ -46,7 +46,7 @@ export class CircleCollider extends SATCollider {
 
     protected getVertices(): Vector2D[] {
         // Circles don't have vertices, but we can return the center as a single "vertex"
-        return [this.Position];
+        return [this.WorldPosition];
     }
 
     protected getAxes(otherVertexs: Vector2D[]): Vector2D[] {
@@ -54,7 +54,7 @@ export class CircleCollider extends SATCollider {
 
         for (const vertex of otherVertexs) {
             // The axis is the vector from this circle's center to the other circle's center
-            const axis = this.Position.subtract(vertex).normalize();
+            const axis = this.WorldPosition.subtract(vertex).normalize();
 
             axes.push(axis);
         }
@@ -63,7 +63,7 @@ export class CircleCollider extends SATCollider {
 
     protected projectOnAxis(axis: Vector2D): Range {
         // Project the center of the circle onto the axis
-        const centerProjection = this.Position.dot(axis);
+        const centerProjection = this.WorldPosition.dot(axis);
         return {
             min: centerProjection - this.radius,
             max: centerProjection + this.radius,

@@ -13,7 +13,7 @@ export const LAYERS: CollisionLayer[] = [
 // Developer-defined collision matrix. Columns correspond to LAYERS by index.
 const collisionMatrix: boolean[][] = [
     // Default Player Obstacle Jump
-    [false], // Default
+    [false], // Default 
     [false, false], // Player
     [false, true, false], // Obstacle
     [false, true, false, false], // Jump
