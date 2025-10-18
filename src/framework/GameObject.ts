@@ -70,7 +70,7 @@ export abstract class GameObject {
             this.transform.WorldPosition.x, 
             this.transform.WorldPosition.y
         );
-        this.container.rotation = this.transform.Rotation.Rad;
+        this.container.rotation = this.transform.WorldRotation.Rad;
         this.container.scale.set(
             this.transform.WorldScale.x, 
             this.transform.WorldScale.y

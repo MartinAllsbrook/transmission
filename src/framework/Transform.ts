@@ -57,7 +57,7 @@ export class Transform {
     //#region Rotation
 
     public get Rotation(): Angle {
-        return this.rotation.clone();
+        return this.rotation;
     }
 
     public set Rotation(value: Angle) {
@@ -68,7 +68,7 @@ export class Transform {
         if (this.parent) {
             return new Angle(this.parent.WorldRotation.Rad + this.rotation.Rad);
         } else {
-            return this.rotation.clone();
+            return this.rotation;
         }
     }
 
@@ -76,7 +76,7 @@ export class Transform {
         if (this.parent) {
             this.rotation = new Angle(value.Rad - this.parent.WorldRotation.Rad);
         } else {
-            this.rotation = value.clone();
+            this.rotation.set(value);
         }
     }
 

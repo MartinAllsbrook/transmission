@@ -26,9 +26,13 @@ export class GroundState extends PlayerState {
 
     // #region Update
 
-    public override update(_deltaTime: number): void {
-        this.shiftyUpdate(_deltaTime);
-        this.physicsUpdate(_deltaTime);
+    public override update(deltaTime: number): void {
+        
+        // this.player.Transform.Position = this.player.Transform.Position.add(new Vector2D(_deltaTime, 0)); // Ensure position is synced
+        
+        // this.shiftyUpdate(deltaTime);
+        this.physicsUpdate(deltaTime);
+        // console.log("Ground State Update", this.player.RotationSpeed.Deg.toFixed(4), this.player.Transform.Rotation.Deg.toFixed(4));
     }
 
     protected shiftyUpdate(deltaTime: number): void {
@@ -44,10 +48,13 @@ export class GroundState extends PlayerState {
 
     protected physicsUpdate(deltaTime: number): void {
         // Apply gravity
-        this.player.Velocity.Y += PLAYER_CONFIG.gravityStrength * deltaTime
+        this.player.Velocity = this.player.Velocity.add(new Vector2D(
+            0,
+            PLAYER_CONFIG.gravityStrength * deltaTime
+        )) 
 
         // Rotate
-        this.player.RotationSpeed.Deg += (this.player.RotationInput.Value - this.player.RotationSpeed.Deg) * deltaTime * 10;
+        this.player.RotationSpeed.Deg = this.player.RotationInput.Value * PLAYER_CONFIG.rotationSpeed;
         
         // Normal force
         const forward = Vector2D.fromAngle(this.board.Transform.WorldRotation.Rad - Math.PI / 2); // TODO: Make FromAngle use Angle type, make separate from Deg and Rad medthods
@@ -63,12 +70,10 @@ export class GroundState extends PlayerState {
         // Friction
         this.player.Velocity = this.player.Velocity.multiply(1 - PLAYER_CONFIG.frictionStrength * deltaTime);
 
-        this.player.Transform.Rotation.Rad += this.player.RotationSpeed.Rad * deltaTime;
+        this.player.Transform.Rotation.Rad = this.player.Transform.Rotation.Rad + this.player.RotationSpeed.Rad * deltaTime;
 
         // Update position
-        this.player.Transform.Position.set(
-            this.player.Transform.Position.add(this.player.Velocity.multiply(deltaTime)),
-        );
+        this.player.Transform.Position = this.player.Transform.Position.add(this.player.Velocity.multiply(deltaTime))
     }
 
     public override get StateName(): StateName {
