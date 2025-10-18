@@ -70,7 +70,7 @@ export abstract class GameObject {
             this.transform.WorldPosition.x, 
             this.transform.WorldPosition.y
         );
-        this.container.rotation = this.transform.Rotation;
+        this.container.rotation = this.transform.Rotation.Rad;
         this.container.scale.set(
             this.transform.WorldScale.x, 
             this.transform.WorldScale.y
@@ -83,12 +83,6 @@ export abstract class GameObject {
      */
     public addChild(child: GameObject): void {
         this.children.push(child);
-        
-        // // If this parent has already had createSprite() called, immediately add the child's container
-        // // Otherwise, it will be added when this parent's createSprite() is called
-        // if (this.spriteCreated && !this.container.children.includes(child.container)) {
-        //     this.container.addChild(child.container);
-        // }
     }
 
     public getChildrenByName(string: string): GameObject[] {

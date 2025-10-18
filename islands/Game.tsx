@@ -5,6 +5,7 @@ import { GameOverScreen } from "./GameOverScreen.tsx";
 
 import { GameInstance } from "framework";
 import { Player } from "src/game/player/Player.ts";
+import { TestObject } from "src/game/TestObject.ts";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -21,6 +22,7 @@ export default class Game extends Component {
         await this.game.init()
 
         new Player(this.game.Root, this.game.Root);
+        new TestObject(this.game.Root, this.game.Root);
     }
 
     override componentWillUnmount() {

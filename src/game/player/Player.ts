@@ -14,8 +14,8 @@ export class Player extends GameObject {
     private body: Body = new Body(this, this.root);
 
     // Inputs
-    private jumpInput = new BooleanInput("Jump", ["Space", "W"]);
-    private rotateInput = new ValueInput("Rotate", ["A"], ["D"]);
+    private jumpInput = new BooleanInput("Jump", ["Space", "w"]);
+    private rotateInput = new ValueInput("Rotate", ["a"], ["d"]);
     private shiftyInput = new ValueInput("Shifty", ["ArrowLeft"], ["ArrowRight"]);
 
     // State
@@ -31,11 +31,23 @@ export class Player extends GameObject {
     }
     
     protected override update(deltaTime: number): void {
+        console.log(this.rotateInput.Value);
+
+        // this.Transform.Position = this.Transform.Position.add(new Vector2D(0, -100).multiply(deltaTime)); // Temporary gravity to test camera
+
         this.state.update(deltaTime);
     }
 
     public get ShiftyInput(): ValueInput {
         return this.shiftyInput;
+    }
+
+    public get RotationInput(): ValueInput {
+        return this.rotateInput;
+    }
+
+    public get JumpInput(): BooleanInput {
+        return this.jumpInput;
     }
 
     public set Velocity(velocity: Vector2D) {

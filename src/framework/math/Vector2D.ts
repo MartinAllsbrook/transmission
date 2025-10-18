@@ -238,4 +238,20 @@ export class Vector2D {
     }
 
     // #endregion
+
+    public get X(): number {
+        return this.x;
+    }
+
+    public set X(value: number) {
+        this.x = value;
+    }
+
+    public get Y(): number {
+        return this.y;
+    }
+
+    public set Y(value: number) {
+        this.y = value;
+    }
 }

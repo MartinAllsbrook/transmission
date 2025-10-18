@@ -4,9 +4,9 @@ import { InputType } from "./InputManager.ts";
  * Abstract base class for different types of inputs.
  */
 export abstract class Input<T> {
-    name: string;
-    type: InputType;
-    value: T;
+    private name: string;
+    private type: InputType;
+    private value: T;
     private listeners: Array<(newValue: T) => void> = [];
 
     constructor(name: string, type: InputType, defaultValue: T) {
@@ -75,5 +75,19 @@ export abstract class Input<T> {
      */
     public get Value(): T {
         return this.value;
+    }
+
+    /**
+     * @returns The name of the input.
+     */
+    public get Name(): string {
+        return this.name;
+    }
+
+    /**
+     * @returns The type of the input.
+     */
+    public get Type(): InputType {
+        return this.type;
     }
 }
