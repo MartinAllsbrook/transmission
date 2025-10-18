@@ -34,8 +34,8 @@ export class GameRoot {
 
     private syncWorldToCamera() {
         this.world.position.set(
-            -this.camera.Transform.WorldPosition.x,
-            -this.camera.Transform.WorldPosition.y
+            -this.camera.Transform.WorldPosition.x + globalThis.innerWidth / 2,
+            -this.camera.Transform.WorldPosition.y + globalThis.innerHeight / 2
         )
         this.world.rotation = -this.camera.Transform.Rotation;
         this.world.scale.set(

@@ -1,12 +1,9 @@
 import { Component } from "preact";
 import { Signal } from "@preact/signals";
 
-import { Application } from "pixi.js";
-
-import { RootObject } from "src/objects/RootObject.ts";
 import { GameOverScreen } from "./GameOverScreen.tsx";
 
-import { GameInstance, Vector2D } from "framework";
+import { GameInstance } from "framework";
 import { TestObject } from "src/TestObject.ts";
 
 export default class Game extends Component {
@@ -14,14 +11,8 @@ export default class Game extends Component {
     private gameContainer?: HTMLDivElement;
     private game?: GameInstance;
 
-    /** Global acess to the pixi app for debugging draw calls */
-    public static app?: Application;
-
-    private static deathMessage: string | undefined;
-    private static gameOver: Signal<boolean> = new Signal(false);
-
-    /** The the root container of the game, also used to center the game on the screen */
-    private static rootObject?: RootObject;
+    private deathMessage: string | undefined;
+    private gameOver: Signal<boolean> = new Signal(false);
 
     override async componentDidMount() {
         if (typeof window === "undefined") return; // Only run on client side
@@ -30,19 +21,10 @@ export default class Game extends Component {
         await this.game.init()
 
         new TestObject(this.game.Root, this.game.Root);
-        const camera = this.game.Root.Camera;
-
-        camera.Transform.Position = new Vector2D(
-            -globalThis.innerWidth / 2, 
-            -globalThis.innerHeight / 2
-        );
     }
 
     override componentWillUnmount() {
-        // Clean up PixiJS application
-        if (Game.app) {
-            Game.app.destroy(true);
-        }
+        this.game?.dispose();
     }
 
     // #region Game Initialization
@@ -52,12 +34,12 @@ export default class Game extends Component {
     render() {
         return (
             <div>
-                {Game.gameOver.value
+                {this.gameOver.value
                     ? (
                         
                         <div>
                             <GameOverScreen
-                                deathMessage={Game.deathMessage}
+                                deathMessage={this.deathMessage}
                                 onRestart={() => {
                                     this.game?.resetGame();
                                 }}

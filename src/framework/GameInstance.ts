@@ -65,6 +65,11 @@ export class GameInstance {
         // Reset game logic goes here
     }
 
+    public dispose() {
+        this.app.destroy(true);
+        this.container.innerHTML = "";
+    }
+
     public get Root(): GameRoot {
         return this.root;
     }

@@ -21,6 +21,10 @@ export class Transform {
         this.scale = options?.scale || new Vector2D(1, 1);
     }
 
+    setParent(parent: Transform) { 
+        this.parent = parent;
+    }
+
     //#region Position
     
     public get Position(): Vector2D {

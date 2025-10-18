@@ -14,4 +14,9 @@ export class Camera {
     public get Transform(): Transform {
         return this.transform;
     }
+
+    setParent(parent: GameObject) {
+        this.parent = parent;
+        this.transform.setParent(parent.Transform);
+    }
 }

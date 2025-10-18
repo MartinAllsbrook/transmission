@@ -9,8 +9,8 @@ import { GameRoot } from "./GameRoot.ts";
  * Base class for all game objects in the game.
  */
 export abstract class GameObject {
-    private parent: GameObject | GameRoot;
-    private root: GameRoot;
+    protected parent: GameObject | GameRoot;
+    protected root: GameRoot;
     private children: GameObject[] = [];
 
     private transform: Transform;
