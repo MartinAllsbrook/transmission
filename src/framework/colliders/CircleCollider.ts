@@ -6,19 +6,23 @@ import { CollisionLayer } from "./CollisionManager.ts";
 import { Graphics } from "pixi.js";
 // import Game from "../../islands/Game.tsx";
 
+export interface CircleColliderOptions {
+    layer?: CollisionLayer
+    radius?: number;
+    position?: Vector2D;
+}
+
 export class CircleCollider extends SATCollider {
     /** The radius of the collider */
     radius: number;
 
     constructor(
         host: GameObject,
-        layer: CollisionLayer = "default",
-        radius: number,
-        position: Vector2D,
+        options: CircleColliderOptions
     ) {
-        super(host, layer, position);
+        super(host, options.layer, options.position);
 
-        this.radius = radius;
+        this.radius = options.radius ?? 10;
 
         // if (this.debugging) {
         //     this.createDebugShape();

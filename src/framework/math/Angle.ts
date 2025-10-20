@@ -4,6 +4,8 @@ export class Angle {
      */
     private value: number;
 
+    //#region Constructors
+
     constructor(radians: number = 0) {
         this.value = radians;
     }
@@ -15,6 +17,12 @@ export class Angle {
     public static fromRadians(radians: number): Angle {
         return new Angle(radians);
     }
+
+    public static get Zero(): Angle {
+        return new Angle(0);
+    }
+
+    //#endregion
 
     public set(value: Angle): void {
         this.value = value.value;

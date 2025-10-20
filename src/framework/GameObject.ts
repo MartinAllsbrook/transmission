@@ -4,6 +4,9 @@ import { SATCollider } from "./colliders/SATCollider.ts";
 import { LayerManager } from "./rendering/LayerManager.ts";
 import { Transform, TransformOptions } from "./Transform.ts";
 import { GameRoot } from "./GameRoot.ts";
+import { CircleCollider, RectCollider } from "framework";
+import { Angle } from "./math/Angle.ts";
+import { RectColliderOptions } from "./colliders/RectCollider.ts";
 
 /**
  * Base class for all game objects in the game.
@@ -98,13 +101,7 @@ export abstract class GameObject {
         }
     }
 
-    /**
-     * Adds a collider to this game object.
-     * @param collider The collider to add to this game object.
-     */
-    public addCollider(collider: SATCollider): void {
-        this.colliders.push(collider);
-    }
+
 
     /**
      * Destroys the game object, its children, and associated resources.
@@ -177,15 +174,54 @@ export abstract class GameObject {
         return sprite;
     }
 
+    /**
+     * Adds a collider to this game object. (Used in collider constructors)
+     * @param collider The collider to add to this game object.
+     */
+    public addCollider(collider: SATCollider): void {
+        this.colliders.push(collider);
+    }
+
+    //#region Component Factories
+
+    createRectCollider(options?: RectColliderOptions): RectCollider {
+        const collider = new RectCollider(this, options);
+        this.colliders.push(collider);
+        return collider;
+    }
+
+    createSpriteCollider(opitions?: CircleCollider): CircleCollider {
+        const collider = new CircleCollider(this, opitions);
+        this.colliders.push(collider);
+        return collider;
+    }
+
+    createCircleCollider(): void {}
+    //#endregion
+
+    //#region Getters / Setters
+
+    /**
+     * Whether or not this game object has been destroyed.
+     */
     public get Destroyed(): boolean {
         return this.destroyed;
     }
 
+    /**
+     * The transform of this game object.
+     */
     public get Transform(): Transform {
         return this.transform;
     }
 
+    /**
+     * The root of the game object hierarchy.
+     * Mainly used for debugging purposes?
+     */
     public get Root(): GameRoot {
         return this.root;
     }
+
+    //#endregion
 }

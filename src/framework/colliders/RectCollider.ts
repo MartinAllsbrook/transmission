@@ -3,6 +3,15 @@ import { CollisionLayer } from "./CollisionManager.ts";
 import { GameObject } from "../GameObject.ts";
 import { Vector2D } from "../math/Vector2D.ts";
 import { Graphics } from "pixi.js";
+import { Angle } from "../math/Angle.ts";
+
+export interface RectColliderOptions {
+    layer?: CollisionLayer;
+    size?: Vector2D;
+    position?: Vector2D;
+    /** Rotation is not currently used */
+    rotation?: Angle;
+}
 
 /**
  * Simple collider class that uses SAT for square collision detection - May expand in the future
@@ -11,19 +20,16 @@ export class RectCollider extends SATCollider {
     /** The size of the collider */
     size: Vector2D;
 
+    rotation: Angle = Angle.Zero;
+
     constructor(
         host: GameObject,
-        layer: CollisionLayer = "default",
-        size: Vector2D,
-        position: Vector2D = new Vector2D(0, 0),
+        opitions: RectColliderOptions = {}
     ) {
-        super(host, layer, position);
+        super(host, opitions.layer, opitions.position);
 
-        this.size = size;
-
-        // if (this.debugging) {
-        //     this.createDebugShape();
-        // }
+        this.size = opitions.size ?? new Vector2D(50, 50);
+        this.rotation = opitions.rotation ?? Angle.Zero;
     }
 
     public override createDebugShape(): void {

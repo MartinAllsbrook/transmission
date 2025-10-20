@@ -37,8 +37,6 @@ export abstract class SATCollider {
         this.host = host;
         this.layer = layer;
 
-        host.addCollider(this);
-
         CollisionManager.addCollider(this);
     }
 
