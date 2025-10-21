@@ -104,4 +104,24 @@ export class ExtraMath {
     public static clamp(value: number, min: number, max: number): number {
         return Math.max(min, Math.min(max, value));
     }
+
+    /**
+     * Converts an angle from degrees to radians.
+     *
+     * @param degrees - The angle in degrees to convert.
+     * @returns The angle in radians.
+     */
+    public static degToRad(degrees: number): number {
+        return degrees * (Math.PI / 180);
+    }
+
+    /**
+     * Converts an angle from radians to degrees.
+     *
+     * @param radians - The angle in radians to convert.
+     * @returns The angle in degrees.
+     */
+    public static radToDeg(radians: number): number {
+        return radians * (180 / Math.PI);
+    }
 }

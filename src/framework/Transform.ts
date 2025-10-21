@@ -1,9 +1,8 @@
-import { Angle } from "./math/Angle.ts";
 import { Vector2D } from "./math/Vector2D.ts";
 
 export interface TransformOptions {
     position?: Vector2D;
-    rotation?: Angle;
+    rotation?: number;
     scale?: Vector2D;
 }
 
@@ -11,14 +10,14 @@ export class Transform {
     private parent?: Transform;
 
     private position: Vector2D;
-    private rotation: Angle;
+    private rotation: number; // radians
     private scale: Vector2D;
 
     constructor(parent?: Transform, options?: TransformOptions) {
         this.parent = parent;
 
         this.position = options?.position || new Vector2D(0, 0);
-        this.rotation = options?.rotation || new Angle(0);
+        this.rotation = options?.rotation || 0;
         this.scale = options?.scale || new Vector2D(1, 1);
     }
 
@@ -56,27 +55,27 @@ export class Transform {
 
     //#region Rotation
 
-    public get Rotation(): Angle {
+    public get Rotation(): number {
         return this.rotation;
     }
 
-    public set Rotation(value: Angle) {
-        this.rotation.set(value);
+    public set Rotation(value: number) {
+        this.rotation;
     }
 
-    public get WorldRotation(): Angle {
+    public get WorldRotation(): number {
         if (this.parent) {
-            return new Angle(this.parent.WorldRotation.Rad + this.rotation.Rad);
+            return this.parent.WorldRotation + this.rotation;
         } else {
             return this.rotation;
         }
     }
 
-    public set WorldRotation(value: Angle) {
+    public set WorldRotation(value: number) {
         if (this.parent) {
-            this.rotation = new Angle(value.Rad - this.parent.WorldRotation.Rad);
+            this.rotation = value - this.parent.WorldRotation;
         } else {
-            this.rotation.set(value);
+            this.rotation = value;
         }
     }
 

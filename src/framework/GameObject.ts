@@ -5,7 +5,6 @@ import { LayerManager } from "./rendering/LayerManager.ts";
 import { Transform, TransformOptions } from "./Transform.ts";
 import { GameRoot } from "./GameRoot.ts";
 import { CircleCollider, RectCollider } from "framework";
-import { Angle } from "./math/Angle.ts";
 import { RectColliderOptions } from "./colliders/RectCollider.ts";
 
 /**
@@ -73,7 +72,7 @@ export abstract class GameObject {
             this.transform.WorldPosition.x, 
             this.transform.WorldPosition.y
         );
-        this.container.rotation = this.transform.WorldRotation.Rad;
+        this.container.rotation = this.transform.WorldRotation;
         this.container.scale.set(
             this.transform.WorldScale.x, 
             this.transform.WorldScale.y
