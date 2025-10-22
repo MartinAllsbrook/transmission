@@ -6,6 +6,7 @@ import { Transform, TransformOptions } from "./Transform.ts";
 import { GameRoot } from "./GameRoot.ts";
 import { CircleCollider, RectCollider } from "framework";
 import { RectColliderOptions } from "./colliders/RectCollider.ts";
+import { CircleColliderOptions } from "./colliders/CircleCollider.ts";
 
 /**
  * Base class for all game objects in the game.
@@ -189,13 +190,12 @@ export abstract class GameObject {
         return collider;
     }
 
-    createSpriteCollider(opitions?: CircleCollider): CircleCollider {
+    createCircleCollider(opitions?: CircleColliderOptions): CircleCollider {
         const collider = new CircleCollider(this, opitions);
         this.colliders.push(collider);
         return collider;
     }
 
-    createCircleCollider(): void {}
     //#endregion
 
     //#region Getters / Setters

@@ -39,7 +39,7 @@ export const PLAYER_CONFIG: Readonly<PlayerConfig> = {
     gravityHeightStrength: 16,
     jumpStrength: 4,
 
-    shiftyLerpSpeed: 3, // Higher is snappier
+    shiftyLerpSpeed: 5, // Higher is snappier
     shiftyMaxAngle: 90, // Degrees
 
     railCorrectionStrength: 2, // Higher is more corrective

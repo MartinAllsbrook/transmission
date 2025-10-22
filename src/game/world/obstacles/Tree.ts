@@ -12,6 +12,6 @@ export class Tree extends GameObject {
             scale: new Vector2D(2, 2.5),
         });
 
-        new CircleCollider(this, "obstacle", 8, new Vector2D(0, 0));
+        new CircleCollider(this, { layer: "obstacle", radius: 8 });
     }
 }

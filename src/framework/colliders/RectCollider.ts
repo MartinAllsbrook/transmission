@@ -3,14 +3,13 @@ import { CollisionLayer } from "./CollisionManager.ts";
 import { GameObject } from "../GameObject.ts";
 import { Vector2D } from "../math/Vector2D.ts";
 import { Graphics } from "pixi.js";
-import { Angle } from "../math/Angle.ts";
 
 export interface RectColliderOptions {
     layer?: CollisionLayer;
     size?: Vector2D;
     position?: Vector2D;
     /** Rotation is not currently used */
-    rotation?: Angle;
+    rotation?: number;
 }
 
 /**
@@ -20,7 +19,7 @@ export class RectCollider extends SATCollider {
     /** The size of the collider */
     size: Vector2D;
 
-    rotation: Angle = Angle.Zero;
+    rotation: number = 0;
 
     constructor(
         host: GameObject,
@@ -29,7 +28,7 @@ export class RectCollider extends SATCollider {
         super(host, opitions.layer, opitions.position);
 
         this.size = opitions.size ?? new Vector2D(50, 50);
-        this.rotation = opitions.rotation ?? Angle.Zero;
+        this.rotation = opitions.rotation ?? 0;
     }
 
     public override createDebugShape(): void {
@@ -51,14 +50,14 @@ export class RectCollider extends SATCollider {
                 this.WorldPosition.x,
                 this.WorldPosition.y,
             );
-            this.debugShape.rotation = this.host.Transform.WorldRotation.Rad;
+            this.debugShape.rotation = this.host.Transform.WorldRotation;
         }
     }
 
     protected getVertices(): Vector2D[] {
         const halfWidth = this.size.x / 2;
         const halfHeight = this.size.y / 2;
-        const rotation = this.host.Transform.WorldRotation.Rad;
+        const rotation = this.host.Transform.WorldRotation;
 
         const cos = Math.cos(rotation);
         const sin = Math.sin(rotation);

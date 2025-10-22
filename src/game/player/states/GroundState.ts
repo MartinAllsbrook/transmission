@@ -18,10 +18,10 @@ export class GroundState extends PlayerState {
         this.player.Transform.Rotation = this.board.Transform.WorldRotation;
 
         // Rotation of the body is now offset to match the now flipped shifty. 90 is for the base stance of the body 
-        this.body.Transform.Rotation.Deg = (this.player.ShiftyAngle.Deg * -1) + 90; 
+        this.body.Transform.Rotation = (this.player.ShiftyAngle * -1) + ExtraMath.degToRad(90); 
 
         // Reset board rotation because it is now handled by the root object
-        this.board.Transform.Rotation.Deg = 0; 
+        this.board.Transform.Rotation = 0; 
     }
 
     // #region Update
@@ -37,13 +37,13 @@ export class GroundState extends PlayerState {
 
     protected shiftyUpdate(deltaTime: number): void {
         const shiftyTargetAngle = this.player.ShiftyInput.Value * PLAYER_CONFIG.shiftyMaxAngle;
-        this.player.ShiftyAngle.Deg = ExtraMath.lerpSafe(
-            this.player.ShiftyAngle.Deg, 
+        this.player.ShiftyAngle = ExtraMath.lerpSafe(
+            this.player.ShiftyAngle, 
             shiftyTargetAngle, 
             PLAYER_CONFIG.shiftyLerpSpeed * deltaTime
         );
         
-        this.body.Transform.Rotation.Rad = (this.player.ShiftyAngle.Rad * -1) + 90; // Flip for goofy
+        this.body.Transform.Rotation = (this.player.ShiftyAngle * -1) + ExtraMath.degToRad(90); // Flip for goofy
     }
 
     protected physicsUpdate(deltaTime: number): void {
@@ -54,10 +54,10 @@ export class GroundState extends PlayerState {
         )) 
 
         // Rotate
-        this.player.RotationSpeed.Deg = this.player.RotationInput.Value * PLAYER_CONFIG.rotationSpeed;
+        this.player.RotationSpeed = this.player.RotationInput.Value * ExtraMath.degToRad(PLAYER_CONFIG.rotationSpeed);
         
         // Normal force
-        const forward = Vector2D.fromAngle(this.board.Transform.WorldRotation.Rad - Math.PI / 2); // TODO: Make FromAngle use Angle type, make separate from Deg and Rad medthods
+        const forward = Vector2D.fromAngle(this.board.Transform.WorldRotation - Math.PI / 2);
         const direction = this.player.Velocity.normalize();
         const projected = direction.projectOnto(forward);
         const normal = projected.subtract(direction);
@@ -70,10 +70,12 @@ export class GroundState extends PlayerState {
         // Friction
         this.player.Velocity = this.player.Velocity.multiply(1 - PLAYER_CONFIG.frictionStrength * deltaTime);
 
-        this.player.Transform.Rotation.Rad = this.player.Transform.Rotation.Rad + this.player.RotationSpeed.Rad * deltaTime;
+        this.player.Transform.Rotation += this.player.RotationSpeed * deltaTime;
 
         // Update position
         this.player.Transform.Position = this.player.Transform.Position.add(this.player.Velocity.multiply(deltaTime))
+    
+        console.log("Rotation:", ExtraMath.radToDeg(this.player.Transform.Rotation), "Rotation Speed:", ExtraMath.radToDeg(this.player.RotationSpeed));
     }
 
     public override get StateName(): StateName {

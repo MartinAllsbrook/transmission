@@ -40,7 +40,7 @@ export class GameRoot {
             -this.camera.Transform.WorldPosition.x + globalThis.innerWidth / 2,
             -this.camera.Transform.WorldPosition.y + globalThis.innerHeight / 2
         )
-        this.world.rotation = -this.camera.Transform.Rotation.Rad;
+        this.world.rotation = -this.camera.Transform.Rotation;
         this.world.scale.set(
             1 / this.camera.Transform.Scale.x,
             1 / this.camera.Transform.Scale.y

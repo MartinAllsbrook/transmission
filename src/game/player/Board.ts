@@ -7,7 +7,8 @@ export class Board extends GameObject {
     protected override start(): void {
         this.loadSprite("snowboarder/Board.png");
 
-        const collider = new RectCollider(this, "player", new Vector2D(33, 8), new Vector2D(0, 0));
+        const collider = new RectCollider(this, { layer: "player", size: new Vector2D(33, 8) });
+
         collider.onCollisionEnter((collider) => {(this.parent as Player).onCollisionEnter(collider)});
         collider.onCollisionStay((collider) => {(this.parent as Player).onCollisionStay(collider)});
         collider.onCollisionExit((collider) => {(this.parent as Player).onCollisionExit(collider)});

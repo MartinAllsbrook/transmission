@@ -60,7 +60,7 @@ export class Transform {
     }
 
     public set Rotation(value: number) {
-        this.rotation;
+        this.rotation = value;
     }
 
     public get WorldRotation(): number {

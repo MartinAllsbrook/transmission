@@ -4,7 +4,6 @@ import { Body } from "./Body.ts";
 import { Board } from "./Board.ts";
 import { PlayerState } from "./states/PlayerState.ts";
 import { GroundState } from "./states/GroundState.ts";
-import { Angle } from "../../framework/math/Angle.ts";
 
 export class Player extends GameObject {
     public override get Name() { return "Player"; }
@@ -23,8 +22,8 @@ export class Player extends GameObject {
 
     // Physics & Movement
     private velocity: Vector2D = new Vector2D(0, 0);
-    private rotationSpeed: Angle = new Angle(0);
-    private shiftyAngle: Angle = new Angle(0);
+    private rotationSpeed: number = 0;
+    private shiftyAngle: number = 0;
 
     protected override start(): void {
         this.root.Camera.setParent(this);
@@ -78,19 +77,19 @@ export class Player extends GameObject {
         return this.velocity;
     }
 
-    public set RotationSpeed(rotationSpeed: Angle) {
+    public set RotationSpeed(rotationSpeed: number) {
         this.rotationSpeed = rotationSpeed;
     }
 
-    public get RotationSpeed(): Angle {
+    public get RotationSpeed(): number {
         return this.rotationSpeed;
     }
 
-    public set ShiftyAngle(shiftyAngle: Angle) {
+    public set ShiftyAngle(shiftyAngle: number) {
         this.shiftyAngle = shiftyAngle;
     }
 
-    public get ShiftyAngle(): Angle {
+    public get ShiftyAngle(): number {
         return this.shiftyAngle;
     }
 

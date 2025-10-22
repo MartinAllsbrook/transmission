@@ -18,7 +18,7 @@ export class CircleCollider extends SATCollider {
 
     constructor(
         host: GameObject,
-        options: CircleColliderOptions
+        options: CircleColliderOptions = {}
     ) {
         super(host, options.layer, options.position);
 
