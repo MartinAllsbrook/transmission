@@ -6,7 +6,7 @@ import { GameOverScreen } from "./GameOverScreen.tsx";
 import { GameInstance, Vector2D } from "framework";
 import { Player } from "src/game/player/Player.ts";
 import { TestObject } from "src/game/TestObject.ts";
-import { Tree } from "src/game/world/obstacles/Tree.ts";
+import { World } from "src/game/world/World.ts";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -20,15 +20,13 @@ export default class Game extends Component {
         if (typeof window === "undefined") return; // Only run on client side
 
         this.game = new GameInstance(this.gameContainer!); 
-        await this.game.init()
+        await this.game.init();
 
         new Player(this.game.Root, this.game.Root);
         new TestObject(this.game.Root, this.game.Root, {
             position: new Vector2D(-100, 100)
         });
-        new Tree(this.game.Root, this.game.Root, {
-            position: new Vector2D(200, 200)
-        });
+        new World(this.game.Root, this.game.Root);
     }
 
     override componentWillUnmount() {
@@ -44,7 +42,6 @@ export default class Game extends Component {
             <div>
                 {this.gameOver.value
                     ? (
-                        
                         <div>
                             <GameOverScreen
                                 deathMessage={this.deathMessage}

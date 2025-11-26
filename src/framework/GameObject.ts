@@ -39,7 +39,7 @@ export abstract class GameObject {
 
         this.setUpContainer();
         this.syncTransform();
-        this.start();
+        queueMicrotask(() => this.start());
     }
 
     private setUpContainer(): void {
