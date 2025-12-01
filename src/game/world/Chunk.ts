@@ -1,5 +1,4 @@
-import { GameObject, GameRoot, Vector2D } from "framework";
-import { TransformOptions } from "../../framework/Transform.ts";
+import { GameObject, GameRoot, Vector2D, TransformOptions } from "framework";
 import { Tree } from "./obstacles/Tree.ts";
 
 export class Chunk extends GameObject {

@@ -22,11 +22,11 @@ export default class Game extends Component {
         this.game = new GameInstance(this.gameContainer!); 
         await this.game.init();
 
-        new Player(this.game.Root, this.game.Root);
+        const player = new Player(this.game.Root, this.game.Root);
         new TestObject(this.game.Root, this.game.Root, {
             position: new Vector2D(-100, 100)
         });
-        new World(this.game.Root, this.game.Root);
+        new World(this.game.Root, this.game.Root, player.Transform);
     }
 
     override componentWillUnmount() {

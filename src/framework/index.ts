@@ -4,6 +4,7 @@ export { GameObject } from './GameObject.ts';
 export { GameRoot } from './GameRoot.ts';
 export { Transform } from './Transform.ts';
 export { Camera } from './Camera.ts';
+export type { TransformOptions } from './Transform.ts';
 
 // Re-export colliders
 export { CircleCollider } from './colliders/CircleCollider.ts';

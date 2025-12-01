@@ -37,6 +37,7 @@ export abstract class SATCollider {
         this.host = host;
         this.layer = layer;
 
+        this.host.addCollider(this);
         CollisionManager.addCollider(this);
     }
 
@@ -147,6 +148,7 @@ export abstract class SATCollider {
 
     destroy(): void {
         CollisionManager.removeCollider(this);
+        
         if (this.debugShape) {
             this.debugShape.destroy();
             this.debugShape = null;

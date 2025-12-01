@@ -74,8 +74,6 @@ export class GroundState extends PlayerState {
 
         // Update position
         this.player.Transform.Position = this.player.Transform.Position.add(this.player.Velocity.multiply(deltaTime))
-    
-        console.log("Rotation:", ExtraMath.radToDeg(this.player.Transform.Rotation), "Rotation Speed:", ExtraMath.radToDeg(this.player.RotationSpeed));
     }
 
     public override get StateName(): StateName {

@@ -36,20 +36,14 @@ export class Player extends GameObject {
     //#region Collison Handling
 
     public onCollisionEnter(other: SATCollider): void {
-        console.log("Enter");
-
         this.state.onCollisionEnter(other);
     }
 
     public onCollisionStay(other: SATCollider): void {
-        console.log("Stay");
-        
         this.state.onCollisionStay(other);
     }
 
     public onCollisionExit(other: SATCollider): void {
-        console.log("Exit");
-        
         this.state.onCollisionExit(other);
     }
 

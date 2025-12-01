@@ -140,6 +140,14 @@ export class Vector2D {
     }
 
     /**
+     * Returns a vector with both components rounded down to the nearest integer.
+     * @returns A new Vector2D instance representing the floored vector.
+     */
+    public floor(): Vector2D {
+        return new Vector2D(Math.floor(this.x), Math.floor(this.y));
+    }
+
+    /**
      * Returns the angle of the vector in radians.
      * @returns The angle of the vector in radians.
      */
