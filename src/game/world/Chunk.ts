@@ -1,5 +1,6 @@
 import { GameObject, GameRoot, Vector2D, TransformOptions } from "framework";
 import { Tree } from "./obstacles/Tree.ts";
+import { Jump } from "./features/Jump.ts";
 
 export class Chunk extends GameObject {
     public override get Name() { return "Chunk"; }
@@ -29,7 +30,11 @@ export class Chunk extends GameObject {
             Math.random() * this.chunkSize
         );
 
-        // Create obstacle at position
-        new Tree(this, this.root, { position });
+
+        if ( Math.random() < 0.2 ) { 
+            new Jump(this, this.root, { position });
+        } else {
+            new Tree(this, this.root, { position });
+        }
     }
 }

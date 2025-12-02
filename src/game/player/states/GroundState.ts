@@ -3,36 +3,27 @@ import { PlayerState, StateName } from "./PlayerState.ts";
 import { PLAYER_CONFIG } from "../PlayerConfig.ts";
 
 export class GroundState extends PlayerState {
+    public override get StateName(): StateName {
+        return "ground";
+    }
+
     private switchToAir: boolean = false;
 
     public override enter(): void {
         this.switchToGroundShifty();
-        // this.tricksManager.endSpin(
-        //     this.board.Transform.WorldRotation, 
-        //     this.velocity.heading() * 180 / Math.PI
-        // );
     }
 
     private switchToGroundShifty() {
-        // Rotation of the root object now matches the board
-        this.player.Transform.Rotation = this.board.Transform.WorldRotation;
-
-        // Rotation of the body is now offset to match the now flipped shifty. 90 is for the base stance of the body 
-        this.body.Transform.Rotation = (this.player.ShiftyAngle * -1) + ExtraMath.degToRad(90); 
-
-        // Reset board rotation because it is now handled by the root object
-        this.board.Transform.Rotation = 0; 
+        this.player.Transform.Rotation = this.board.Transform.WorldRotation; // Rotation of the root object now matches the board
+        this.body.Transform.Rotation = (this.player.ShiftyAngle * -1) + ExtraMath.degToRad(90); // Rotation of the body is now offset to match the now flipped shifty. 90 is for the base stance of the body 
+        this.board.Transform.Rotation = 0; // Reset board rotation because it is now handled by the root object
     }
 
     // #region Update
 
-    public override update(deltaTime: number): void {
-        
-        // this.player.Transform.Position = this.player.Transform.Position.add(new Vector2D(_deltaTime, 0)); // Ensure position is synced
-        
-        // this.shiftyUpdate(deltaTime);
+    public override update(deltaTime: number): void {        
+        this.shiftyUpdate(deltaTime);
         this.physicsUpdate(deltaTime);
-        // console.log("Ground State Update", this.player.RotationSpeed.Deg.toFixed(4), this.player.Transform.Rotation.Deg.toFixed(4));
     }
 
     protected shiftyUpdate(deltaTime: number): void {
@@ -76,9 +67,7 @@ export class GroundState extends PlayerState {
         this.player.Transform.Position = this.player.Transform.Position.add(this.player.Velocity.multiply(deltaTime))
     }
 
-    public override get StateName(): StateName {
-        return "ground";
-    }
+
 
     // #endregion
 }
