@@ -13,7 +13,7 @@ export class Player extends GameObject {
     private body: Body = new Body(this, this.root);
 
     // Inputs
-    private jumpInput = new BooleanInput("Jump", ["Space", "w"]);
+    private jumpInput = new BooleanInput("Jump", [" ", "w", "ArrowUp"]);
     private rotateInput = new ValueInput("Rotate", ["d"], ["a"]);
     private shiftyInput = new ValueInput("Shifty", ["ArrowLeft"], ["ArrowRight"]);
 
@@ -25,6 +25,9 @@ export class Player extends GameObject {
     private rotationSpeed: number = 0;
     private shiftyAngle: number = 0;
 
+    private height: number = 0;
+    private deltaHeight: number = 0;
+
     protected override start(): void {
         this.root.Camera.setParent(this);
     }
@@ -33,7 +36,13 @@ export class Player extends GameObject {
         this.state.update(deltaTime);
     }
 
-    //#region Collison Handling
+    public changeState(newState: PlayerState): void {
+        this.state.exit();
+        this.state = newState;
+        this.state.enter();
+    }
+
+    //#region Collision Handling
 
     public onCollisionEnter(other: SATCollider): void {
         this.state.onCollisionEnter(other);
@@ -85,6 +94,22 @@ export class Player extends GameObject {
 
     public get ShiftyAngle(): number {
         return this.shiftyAngle;
+    }
+
+    public set Height(height: number) {
+        this.height = height;
+    }
+
+    public get Height(): number {
+        return this.height;
+    }
+
+    public set DeltaHeight(deltaHeight: number) {
+        this.deltaHeight = deltaHeight;
+    }
+
+    public get DeltaHeight(): number {
+        return this.deltaHeight;
     }
 
     //#endregion

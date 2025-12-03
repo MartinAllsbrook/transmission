@@ -29,7 +29,9 @@ export abstract class PlayerState {
     public enter(): void {}
     
     public update(_deltaTime: number): void {}
-    
+
+    protected checkTransitions(): void {}
+
     public exit(): void {}
 
     public onCollisionEnter(_other: SATCollider): void {}

@@ -1,6 +1,7 @@
 import { ExtraMath, Vector2D } from "framework";
 import { PlayerState, StateName } from "./PlayerState.ts";
 import { PLAYER_CONFIG } from "../PlayerConfig.ts";
+import { AirState } from "./AirState.ts";
 
 export class GroundState extends PlayerState {
     public override get StateName(): StateName {
@@ -24,10 +25,12 @@ export class GroundState extends PlayerState {
     public override update(deltaTime: number): void {        
         this.shiftyUpdate(deltaTime);
         this.physicsUpdate(deltaTime);
+
+        this.checkJump();
     }
 
     protected shiftyUpdate(deltaTime: number): void {
-        const shiftyTargetAngle = this.player.ShiftyInput.Value * PLAYER_CONFIG.shiftyMaxAngle;
+        const shiftyTargetAngle = this.player.ShiftyInput.Value * ExtraMath.degToRad(PLAYER_CONFIG.shiftyMaxAngle);
         this.player.ShiftyAngle = ExtraMath.lerpSafe(
             this.player.ShiftyAngle, 
             shiftyTargetAngle, 
@@ -64,10 +67,22 @@ export class GroundState extends PlayerState {
         this.player.Transform.Rotation += this.player.RotationSpeed * deltaTime;
 
         // Update position
-        this.player.Transform.Position = this.player.Transform.Position.add(this.player.Velocity.multiply(deltaTime))
+        this.player.Transform.Position = 
+            this.player.Transform.Position
+            .add(this.player.Velocity.multiply(deltaTime));
     }
 
-
-
     // #endregion
+
+    //#region Transitions
+
+    private checkJump(): void {
+        if (this.player.JumpInput.Value) {
+            console.log("Jumped");
+            this.player.DeltaHeight = 1; // Small delta height to indicate we are in the air
+            this.player.changeState(new AirState(this.player));
+        }
+    }
+
+    //#endregion
 }

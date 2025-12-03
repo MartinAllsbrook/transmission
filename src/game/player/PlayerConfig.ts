@@ -14,7 +14,7 @@ export interface PlayerConfig {
     rotationStrength: number;
 
     // Height & Air
-    gravityHeightStrength: number;
+    deltaDeltaHeight: number;
     jumpStrength: number;
 
     // Shifty
@@ -36,7 +36,7 @@ export const PLAYER_CONFIG: Readonly<PlayerConfig> = {
     rotationSpeed: 250,
     rotationStrength: 10,
 
-    gravityHeightStrength: 16,
+    deltaDeltaHeight: 4,
     jumpStrength: 4,
 
     shiftyLerpSpeed: 5, // Higher is snappier

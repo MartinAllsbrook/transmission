@@ -11,11 +11,12 @@ type InputMap = {
     // Add other inputs here as needed, e.g. move: ValueInput;
 };
 
+// Depricated: Use Player class inputs instead
 export class InputManager {
     private static inputs: { [K in keyof InputMap]: InputMap[K] } = {
         jump: new BooleanInput("jump", [" ", "w", "ArrowUp"]),
         turn: new ValueInput("turn", ["d"], ["a"]),
-        shifty: new ValueInput("shify", ["ArrowRight"], ["ArrowLeft"]),
+        shifty: new ValueInput("shifty", ["ArrowRight"], ["ArrowLeft"]),
         restart: new BooleanInput("restart", ["r"]),
     };
 
