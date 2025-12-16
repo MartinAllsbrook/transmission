@@ -112,5 +112,9 @@ export class Player extends GameObject {
         return this.deltaHeight;
     }
 
+    public get InAir(): boolean {
+        return this.state.StateName === "air";
+    }
+
     //#endregion
 }

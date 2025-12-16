@@ -1,6 +1,7 @@
 import { Application } from "pixi.js";
 import { GameRoot } from "./GameRoot.ts";
 import { CollisionManager } from "./colliders/CollisionManager.ts";
+import { LayerManager } from "framework";
 
 export class GameInstance {
     private app: Application;
@@ -16,6 +17,7 @@ export class GameInstance {
 
         this.app = this.createPixiApp();
 
+        LayerManager.initialize(this.app);
         this.root = new GameRoot(this.app.stage);
     } 
     

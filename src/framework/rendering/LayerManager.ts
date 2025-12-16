@@ -1,7 +1,7 @@
-import { Application, IRenderLayer, RenderLayer } from "pixi.js";
+import { Application, RenderLayer } from "pixi.js";
 
 export class LayerManager {
-    public static layers: Record<string, IRenderLayer> = {
+    public static layers: Record<string, RenderLayer> = {
         background: new RenderLayer(),
         trail: new RenderLayer(),
         shadows: new RenderLayer(),
@@ -18,7 +18,7 @@ export class LayerManager {
             app.stage.addChild(LayerManager.layers[layerName]);
     }
 
-    public static getLayer(name: string): IRenderLayer {
+    public static getLayer(name: string): RenderLayer {
         if (!this.layers[name]) {
             console.warn(`Layer "${name}" does not exist. Creating new layer.`);
             this.layers[name] = new RenderLayer();

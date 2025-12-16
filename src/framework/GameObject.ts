@@ -12,7 +12,9 @@ import { CircleColliderOptions } from "./colliders/CircleCollider.ts";
  * Base class for all game objects in the game.
  */
 export abstract class GameObject {
+    // Settings basically
     public abstract get Name(): string;
+    protected layer: string = "default"; // Idk if this should be abstract
 
     protected parent: GameObject | GameRoot;
     protected root: GameRoot;
@@ -101,8 +103,6 @@ export abstract class GameObject {
         }
     }
 
-
-
     /**
      * Destroys the game object, its children, and associated resources.
      */
@@ -163,6 +163,8 @@ export abstract class GameObject {
         // Layer
         if (options.layer) 
             LayerManager.getLayer(options.layer)?.attach(sprite);
+        // else 
+        //     LayerManager.getLayer(this.layer)?.attach(sprite);
         
         // Z-Index
         if (options.zIndex !== undefined)
@@ -172,6 +174,10 @@ export abstract class GameObject {
             this.container.addChild(sprite);
 
         return sprite;
+    }
+
+    addGraphics(graphics: Container, options?: {}): void {
+        this.container.addChild(graphics);
     }
 
     /**

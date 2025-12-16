@@ -3,10 +3,11 @@ import { Signal } from "@preact/signals";
 
 import { GameOverScreen } from "./GameOverScreen.tsx";
 
-import { GameInstance, Vector2D } from "framework";
+import { GameInstance, LayerManager, Vector2D } from "framework";
 import { Player } from "src/game/player/Player.ts";
 import { TestObject } from "src/game/TestObject.ts";
 import { World } from "src/game/world/World.ts";
+import { PlayerTracks } from "src/game/player/PlayerTracks.ts";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -26,7 +27,8 @@ export default class Game extends Component {
         new TestObject(this.game.Root, this.game.Root, {
             position: new Vector2D(-100, 100)
         });
-        new World(this.game.Root, this.game.Root, player.Transform);
+        const world = new World(this.game.Root, this.game.Root, player.Transform);
+        new PlayerTracks(world, this.game.Root, player);
     }
 
     override componentWillUnmount() {

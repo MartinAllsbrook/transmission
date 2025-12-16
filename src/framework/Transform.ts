@@ -59,8 +59,17 @@ export class Transform {
         return this.rotation;
     }
 
+    
     public set Rotation(value: number) {
         this.rotation = value;
+    }
+    
+    public get Forward(): Vector2D {
+        return Vector2D.fromAngle(this.rotation);
+    }
+
+    public get Right(): Vector2D {
+        return Vector2D.fromAngle(this.rotation + Math.PI / 2);
     }
 
     public get WorldRotation(): number {
@@ -77,6 +86,14 @@ export class Transform {
         } else {
             this.rotation = value;
         }
+    }
+
+    public get WorldForward(): Vector2D {
+        return Vector2D.fromAngle(this.WorldRotation);
+    }
+
+    public get WorldRight(): Vector2D {
+        return Vector2D.fromAngle(this.WorldRotation + Math.PI / 2);
     }
 
     //#endregion
