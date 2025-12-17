@@ -1,38 +1,53 @@
-import { CatmullRomSpline, Vector2D, GameObject, ExtraMath } from "framework";
-import { World } from "../World.ts";
+import { CatmullRomSpline, ExtraMath, GameObject, Vector2D } from "framework";
 
-export class Trails extends GameObject {
-    private spline: CatmullRomSpline;
-    private world: World;
-    // private debugGraphics: Graphics;
+export class Trail extends GameObject {
+    public override get Name() { return "Trail"; }
 
-    constructor(parent: World, startingPoint: Vector2D = new Vector2D(128, 128)) {
-        super(parent);
+    private spline: CatmullRomSpline = new CatmullRomSpline([
+        new Vector2D(0, -1024),
+        new Vector2D(0, -512),
+        new Vector2D(0, 0),
+        new Vector2D(0, 512),
+    ]);
 
-        const initialPoints: Vector2D[] = [];
-
-        this.world = parent;
-
-        // To start we need to initialize 2 points before the starting point
-        initialPoints.push(new Vector2D(startingPoint.x, startingPoint.y - 512));
-        initialPoints.push(new Vector2D(startingPoint.x, startingPoint.y - 512));
-        initialPoints.push(startingPoint);
-
-        // Then we should initialize a few points after the starting point
-        for (let i = 0; i < 5; i++) {
-            initialPoints.push(this.nextPoint(initialPoints[initialPoints.length - 1]));
+    protected override start(): void {
+        // Initialize a few points after the starting points
+        for (let i = 0; i < 4; i++) {
+            const nextPoint = this.generateNextPoint(this.getLastSplinePoint());
+            this.spline.addControlPoint(nextPoint);
         }
 
-        // This gives us 8 points to start with. 
-        // The path does not render anything involving the first or last two.
-        // This would render 3, 4, 5, and 6
-
-        // Create the spline
-        this.spline = new CatmullRomSpline(initialPoints);
-        // this.debugGraphics = this.spline.drawDebug(this.world);
+        this.updateTrail();
     }
 
-    private nextPoint(lastPoint: Vector2D): Vector2D {
+    protected override reset(): void {
+        this.spline = new CatmullRomSpline([
+            new Vector2D(0, -1024),
+            new Vector2D(0, -512),
+            new Vector2D(0, 0),
+            new Vector2D(0, 512),
+        ]);
+
+        // Initialize a few points after the starting points
+        for (let i = 0; i < 4; i++) {
+            const nextPoint = this.generateNextPoint(this.getLastSplinePoint());
+            this.spline.addControlPoint(nextPoint);
+        }
+
+        this.updateTrail();
+    }
+
+    /**
+     * Returns the distance from a given position to the trail.
+     * @param position - The position to measure from.
+     * @returns - The distance to the trail.
+     */
+    public getDistanceToTrail(position: Vector2D): number {
+        const closest = this.spline.getClosestPoint(position, 20);
+        return closest ? position.distanceTo(closest.point) : Infinity;
+    }
+
+    private generateNextPoint(lastPoint: Vector2D): Vector2D {
         // Average distance will be 0.5 * variation + minDistance
         const variation = 512;
         const minDistance = 256;
@@ -54,22 +69,12 @@ export class Trails extends GameObject {
         return lastPoint.add(offset);
     }
 
-    public getDistanceToTrail(position: Vector2D): number {
-        const closest = this.spline.getClosestPoint(position, 20);
-        return closest ? position.distanceTo(closest.point) : Infinity;
-    }
-
-    private updateTrail() {
-        // this.debugGraphics.destroy(); // TODO: delete or make this use clear()
-        // this.debugGraphics = this.spline.drawDebug(this.world);
-    }
-
     /**
      * Extends the trail by adding a new point to the end of the spline. 
      */
     public extendTrail() {
         // Add a new point to the end of the spline
-        const newPoint = this.nextPoint(this.getLastSplinePoint());
+        const newPoint = this.generateNextPoint(this.getLastSplinePoint());
         this.spline.addControlPoint(newPoint);
         this.updateTrail();
     }
@@ -120,9 +125,12 @@ export class Trails extends GameObject {
 
         return point;
     }
-
-    public override destroy(): void {
-        // this.debugGraphics.destroy();
-        super.destroy();
+    
+    /**
+     * This method doesn't do anything yet LMAO
+     */
+    private updateTrail() {
+        // this.debugGraphics.destroy(); // TODO: delete or make this use clear()
+        // this.debugGraphics = this.spline.drawDebug(this.world);
     }
 }

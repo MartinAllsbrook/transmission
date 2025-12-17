@@ -1,5 +1,6 @@
 import { GameObject, GameRoot, Vector2D, TransformOptions, Transform } from "framework";
 import { Chunk } from "./Chunk.ts";
+import { Trail } from "./trails/Trail.ts";
 
 export class World extends GameObject {
     public override get Name() { return "World"; }
@@ -9,6 +10,11 @@ export class World extends GameObject {
     private playerTransform: Transform;
 
     private chunks: Map<string, Chunk> = new Map();
+
+    private trail: Trail = new Trail(this, this.root);
+
+    private chunksActiveDistance: number = 4;
+    private runsActiveDistance: number = 8;
 
     constructor(
         parent: GameObject | GameRoot,
@@ -27,8 +33,31 @@ export class World extends GameObject {
 
     protected override update(_deltaTime: number): void {
         this.updateChunks();
+        this.updateTrail();
     }
 
+    public distanceToTrail(position: Vector2D): number {
+        return this.trail.getDistanceToTrail(position);
+    }
+
+    private updateTrail(): void {
+        const runsActiveDistance = this.runsActiveDistance * this.chunkSize;
+
+        const lowerBound = (runsActiveDistance * -1) + this.playerTransform.WorldPosition.y;
+        const upperBound = (runsActiveDistance) + this.playerTransform.WorldPosition.y;
+        
+        if (this.trail.getLastPoint().y < lowerBound) {
+            this.trail.shortenTrail();
+        }
+
+        if (this.trail.getFirstPoint().y < upperBound) {
+            this.trail.extendTrail();
+        }
+    }
+
+    /**
+     * Updates the loaded chunks based on the player's position.
+     */
     private updateChunks(): void {
         const playerPosition = this.playerTransform?.WorldPosition;
         const playerChunkPosition = playerPosition
@@ -47,7 +76,7 @@ export class World extends GameObject {
                 Math.abs(chunkY - playerChunkY)
             );
             
-            if (distance > 2) {
+            if (distance > this.chunksActiveDistance) {
                 chunksToRemove.push(key);
                 chunk.destroy();
             }
@@ -59,8 +88,8 @@ export class World extends GameObject {
         }
         
         // Load chunks in 5x5 area around player (2 chunks in each direction)
-        for (let x = playerChunkX - 2; x <= playerChunkX + 2; x++) {
-            for (let y = playerChunkY - 2; y <= playerChunkY + 2; y++) {
+        for (let x = playerChunkX - this.chunksActiveDistance; x <= playerChunkX + this.chunksActiveDistance; x++) {
+            for (let y = playerChunkY - this.chunksActiveDistance; y <= playerChunkY + this.chunksActiveDistance; y++) {
                 this.createChunk(x, y);
             }
         }
