@@ -22,6 +22,7 @@ export { VectorInput } from './inputs/VectorInput.ts';
 // Re-export math
 export { ExtraMath } from './math/ExtraMath.ts';
 export { Vector2D } from './math/Vector2D.ts';
+export { BlueNoise } from './math/noise/BlueNoise.ts';
 
 // Re-export splines
 export { BezierSpline } from './math/splines/BezierSpline.ts';

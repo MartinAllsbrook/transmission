@@ -5,7 +5,7 @@ import { Trail } from "./trails/Trail.ts";
 export class World extends GameObject {
     public override get Name() { return "World"; }
 
-    private readonly chunkSize: number = 256;
+    private readonly chunkSize: number = 1000;
 
     private playerTransform: Transform;
 
@@ -13,8 +13,8 @@ export class World extends GameObject {
 
     private trail: Trail = new Trail(this, this.root);
 
-    private chunksActiveDistance: number = 4;
-    private runsActiveDistance: number = 8;
+    private chunksActiveDistance: number = 1;
+    private runsActiveDistance: number = 2;
 
     constructor(
         parent: GameObject | GameRoot,

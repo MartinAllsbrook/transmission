@@ -1,7 +1,8 @@
-import { GameObject, GameRoot, Vector2D, TransformOptions } from "framework";
+import { GameObject, GameRoot, Vector2D, TransformOptions, BlueNoise } from "framework";
 import { Tree } from "./obstacles/Tree.ts";
 import { Jump } from "./features/Jump.ts";
 import { World } from "./World.ts";
+import { Graphics } from "pixi.js";
 
 export class Chunk extends GameObject {
     public override get Name() { return "Chunk"; }
@@ -19,11 +20,34 @@ export class Chunk extends GameObject {
     
         this.chunkSize = chunkSize;
         this.world = parent;
+    }
 
-        // For demonstration, create 5 random obstacles in the chunk
-        for (let i = 0; i < 10; i++) {
-            this.createRandomObstacle();
+    protected override start(): void {
+        const treePoints = BlueNoise.generate(
+            new Vector2D(0, 0),
+            new Vector2D(this.chunkSize, this.chunkSize),
+            90,
+        );
+
+        for (const point of treePoints) {
+            // Ensure trees are not too close to the trail
+            const distanceToTrail = this.world.distanceToTrail(point.add(this.Transform.WorldPosition))
+            if (distanceToTrail >= 200) {
+                console.log(`Placing tree, Chunk Position: ${this.Transform.WorldPosition.X.toFixed(0)} ${this.Transform.WorldPosition.Y.toFixed(0)}`);
+                new Tree(this, this.root, { position: point });
+            }
         }
+
+        const graphics = new Graphics();
+
+        graphics.rect(0, 0, this.chunkSize, this.chunkSize);
+        graphics.stroke({
+            color: 0xff00ff,
+            alpha: 0.5,
+            width: 2,
+        });
+
+        this.addGraphics(graphics);
     }
     
     private createRandomObstacle() {

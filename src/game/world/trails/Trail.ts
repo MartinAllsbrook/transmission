@@ -1,7 +1,10 @@
 import { CatmullRomSpline, ExtraMath, GameObject, Vector2D } from "framework";
+import { Graphics } from "pixi.js";
 
 export class Trail extends GameObject {
     public override get Name() { return "Trail"; }
+
+    private debugGraphics: Graphics | null = null;
 
     private spline: CatmullRomSpline = new CatmullRomSpline([
         new Vector2D(0, -1024),
@@ -18,6 +21,8 @@ export class Trail extends GameObject {
         }
 
         this.updateTrail();
+
+        console.log("Spline Created");
     }
 
     protected override reset(): void {
@@ -130,7 +135,25 @@ export class Trail extends GameObject {
      * This method doesn't do anything yet LMAO
      */
     private updateTrail() {
-        // this.debugGraphics.destroy(); // TODO: delete or make this use clear()
-        // this.debugGraphics = this.spline.drawDebug(this.world);
+        if (this.debugGraphics) {
+            this.debugGraphics.destroy();
+        }
+
+        const splinePoints = this.spline.samplePoints(100);
+
+        const graphics = new Graphics();
+
+        graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
+        for (const point of splinePoints) {
+            graphics.lineTo(point.x, point.y);
+        }
+
+        graphics.stroke({
+            width: 10,
+            color: 0x00ff00,
+        });
+
+        this.debugGraphics = graphics;
+        this.addGraphics(graphics);
     }
 }
