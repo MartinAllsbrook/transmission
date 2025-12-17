@@ -35,6 +35,13 @@ export class GameRoot {
         }
     }
 
+    public reset() {
+        for (const child of this.children) {
+            child.baseReset();
+        }
+    }
+
+
     private syncWorldToCamera() {
         this.world.position.set(
             -this.camera.Transform.WorldPosition.x + globalThis.innerWidth / 2,

@@ -2,21 +2,29 @@ import { Application } from "pixi.js";
 import { GameRoot } from "./GameRoot.ts";
 import { CollisionManager } from "./colliders/CollisionManager.ts";
 import { LayerManager } from "framework";
+import { Signal } from "@preact/signals";
 
 export class GameInstance {
+    public static instance: GameInstance;
+
     private app: Application;
     private container: HTMLElement;
     private root: GameRoot;
+
+    private gameOverSignal: Signal<boolean>;
+    private deathMessage: string | undefined;
 
     /**
      * 
      * @param container - the HTML container to attach the PixiJS application to
      */
-    constructor(container: HTMLElement) {
+    constructor(container: HTMLElement, gameOverSignal: Signal<boolean>) {
+        GameInstance.instance = this;
+
         this.container = container;
+        this.gameOverSignal = gameOverSignal;
 
         this.app = this.createPixiApp();
-
         LayerManager.initialize(this.app);
         this.root = new GameRoot(this.app.stage);
     } 
@@ -46,8 +54,6 @@ export class GameInstance {
         });
 
         this.container.appendChild(this.app.canvas);
-
-
     }
 
     private setupGame() {
@@ -65,8 +71,19 @@ export class GameInstance {
         CollisionManager.update();
     }
 
+    public endGame(deathMessage: string) {
+        this.deathMessage = deathMessage;
+        this.gameOverSignal.value = true;
+
+        this.app?.ticker.stop();
+    }
+
     public resetGame() {
-        // Reset game logic goes here
+        this.deathMessage = undefined;
+        this.gameOverSignal.value = false;
+        
+        this.app?.ticker.start();
+        this.root?.reset();
     }
 
     public dispose() {
@@ -76,5 +93,9 @@ export class GameInstance {
 
     public get Root(): GameRoot {
         return this.root;
+    }
+
+    public get DeathMessage(): string | undefined {
+        return this.deathMessage;
     }
 }

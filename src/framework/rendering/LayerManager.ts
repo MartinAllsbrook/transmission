@@ -2,14 +2,8 @@ import { Application, RenderLayer } from "pixi.js";
 
 export class LayerManager {
     public static layers: Record<string, RenderLayer> = {
-        background: new RenderLayer(),
         trail: new RenderLayer(),
-        shadows: new RenderLayer(),
-        snowboarder: new RenderLayer(),
-        foreground: new RenderLayer(),
-        snowLayer0: new RenderLayer(),
-        snowLayer1: new RenderLayer(),
-        snowLayer2: new RenderLayer(),
+        default: new RenderLayer(),
         ui: new RenderLayer(),
     };
 

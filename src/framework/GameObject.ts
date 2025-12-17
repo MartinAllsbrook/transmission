@@ -67,6 +67,20 @@ export abstract class GameObject {
      */
     protected update(_deltaTime: number): void {}
 
+
+    public baseReset(): void {
+        this.reset();
+
+        for (const child of this.children) {
+            child.baseReset();
+        }
+    }
+
+    /**
+     * Resets the game object to its initial state. Called when the game is reset.
+     */
+    protected reset(): void {}
+
     /**
      * Updates the container's position, rotation, and scale to match the game object's properties.
      */
@@ -163,8 +177,8 @@ export abstract class GameObject {
         // Layer
         if (options.layer) 
             LayerManager.getLayer(options.layer)?.attach(sprite);
-        // else 
-        //     LayerManager.getLayer(this.layer)?.attach(sprite);
+        else 
+            LayerManager.getLayer(this.layer)?.attach(sprite);
         
         // Z-Index
         if (options.zIndex !== undefined)

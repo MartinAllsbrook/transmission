@@ -60,9 +60,7 @@ export class AirState extends PlayerState {
     //#region Transitions
 
     private checkGrounded(): void {
-        console.log("Height:", this.player.Height, " DeltaHeight:", this.player.DeltaHeight);
         if (this.player.Height <= 0 && this.player.DeltaHeight <= 0) {
-            console.log("Grounded");
             this.player.Height = 0;
             this.player.DeltaHeight = 0;
             this.player.changeState(new GroundState(this.player));

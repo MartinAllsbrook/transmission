@@ -1,4 +1,4 @@
-import { BooleanInput, GameObject, SATCollider, ValueInput, Vector2D } from "framework";
+import { BooleanInput, GameInstance, GameObject, SATCollider, ValueInput, Vector2D } from "framework";
 
 import { Body } from "./Body.ts";
 import { Board } from "./Board.ts";
@@ -36,6 +36,21 @@ export class Player extends GameObject {
         this.state.update(deltaTime);
     }
 
+    protected override reset(): void {
+        console.log("Resetting Player");
+
+        this.Transform.Position = new Vector2D(0, 0);
+        this.Transform.Rotation = 0;
+
+        this.velocity = new Vector2D(0, 0);
+        this.rotationSpeed = 0;
+        this.shiftyAngle = 0;
+        this.height = 0;
+        this.deltaHeight = 0;
+        this.state = new GroundState(this);
+        this.state.enter();
+    }
+
     public changeState(newState: PlayerState): void {
         this.state.exit();
         this.state = newState;
@@ -45,6 +60,10 @@ export class Player extends GameObject {
     //#region Collision Handling
 
     public onCollisionEnter(other: SATCollider): void {
+        if (other.layer === "obstacle") {
+            GameInstance.instance.endGame("You crashed into an tree, watch out!");
+        }
+
         this.state.onCollisionEnter(other);
     }
 

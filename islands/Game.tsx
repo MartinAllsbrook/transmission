@@ -3,7 +3,7 @@ import { Signal } from "@preact/signals";
 
 import { GameOverScreen } from "./GameOverScreen.tsx";
 
-import { GameInstance, LayerManager, Vector2D } from "framework";
+import { GameInstance, Vector2D } from "framework";
 import { Player } from "src/game/player/Player.ts";
 import { TestObject } from "src/game/TestObject.ts";
 import { World } from "src/game/world/World.ts";
@@ -14,19 +14,15 @@ export default class Game extends Component {
     private gameContainer?: HTMLDivElement;
     private game?: GameInstance;
 
-    private deathMessage: string | undefined;
     private gameOver: Signal<boolean> = new Signal(false);
 
     override async componentDidMount() {
         if (typeof window === "undefined") return; // Only run on client side
 
-        this.game = new GameInstance(this.gameContainer!); 
+        this.game = new GameInstance(this.gameContainer!, this.gameOver); 
         await this.game.init();
 
         const player = new Player(this.game.Root, this.game.Root);
-        new TestObject(this.game.Root, this.game.Root, {
-            position: new Vector2D(-100, 100)
-        });
         const world = new World(this.game.Root, this.game.Root, player.Transform);
         new PlayerTracks(world, this.game.Root, player);
     }
@@ -46,7 +42,7 @@ export default class Game extends Component {
                     ? (
                         <div>
                             <GameOverScreen
-                                deathMessage={this.deathMessage}
+                                deathMessage={this.game?.DeathMessage || "You died! (I need to add a proper message here)"}
                                 onRestart={() => {
                                     this.game?.resetGame();
                                 }}
