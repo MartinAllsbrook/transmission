@@ -190,7 +190,17 @@ export abstract class GameObject {
         return sprite;
     }
 
-    addGraphics(graphics: Container, options?: {}): void {
+    addGraphics(graphics: Container, options?: {
+        layer?: string,
+    }): void {
+        if (options === undefined) options = {};
+
+        // Layer
+        if (options.layer) 
+            LayerManager.getLayer(options.layer)?.attach(graphics);
+        else 
+            LayerManager.getLayer(this.layer)?.attach(graphics);
+
         this.container.addChild(graphics);
     }
 

@@ -4,13 +4,16 @@ import { Body } from "./Body.ts";
 import { Board } from "./Board.ts";
 import { PlayerState } from "./states/PlayerState.ts";
 import { GroundState } from "./states/GroundState.ts";
+import { Shadow } from "./Shadow.ts";
 
 export class Player extends GameObject {
     public override get Name() { return "Player"; }
+    protected override layer: string = "player";
 
     // Parts
     private board: Board = new Board(this, this.root);
     private body: Body = new Body(this, this.root);
+    private shadow: Shadow = new Shadow(this, this.root); // Placeholder for shadow
 
     // Inputs
     private jumpInput = new BooleanInput("Jump", [" ", "w", "ArrowUp"]);
@@ -34,6 +37,8 @@ export class Player extends GameObject {
     
     protected override update(deltaTime: number): void {
         this.state.update(deltaTime);
+
+        this.Transform.Scale = new Vector2D(1, 1).multiply(1 + (this.height * 0.5));
     }
 
     protected override reset(): void {

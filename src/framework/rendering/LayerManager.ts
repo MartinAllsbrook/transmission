@@ -3,6 +3,8 @@ import { Application, RenderLayer } from "pixi.js";
 export class LayerManager {
     public static layers: Record<string, RenderLayer> = {
         trail: new RenderLayer(),
+        shadow: new RenderLayer(),
+        player: new RenderLayer(),
         default: new RenderLayer(),
         ui: new RenderLayer(),
     };

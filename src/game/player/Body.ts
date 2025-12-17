@@ -3,6 +3,7 @@ import { Head } from "./Head.ts";
 
 export class Body extends GameObject {
     public override get Name() { return "Body"; }
+    protected override layer: string = "player";
 
     private head: Head = new Head(this, this.root);
 

@@ -1,4 +1,4 @@
-import { ExtraMath, Vector2D } from "framework";
+import { ExtraMath, SATCollider, Vector2D } from "framework";
 import { PlayerState, StateName } from "./PlayerState.ts";
 import { PLAYER_CONFIG } from "../PlayerConfig.ts";
 import { AirState } from "./AirState.ts";
@@ -80,6 +80,22 @@ export class GroundState extends PlayerState {
         if (this.player.JumpInput.Value) {
             console.log("Jumped");
             this.player.DeltaHeight = 1; // Small delta height to indicate we are in the air
+            this.player.changeState(new AirState(this.player));
+        }
+    }
+
+    //#endregion
+
+    //#region 
+
+    public override onCollisionEnter(other: SATCollider): void {
+        if (other.layer === "jump") {
+            this.player.Height = 0.5;
+        }
+    }
+
+    public override onCollisionExit(other: SATCollider): void {
+        if (other.layer === "jump") {
             this.player.changeState(new AirState(this.player));
         }
     }
