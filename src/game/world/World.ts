@@ -40,6 +40,11 @@ export class World extends GameObject {
         return this.trail.getDistanceToTrail(position);
     }
 
+    public closestPointOnTrail(position: Vector2D): Vector2D | null {
+        const closest = this.trail.getClosestPoint(position, 20);
+        return closest ? closest.point : null;
+    }
+
     private updateTrail(): void {
         const runsActiveDistance = this.runsActiveDistance * this.chunkSize;
 

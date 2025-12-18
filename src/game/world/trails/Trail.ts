@@ -21,8 +21,6 @@ export class Trail extends GameObject {
         }
 
         this.updateTrail();
-
-        console.log("Spline Created");
     }
 
     protected override reset(): void {
@@ -50,6 +48,10 @@ export class Trail extends GameObject {
     public getDistanceToTrail(position: Vector2D): number {
         const closest = this.spline.getClosestPoint(position, 20);
         return closest ? position.distanceTo(closest.point) : Infinity;
+    }
+
+    public getClosestPoint(position: Vector2D, sampleCount: number): { point: Vector2D; t: number } | null {
+        return this.spline.getClosestPoint(position, sampleCount);
     }
 
     private generateNextPoint(lastPoint: Vector2D): Vector2D {

@@ -23,6 +23,8 @@ export class Chunk extends GameObject {
     }
 
     protected override start(): void {
+        const start = Date.now();
+
         const treePoints = BlueNoise.generate(
             new Vector2D(0, 0),
             new Vector2D(this.chunkSize, this.chunkSize),
@@ -37,6 +39,18 @@ export class Chunk extends GameObject {
                 new Tree(this, this.root, { position: point });
             }
         }
+
+        // Create jump
+        if (this.world.distanceToTrail(this.Transform.WorldPosition.add(new Vector2D(this.chunkSize / 2, this.chunkSize / 2)))){
+            const jumpPosition = this.world.closestPointOnTrail(this.Transform.WorldPosition.add(new Vector2D(this.chunkSize / 2, this.chunkSize / 2)));
+            if (jumpPosition) {
+                new Jump(this, this.root, { position: jumpPosition.subtract(this.Transform.WorldPosition) });
+            }
+        } 
+
+        const end = Date.now();
+        const time = end - start;
+        console.log(`Chunk generated in ${time} ms with ${treePoints.length} trees. (${(time / treePoints.length).toFixed(2)} ms/tree)`);
 
         const graphics = new Graphics();
 
@@ -62,7 +76,7 @@ export class Chunk extends GameObject {
             return;
         }
 
-        if ( Math.random() < 0.2 ) { 
+        if (Math.random() < 0.2) { 
             new Jump(this, this.root, { position });
         } else {
             new Tree(this, this.root, { position });
