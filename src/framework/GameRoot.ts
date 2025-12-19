@@ -41,7 +41,6 @@ export class GameRoot {
         }
     }
 
-
     private syncWorldToCamera() {
         this.world.position.set(
             -this.camera.Transform.WorldPosition.x + globalThis.innerWidth / 2,

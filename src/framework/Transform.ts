@@ -7,11 +7,12 @@ export interface TransformOptions {
 }
 
 export class Transform {
-    private parent?: Transform;
+    protected parent?: Transform;
+    public get isUI(): boolean { return false; }
 
-    private position: Vector2D;
-    private rotation: number; // radians
-    private scale: Vector2D;
+    protected position: Vector2D;
+    protected rotation: number; // radians
+    protected scale: Vector2D;
 
     constructor(parent?: Transform, options?: TransformOptions) {
         this.parent = parent;

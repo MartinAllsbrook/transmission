@@ -38,11 +38,17 @@ export abstract class GameObject {
         this.root = root;
 
         this.parent.addChild(this);
-        this.transform = new Transform(parent.Transform, transformOptions);
+
+        this.transform = this.createTransform(transformOptions || {});
 
         this.setUpContainer();
         this.syncTransform();
         queueMicrotask(() => this.start());
+    }
+
+    protected createTransform(options: TransformOptions): Transform {
+        const transform = new Transform(this.parent.Transform, options);
+        return transform;
     }
 
     private setUpContainer(): void {
@@ -201,6 +207,8 @@ export abstract class GameObject {
             LayerManager.getLayer(options.layer)?.attach(graphics);
         else 
             LayerManager.getLayer(this.layer)?.attach(graphics);
+
+        graphics.pivot.set(0.5, 0.5);
 
         this.container.addChild(graphics);
     }
