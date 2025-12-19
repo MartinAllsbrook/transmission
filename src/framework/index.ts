@@ -32,3 +32,7 @@ export { SplinePoint } from './math/splines/SplinePoint.ts';
 
 // Re-export rendering
 export { LayerManager } from './rendering/LayerManager.ts';
+
+// Re-export UI Kit
+export { UIElement } from './uikit/UIElement.ts';
+export { UIText } from './uikit/UIText.ts';

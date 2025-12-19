@@ -3,7 +3,7 @@ import { Player } from "./Player.ts";
 
 export class Board extends GameObject {
     public override get Name(): string { return "Board"; }
-    protected override layer: string = "player";
+    public override get layer(): string { return "player"; }
 
     protected override start(): void {
         this.loadSprite("snowboarder/Board.png");

@@ -41,8 +41,9 @@ export class Chunk extends GameObject {
         }
 
         // Create jump
-        if (this.world.distanceToTrail(this.Transform.WorldPosition.add(new Vector2D(this.chunkSize / 2, this.chunkSize / 2)))){
-            const jumpPosition = this.world.closestPointOnTrail(this.Transform.WorldPosition.add(new Vector2D(this.chunkSize / 2, this.chunkSize / 2)));
+        const chunkCenter = this.Transform.WorldPosition.add(new Vector2D(this.chunkSize / 2, this.chunkSize / 2));
+        if (this.world.distanceToTrail(chunkCenter) < this.chunkSize / 2) {
+            const jumpPosition = this.world.closestPointOnTrail(chunkCenter);
             if (jumpPosition) {
                 new Jump(this, this.root, { position: jumpPosition.subtract(this.Transform.WorldPosition) });
             }

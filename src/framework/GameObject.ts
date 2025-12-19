@@ -14,7 +14,8 @@ import { CircleColliderOptions } from "./colliders/CircleCollider.ts";
 export abstract class GameObject {
     // Settings basically
     public abstract get Name(): string;
-    protected layer: string = "default"; // Idk if this should be abstract
+    public get layer(): string { return "default"; }
+    public get isUI(): boolean { return false; }
 
     protected parent: GameObject | GameRoot;
     protected root: GameRoot;
@@ -46,7 +47,7 @@ export abstract class GameObject {
 
     private setUpContainer(): void {
         this.container.label = this.Name;
-        this.root.addContainer(this.container);
+        this.root.addContainer(this.container, this.isUI);
     }
 
     protected start(): void {}

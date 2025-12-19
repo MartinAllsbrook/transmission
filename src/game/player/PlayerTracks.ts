@@ -15,7 +15,7 @@ interface TrailPoint {
 
 export class PlayerTracks extends GameObject {
     public override get Name(): string { return "SnowboarderTrail"; }
-    protected override layer: string = "trail";
+    public override get layer(): string { return "trail"; }
 
     private player: Player;
 

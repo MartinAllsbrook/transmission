@@ -4,7 +4,7 @@ import { Player } from "./Player.ts";
 
 export class Shadow extends GameObject {
     public override get Name(): string { return "Shadow"; }
-    protected override layer: string = "shadow";
+    public override get layer(): string { return "shadow"; }
 
     private radius: number = 20;
     private shinkFactor: number = 0.7;

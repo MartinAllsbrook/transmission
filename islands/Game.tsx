@@ -1,13 +1,14 @@
 import { Component } from "preact";
 import { Signal } from "@preact/signals";
 
+import { GameInstance } from "framework";
+
 import { GameOverScreen } from "./GameOverScreen.tsx";
 
-import { GameInstance, Vector2D } from "framework";
 import { Player } from "src/game/player/Player.ts";
-import { TestObject } from "src/game/TestObject.ts";
 import { World } from "src/game/world/World.ts";
 import { PlayerTracks } from "src/game/player/PlayerTracks.ts";
+import { DebugStats } from "src/game/ui/DebugStats.ts";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -21,6 +22,8 @@ export default class Game extends Component {
 
         this.game = new GameInstance(this.gameContainer!, this.gameOver); 
         await this.game.init();
+
+        const debugUI = new DebugStats(this.game.Root, this.game.Root);
 
         const player = new Player(this.game.Root, this.game.Root);
         const world = new World(this.game.Root, this.game.Root, player.Transform);

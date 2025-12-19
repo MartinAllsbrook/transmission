@@ -8,7 +8,7 @@ import { Shadow } from "./Shadow.ts";
 
 export class Player extends GameObject {
     public override get Name() { return "Player"; }
-    protected override layer: string = "player";
+    public override get layer(): string { return "player"; }
 
     // Parts
     private board: Board = new Board(this, this.root);
