@@ -1,7 +1,8 @@
 import { GameObject, GameRoot, TransformOptions, Vector2D } from "framework";
 import { Graphics } from "pixi.js";
+import { BaseObject } from "../BaseObject.ts";
 
-export abstract class UIElement extends GameObject {
+export abstract class UIElement extends BaseObject {
     public override get layer() { return "ui"; }
     public override get isUI() { return true; }
 
@@ -11,7 +12,7 @@ export abstract class UIElement extends GameObject {
     protected anchor: Vector2D = new Vector2D(-1, -1); // Top-left by default
 
     constructor(
-        parent: GameObject | GameRoot,
+        parent: BaseObject | GameRoot,
         root: GameRoot,
         transformOptions?: TransformOptions
     ) {

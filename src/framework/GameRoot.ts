@@ -1,6 +1,6 @@
 import { Container } from "pixi.js";
 import { Camera } from "./Camera.ts";
-import { GameObject } from "./GameObject.ts";
+import { BaseObject } from "./BaseObject.ts";
 
 export class GameRoot {
     private stage: Container;
@@ -10,7 +10,7 @@ export class GameRoot {
 
     private camera: Camera;
 
-    private children: GameObject[] = [];
+    private children: BaseObject[] = [];
 
     constructor(stage: Container) {
         this.stage = stage;
@@ -58,11 +58,11 @@ export class GameRoot {
         this.camera = camera;
     }
     
-    public addChild(child: GameObject) {
+    public addChild(child: BaseObject) {
         this.children.push(child);
     }
 
-    public removeChild(child: GameObject) {
+    public removeChild(child: BaseObject) {
         const index = this.children.indexOf(child);
         if (index > -1) {
             this.children.splice(index, 1);
