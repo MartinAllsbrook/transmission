@@ -1,5 +1,4 @@
-import { ExtraMath } from "../../math/ExtraMath.ts";
-import { GameObject } from "../GameObject.ts";
+import { ExtraMath, GameObject } from "framework";
 import { Body } from "./Body.ts";
 import { Snowboarder } from "./Snowboarder.ts";
 

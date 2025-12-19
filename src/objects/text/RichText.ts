@@ -1,6 +1,5 @@
 import { Text, TextStyle } from "pixi.js";
-import { GameObject } from "../GameObject.ts";
-import { Vector2D } from "../../math/Vector2D.ts";
+import { GameObject } from "framework";
 
 export class RichText extends GameObject {
     private style: TextStyle;

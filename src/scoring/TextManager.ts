@@ -1,13 +1,13 @@
-import { GameObject } from "../objects/GameObject.ts";
 import { OverheadText } from "../objects/text/OverheadText.ts";
 import { ScoringDisplay } from "../objects/text/score/ScoringDisplay.ts";
 import { TrickDisplay } from "../objects/text/tricks/TrickDisplay.ts";
 import { UpdatingText } from "../objects/text/UpdatingText.ts";
+import { RootObject } from "../objects/RootObject.ts";
 
 export class TextManager{
-    private static root: GameObject;
+    private static root: RootObject;
     
-    public static initialize(root: GameObject) {
+    public static initialize(root: RootObject) {
         this.root = root;
 
     }

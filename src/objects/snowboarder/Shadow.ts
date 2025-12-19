@@ -1,7 +1,5 @@
 import { Graphics } from "pixi.js";
-import { GameObject, Parent } from "../GameObject.ts";
-import { LayerManager } from "../../rendering/LayerManager.ts";
-import { Vector2D } from "../../math/Vector2D.ts";
+import { GameObject, Parent, LayerManager, Vector2D } from "framework";
 
 export class Shadow extends GameObject {
     private radius: number = 20;

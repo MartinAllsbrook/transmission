@@ -1,7 +1,4 @@
-import { GameObject } from "../GameObject.ts";
-import { Vector2D } from "../../math/Vector2D.ts";
-import { RectCollider } from "../../colliders/RectCollider.ts";
-import { LayerManager } from "../../rendering/LayerManager.ts";
+import { GameObject, Vector2D, RectCollider, LayerManager } from "framework";
 
 export class Jump extends GameObject {
     constructor(parent: GameObject, position: Vector2D) {

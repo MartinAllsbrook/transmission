@@ -1,7 +1,5 @@
-import { Vector2D } from "src/math/Vector2D.ts";
-import { GameObject } from "src/objects/GameObject.ts";
+import { Vector2D, GameObject, LayerManager } from "framework";
 import { Container, Graphics } from "pixi.js";
-import { LayerManager } from "../../rendering/LayerManager.ts";
 
 interface TrailSegment {
     position: Vector2D;

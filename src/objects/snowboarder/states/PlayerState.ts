@@ -1,5 +1,4 @@
-import { SATCollider } from "../../../colliders/SATCollider.ts";
-import { Vector2D } from "../../../math/Vector2D.ts";
+import { SATCollider, Vector2D } from "framework";
 import { Body } from "../Body.ts";
 import { Head } from "../Head.ts";
 import { Snowboard } from "../Snowboard.ts";

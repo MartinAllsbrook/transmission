@@ -1,6 +1,4 @@
-import { Vector2D } from "../../../math/Vector2D.ts";
-import { LayerManager } from "../../../rendering/LayerManager.ts";
-import { GameObject } from "../../GameObject.ts";
+import { Vector2D, LayerManager, GameObject } from "framework";
 import { TrickExecution, LandTrickPopup } from "./LandTrickPopup.ts";
 import { TrickPopup } from "./TrickPopup.ts";
 

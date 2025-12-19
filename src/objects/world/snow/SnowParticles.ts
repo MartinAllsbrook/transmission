@@ -1,7 +1,5 @@
-import { Vector2D } from "../../../math/Vector2D.ts";
-import { GameObject } from "../../GameObject.ts";
-
 import { ParticleContainer, Particle, Assets, IRenderLayer } from 'pixi.js';
+import { Vector2D, GameObject } from "framework";
 
 interface SnowParticle {
     particle: Particle;
@@ -24,7 +22,6 @@ export class SnowParticles extends GameObject{
         
         // Create a particle container with default options
         const container = new ParticleContainer({
-            // this is the default, but we show it here for clarity
             dynamicProperties: {
                 position: true, // Allow dynamic position changes (default)
                 scale: false, // Static scale for extra performance
@@ -52,7 +49,7 @@ export class SnowParticles extends GameObject{
 
             container.addParticle(particle);
         }
-        
+
         // Add container to the Pixi stage
         this.container.addChild(container);
 

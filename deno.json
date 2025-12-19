@@ -25,7 +25,8 @@
         "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
         "$std/": "https://deno.land/std@0.216.0/",
         "src/": "./src/",
-        "islands/": "./islands/"
+        "islands/": "./islands/",
+        "framework": "./src/framework/index.ts"
     },
     "compilerOptions": { "jsx": "react-jsx", "jsxImportSource": "preact" },
     "nodeModulesDir": "auto"

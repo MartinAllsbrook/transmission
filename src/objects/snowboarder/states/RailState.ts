@@ -1,5 +1,4 @@
-import { SATCollider } from "../../../colliders/SATCollider.ts";
-import { ExtraMath } from "../../../math/ExtraMath.ts";
+import { SATCollider, ExtraMath } from "framework";
 import { Rail } from "../../world/features/Rail.ts";
 import { PlayerState, StateName } from "./PlayerState.ts";
 

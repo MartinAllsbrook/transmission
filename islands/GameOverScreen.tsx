@@ -1,5 +1,5 @@
 import { Component } from "preact";
-import { InputManager } from "src/inputs/InputManager.ts";
+import { InputManager } from "framework";
 
 interface GameOverScreenProps {
     deathMessage?: string;

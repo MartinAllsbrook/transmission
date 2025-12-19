@@ -1,4 +1,4 @@
-import { GameObject } from "../GameObject.ts";
+import { GameObject } from "framework";
 import { World } from "./World.ts";
 import { Sprite } from "pixi.js";
 

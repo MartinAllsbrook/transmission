@@ -1,10 +1,9 @@
 import { TextStyle } from "pixi.js";
-import { Vector2D } from "../../../math/Vector2D.ts";
-import { GameObject } from "../../GameObject.ts";
+import { Vector2D, GameObject, LayerManager } from "framework";
+
 import { RootObject } from "../../RootObject.ts";
 import { ScoreText } from "./ScoreText.ts";
 import { FadingText } from "../FadingText.ts";
-import { LayerManager } from "../../../rendering/LayerManager.ts";
 
 export class ScoringDisplay extends GameObject {
     

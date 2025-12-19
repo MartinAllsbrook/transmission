@@ -1,5 +1,5 @@
 import { TextStyle } from "pixi.js";
-import { GameObject } from "../../GameObject.ts";
+import { GameObject } from "framework";
 import { RichText } from "../RichText.ts";
 
 export class ScoreText extends RichText {

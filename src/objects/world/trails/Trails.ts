@@ -1,16 +1,12 @@
-import { CatmullRomSpline } from "../../../math/splines/CatmullRomSpline.ts";
-import { Vector2D } from "../../../math/Vector2D.ts";
-import { GameObject } from "../../GameObject.ts";
-import { ExtraMath } from "../../../math/ExtraMath.ts";
+import { CatmullRomSpline, Vector2D, GameObject, ExtraMath } from "framework";
 import { World } from "../World.ts";
-import { Graphics } from "pixi.js";
 
 export class Trails extends GameObject {
     private spline: CatmullRomSpline;
     private world: World;
     // private debugGraphics: Graphics;
 
-    constructor(parent: World, startingPoint: Vector2D = new Vector2D(128, 128), width: number = 10, resolution: number = 10) {
+    constructor(parent: World, startingPoint: Vector2D = new Vector2D(128, 128)) {
         super(parent);
 
         const initialPoints: Vector2D[] = [];
@@ -29,7 +25,7 @@ export class Trails extends GameObject {
 
         // This gives us 8 points to start with. 
         // The path does not render anything involving the first or last two.
-        // Right this would render 3, 4, 5, and 6
+        // This would render 3, 4, 5, and 6
 
         // Create the spline
         this.spline = new CatmullRomSpline(initialPoints);
@@ -88,10 +84,10 @@ export class Trails extends GameObject {
     }
 
     /**
-     * Returns the seccond to last (higest) point in the trail. 
-     * This is the third point in the spline because the first is used for tangents, and the seccond is to far lol.
+     * Returns the second to last (highest) point in the trail. 
+     * This is the third point in the spline because the first is used for tangents, and the second is to far lol.
      * @returns The last point in the trail
-     * ### TODO: this is really seccond to last point, rename
+     * ### TODO: this is really second to last point, rename
      */
     public getLastPoint(): Vector2D { 
         const point = this.spline.getControlPoint(2);
@@ -103,7 +99,7 @@ export class Trails extends GameObject {
 
     /**
      * Returns the first (lowest) point in the trail.
-     * This is the seccond-to-last point in the spline because the last one is used for tangents.
+     * This is the second-to-last point in the spline because the last one is used for tangents.
      * @returns The first point in the trail
      */
     public getFirstPoint(): Vector2D {

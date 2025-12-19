@@ -1,6 +1,4 @@
-import { RectCollider } from "../../../colliders/RectCollider.ts";
-import { Vector2D } from "../../../math/Vector2D.ts";
-import { GameObject } from "../../GameObject.ts";
+import { RectCollider, Vector2D, GameObject } from "framework";
 
 export class Rail extends GameObject {
     private length: number = 256;

@@ -1,16 +1,15 @@
-import { GameObject, Parent } from "../GameObject.ts";
-import { Vector2D } from "../../math/Vector2D.ts";
-import { LayerManager } from "../../rendering/LayerManager.ts";
-import { SATCollider } from "../../colliders/SATCollider.ts";
+import { GameObject, Parent } from "../../framework/GameObject.ts";
+import { Vector2D, LayerManager, SATCollider, InputManager } from "framework";
+
 import { Snowboard } from "./Snowboard.ts";
 import { Body } from "./Body.ts";
 import { Shadow } from "./Shadow.ts";
-import { InputManager } from "../../inputs/InputManager.ts";
 import { TricksManager } from "./TricksManager.ts";
 import { PlayerState, StateName } from "./states/PlayerState.ts";
 import { GroundState } from "./states/GroundState.ts";
 import { AirState } from "./states/AirState.ts";
 import { RailState } from "./states/RailState.ts";
+import { LandingParticles } from "./particles/LandingParticles.ts";
   
 export interface PlayerConfig {
     // Initialization
@@ -101,6 +100,12 @@ export class Snowboarder extends GameObject {
             inputs: this.inputs,
             config: this.config,
         });
+
+        const landingParticles = new LandingParticles(this);
+        
+        setTimeout(() => {
+            landingParticles.playParticles(4);
+        }, 2000);
 
         this.state.enter();
     }
