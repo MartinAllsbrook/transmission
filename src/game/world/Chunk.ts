@@ -35,7 +35,7 @@ export class Chunk extends GameObject {
             // Ensure trees are not too close to the trail
             const distanceToTrail = this.world.distanceToTrail(point.add(this.Transform.WorldPosition))
             if (distanceToTrail >= 200) {
-                console.log(`Placing tree, Chunk Position: ${this.Transform.WorldPosition.X.toFixed(0)} ${this.Transform.WorldPosition.Y.toFixed(0)}`);
+                // console.log(`Placing tree, Chunk Position: ${this.Transform.WorldPosition.X.toFixed(0)} ${this.Transform.WorldPosition.Y.toFixed(0)}`);
                 new Tree(this, this.root, { position: point });
             }
         }
@@ -51,7 +51,7 @@ export class Chunk extends GameObject {
 
         const end = Date.now();
         const time = end - start;
-        console.log(`Chunk generated in ${time} ms with ${treePoints.length} trees. (${(time / treePoints.length).toFixed(2)} ms/tree)`);
+        // console.log(`Chunk generated in ${time} ms with ${treePoints.length} trees. (${(time / treePoints.length).toFixed(2)} ms/tree)`);
 
         const graphics = new Graphics();
 

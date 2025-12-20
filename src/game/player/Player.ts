@@ -1,10 +1,11 @@
-import { BooleanInput, GameInstance, GameObject, SATCollider, ValueInput, Vector2D } from "framework";
+import { BooleanInput, ExtraMath, GameInstance, GameObject, SATCollider, ValueInput, Vector2D } from "framework";
 
 import { Body } from "./Body.ts";
 import { Board } from "./Board.ts";
 import { PlayerState } from "./states/PlayerState.ts";
 import { GroundState } from "./states/GroundState.ts";
 import { Shadow } from "./Shadow.ts";
+import { DebugStats } from "../ui/DebugStats.ts";
 
 export class Player extends GameObject {
     public override get Name() { return "Player"; }
@@ -37,6 +38,11 @@ export class Player extends GameObject {
     
     protected override update(deltaTime: number): void {
         this.state.update(deltaTime);
+
+        DebugStats.instance.updateStat("position", `(${this.Transform.WorldPosition.x.toFixed(2)}, ${this.Transform.WorldPosition.y.toFixed(2)})`);
+        DebugStats.instance.updateStat("velocity", `(${this.Velocity.x.toFixed(2)}, ${this.Velocity.y.toFixed(2)})`);
+        DebugStats.instance.updateStat("rotation", `${ExtraMath.radToDeg(this.Transform.Rotation).toFixed(2)}°`);
+        DebugStats.instance.updateStat("height", this.Height.toFixed(2));
 
         this.Transform.Scale = new Vector2D(1, 1).multiply(1 + (this.height * 0.5));
     }

@@ -35,4 +35,7 @@ export { LayerManager } from './rendering/LayerManager.ts';
 
 // Re-export UI Kit
 export { UIElement } from './uikit/UIElement.ts';
-export { UIText } from './uikit/UIText.ts';
+export { UIText } from './uikit/text/UIText.ts';
+export { BitmapUIText } from './uikit/text/BitmapUIText.ts';
+export { UITransform } from './UITransform.ts';
+export type { UITransformOptions } from './UITransform.ts';

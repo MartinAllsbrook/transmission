@@ -22,8 +22,8 @@ export class UITransform extends Transform {
     constructor(parent?: Transform, options?: UITransformOptions) {
         super(parent, options);
 
-        this.pivot = options?.pivot || new Vector2D(0.5, 0.5);
-        this.anchor = options?.anchor || new Vector2D(0.5, 0.5);
+        this.pivot = options?.pivot || new Vector2D(0, 0);
+        this.anchor = options?.anchor || new Vector2D(0, 0);
         this.size = options?.size || new Vector2D(128, 128);
     }
 
