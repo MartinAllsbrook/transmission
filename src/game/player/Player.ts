@@ -1,4 +1,4 @@
-import { BooleanInput, ExtraMath, GameInstance, GameObject, SATCollider, ValueInput, Vector2D } from "framework";
+import { BooleanInput, CircleCollider, ExtraMath, GameInstance, GameObject, SATCollider, ValueInput, Vector2D } from "framework";
 
 import { Body } from "./Body.ts";
 import { Board } from "./Board.ts";
@@ -30,9 +30,11 @@ export class Player extends GameObject {
     private velocity: Vector2D = new Vector2D(0, 0);
     private rotationSpeed: number = 0;
     private shiftyAngle: number = 0;
-
     private height: number = 0;
     private deltaHeight: number = 0;
+
+    // Near Miss Collider
+    private nearMissCollider: CircleCollider = new CircleCollider(this, { layer: "player", radius: 60 });
 
     protected override start(): void {
         this.root.Camera.setParent(this);
@@ -70,7 +72,13 @@ export class Player extends GameObject {
         this.state.enter();
     }
 
-    //#region Collision Handling
+    //#region Near Miss Collision Handling
+
+
+
+    //#endregion
+
+    //#region Board Collision Handling
 
     public onCollisionEnter(other: SATCollider): void {
         if (other.layer === "obstacle") {

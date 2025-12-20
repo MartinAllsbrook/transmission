@@ -2,6 +2,8 @@ import { ExtraMath, GameObject, GameRoot, Vector2D } from "framework";
 import { TrickFeedbackText } from "../ui/tricks/TrickFeedbackText.ts";
 import { TrickPrecisionText } from "../ui/tricks/TrickPrecisionText.ts";
 
+type TrickPrecision = "Perfect" | "Great" | "Good" | "Okay" | "Poor";
+
 export class TrickManager extends GameObject{
     public override get Name() { return "TrickManager"; }
 
@@ -40,17 +42,7 @@ export class TrickManager extends GameObject{
         // Slip
         const slip = this.calculateSlip(angle, heading);
 
-        if (slip > 45) {
-            this.precision("Poor", " Takeoff");
-        } else if (slip > 30) {
-            this.precision("Okay", " Takeoff");
-        } else if (slip > 15) {
-            this.precision("Good", " Takeoff");
-        } else if (slip > 5) {
-            this.precision("Great", " Takeoff");
-        } else {
-            this.precision("Perfect", " Takeoff");
-        }
+        this.precision(this.determinePrecision(slip), " Takeoff");
 
         this.enterAirSlip = slip;
     }
@@ -108,20 +100,7 @@ export class TrickManager extends GameObject{
             trickText += "Air ";
         }
 
-        if (slip > 45) {
-            this.precision("Poor", " Landing");
-        } else if (slip > 30) {
-            this.precision("Okay", " Landing");
-        } else if (slip > 15) {
-            this.precision("Good", " Landing");
-        } else if (slip > 5) {
-            this.precision("Great", " Landing");
-        } else {
-            this.precision("Perfect", " Landing");
-        }
-
-        console.log(`Landing slip: ${slip.toFixed(2)}°`);
-
+        this.precision(this.determinePrecision(slip), " Landing");
         this.trick(trickText);
 
         // Reset values
@@ -140,7 +119,23 @@ export class TrickManager extends GameObject{
         return Math.abs(slip);
     }
 
-    private precision(precision: "Perfect" | "Great" | "Good" | "Okay" | "Poor", text: string): void {
+    private determinePrecision(slip: number): TrickPrecision {
+        slip = Math.abs(slip);
+        if (slip > 45) {
+            return "Poor";
+        } else if (slip > 30) {
+            return "Okay";
+        } else if (slip > 15) {
+            return "Good";
+        } else if (slip > 5) {
+            return "Great";
+        } else {
+            return "Perfect";
+        }
+        
+    }
+
+    private precision(precision: TrickPrecision, text: string): void {
         new TrickPrecisionText(this, this.root, precision, text);
     }
 
