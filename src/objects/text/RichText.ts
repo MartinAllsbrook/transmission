@@ -7,7 +7,12 @@ export class RichText extends GameObject {
     private textSprite?: Text;
     private anchor: { x: number; y: number };
 
-    constructor(parent: GameObject, content: string, style: TextStyle = new TextStyle(), anchor: { x: number; y: number } = { x: 0, y: 1 }) {
+    constructor(
+        parent: GameObject,
+        content: string,
+        style: TextStyle = new TextStyle(),
+        anchor: { x: number; y: number } = { x: 0, y: 1 },
+    ) {
         super(parent);
 
         const defaultStyleOptions = {
@@ -19,10 +24,9 @@ export class RichText extends GameObject {
         this.content = content;
         this.style = new TextStyle({
             ...style,
-            ...defaultStyleOptions
+            ...defaultStyleOptions,
         });
         this.anchor = anchor;
-
     }
 
     protected override async createOwnSprites(): Promise<void> {
@@ -31,7 +35,7 @@ export class RichText extends GameObject {
             text: this.content,
             anchor: this.anchor,
         });
-    
+
         this.container.addChild(this.textSprite);
 
         return await Promise.resolve(); // Ensure async context

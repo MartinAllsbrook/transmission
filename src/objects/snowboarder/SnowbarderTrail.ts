@@ -1,4 +1,4 @@
-import { Vector2D, GameObject, LayerManager } from "framework";
+import { GameObject, LayerManager, Vector2D } from "framework";
 import { Container, Graphics } from "pixi.js";
 
 interface TrailSegment {

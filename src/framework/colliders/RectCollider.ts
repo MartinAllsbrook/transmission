@@ -23,7 +23,7 @@ export class RectCollider extends SATCollider {
 
     constructor(
         host: GameObject,
-        opitions: RectColliderOptions = {}
+        opitions: RectColliderOptions = {},
     ) {
         super(host, opitions.layer, opitions.position);
 

@@ -1,13 +1,19 @@
-import { RectCollider, Vector2D, GameObject } from "framework";
+import { GameObject, RectCollider, Vector2D } from "framework";
 
 export class Rail extends GameObject {
     private length: number = 256;
-    private wdith: number  = 32;
+    private wdith: number = 32;
 
     private relativeStart: Vector2D = new Vector2D(0, -this.length / 2);
     private relativeEnd: Vector2D = new Vector2D(0, this.length / 2);
 
-    private collider: RectCollider = new RectCollider(this, new Vector2D(0, 0), new Vector2D(this.wdith, this.length), true, "rail");
+    private collider: RectCollider = new RectCollider(
+        this,
+        new Vector2D(0, 0),
+        new Vector2D(this.wdith, this.length),
+        true,
+        "rail",
+    );
 
     constructor(parent: GameObject, position: Vector2D) {
         super(parent, position);
@@ -27,8 +33,8 @@ export class Rail extends GameObject {
 
     protected override async createOwnSprites(): Promise<void> {
         await this.loadSprite("/features/Tube.png", {
-            scale: new Vector2D(2, 4)
-        })
+            scale: new Vector2D(2, 4),
+        });
         return await super.createOwnSprites();
     }
 

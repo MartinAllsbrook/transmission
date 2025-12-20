@@ -4,8 +4,12 @@ import { Text } from "pixi.js";
 import { Vector2D } from "../../../framework/math/Vector2D.ts";
 
 export class TrickPrecisionText extends GameObject {
-    public override get Name(): string { return "TrickFeedbackText"; }
-    public override get layer(): string { return "ui"; }
+    public override get Name(): string {
+        return "TrickFeedbackText";
+    }
+    public override get layer(): string {
+        return "ui";
+    }
 
     private textElement: Text;
 
@@ -22,14 +26,14 @@ export class TrickPrecisionText extends GameObject {
             position: new Vector2D(0, -100),
         });
 
-        this.textElement = new Text()
+        this.textElement = new Text();
         this.textElement.anchor.set(0.5);
         this.textElement.style.fontFamily = "Arial";
         this.textElement.style.fontSize = 32;
         this.textElement.style.fontWeight = "bold";
         this.textElement.style.fontStyle = "italic";
 
-        switch(precision) {
+        switch (precision) {
             case "Perfect":
                 this.textElement.style.fill = "#FF00FF"; // Magenta
                 break;
@@ -52,11 +56,13 @@ export class TrickPrecisionText extends GameObject {
         this.textElement.text = precision + extraText;
 
         this.addGraphics(this.textElement);
-
     }
 
     protected override update(deltaTime: number): void {
-        this.Transform.Position = new Vector2D(0, -100 - (200 * (this.timeAlive / this.lifetime)));
+        this.Transform.Position = new Vector2D(
+            0,
+            -100 - (200 * (this.timeAlive / this.lifetime)),
+        );
         this.textElement.alpha = 1 - (this.timeAlive / this.lifetime);
 
         this.timeAlive += deltaTime;

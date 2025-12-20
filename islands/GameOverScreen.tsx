@@ -9,10 +9,11 @@ interface GameOverScreenProps {
 export class GameOverScreen extends Component<GameOverScreenProps> {
     constructor(props: GameOverScreenProps) {
         super(props);
-    
+
         InputManager.getInput("restart")?.subscribe((value) => {
-            if (value)
+            if (value) {
                 this.props.onRestart();
+            }
         });
     }
 
@@ -21,7 +22,9 @@ export class GameOverScreen extends Component<GameOverScreenProps> {
             <div class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black bg-opacity-75 text-white">
                 <h1 class="mb-4 text-4xl font-bold">Game Over</h1>
                 {this.props.deathMessage && (
-                    <p class="mb-4 text-center text-lg">{this.props.deathMessage}</p>
+                    <p class="mb-4 text-center text-lg">
+                        {this.props.deathMessage}
+                    </p>
                 )}
                 <button
                     type="button"

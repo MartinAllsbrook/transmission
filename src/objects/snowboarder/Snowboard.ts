@@ -1,20 +1,18 @@
-import { RectCollider, Vector2D, GameObject } from "framework";
+import { GameObject, RectCollider, Vector2D } from "framework";
 import { SnowboarderTrail } from "./SnowbarderTrail.ts";
-import { Snowboarder } from "./Snowboarder.ts"
+import { Snowboarder } from "./Snowboarder.ts";
 
 export class Snowboard extends GameObject {
     private snowboarder: Snowboarder;
 
     private lerpSpeed: number = 5; // Adjust this to control how fast the board
 
-
     constructor(parent: Snowboarder) {
         super(parent);
         this.container.label = "Snowboard";
-        
+
         this.snowboarder = parent;
         this.setupCollider();
-
     }
 
     public override update(deltaTime: number): void {
@@ -27,7 +25,9 @@ export class Snowboard extends GameObject {
 
         SnowboarderTrail.instance?.addTrailPoint(
             this.WorldPosition,
-            Vector2D.fromAngle(this.WorldRotation * (Math.PI / 180) - Math.PI / 2),
+            Vector2D.fromAngle(
+                this.WorldRotation * (Math.PI / 180) - Math.PI / 2,
+            ),
         );
     }
 

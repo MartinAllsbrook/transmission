@@ -1,11 +1,10 @@
 /**
  * A utility class providing additional mathematical functions.
- * 
+ *
  * @remarks
  * The `ExtraMath` class includes static methods for common mathematical operations
  * such as linear interpolation, with both standard and safe (clamped) variants.
  */
-
 
 export class ExtraMath {
     /**
@@ -54,7 +53,11 @@ export class ExtraMath {
      * @param findLarger - If true, returns the larger difference; otherwise, returns the smaller (default: false).
      * @returns The angle difference in degrees (always positive).
      */
-    public static angleDifference(angle1: number, angle2: number, findLarger: boolean = false): number {
+    public static angleDifference(
+        angle1: number,
+        angle2: number,
+        findLarger: boolean = false,
+    ): number {
         // Normalize angles to [0, 360)
         const a1 = ((angle1 % 360) + 360) % 360;
         const a2 = ((angle2 % 360) + 360) % 360;
@@ -84,15 +87,15 @@ export class ExtraMath {
         const u = Math.random();
         const v = Math.random();
         const z = Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
-        
+
         // Scale and translate: mean = 0.5, standard deviation ≈ 0.15
         // This ensures most values (≈99.7%) fall within [0, 1]
         const scaled = 0.5 + z * 0.15;
-        
+
         // Clamp to [0, 1] range
         return Math.max(0, Math.min(1, scaled));
     }
-    
+
     /**
      * Clamps a number to be within the specified range [min, max].
      *

@@ -4,8 +4,10 @@ import { TrickPrecisionText } from "../ui/tricks/TrickPrecisionText.ts";
 
 type TrickPrecision = "Perfect" | "Great" | "Good" | "Okay" | "Poor";
 
-export class TrickManager extends GameObject{
-    public override get Name() { return "TrickManager"; }
+export class TrickManager extends GameObject {
+    public override get Name() {
+        return "TrickManager";
+    }
 
     // private testText: TrickFeedbackText = new TrickFeedbackText(this, this.root, "Test Trick!");
 
@@ -64,7 +66,7 @@ export class TrickManager extends GameObject{
         // Airtime
         if (airtime >= 1400) {
             trickText += "Massive ";
-        }else if (airtime >= 1100) {
+        } else if (airtime >= 1100) {
             trickText += "Huge ";
         } else if (airtime >= 800) {
             trickText += "Big ";
@@ -110,7 +112,9 @@ export class TrickManager extends GameObject{
     }
 
     private isSwitch(boardRotation: number, heading: number): boolean {
-        return Math.abs(ExtraMath.angleDifference(boardRotation % 360, heading)) > 90
+        return Math.abs(
+            ExtraMath.angleDifference(boardRotation % 360, heading),
+        ) > 90;
     }
 
     private calculateSlip(boardRotation: number, heading: number): number {
@@ -132,7 +136,6 @@ export class TrickManager extends GameObject{
         } else {
             return "Perfect";
         }
-        
     }
 
     private precision(precision: TrickPrecision, text: string): void {

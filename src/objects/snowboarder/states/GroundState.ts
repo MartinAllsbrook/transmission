@@ -1,5 +1,5 @@
 import Game from "islands/Game.tsx";
-import { SATCollider, ExtraMath, Vector2D } from "framework";
+import { ExtraMath, SATCollider, Vector2D } from "framework";
 import { PlayerState, StateName } from "./PlayerState.ts";
 
 export class GroundState extends PlayerState {
@@ -8,8 +8,8 @@ export class GroundState extends PlayerState {
     public override enter(): void {
         this.switchToGroundShifty();
         this.tricksManager.endSpin(
-            this.board.WorldRotation, 
-            this.velocity.heading() * 180 / Math.PI
+            this.board.WorldRotation,
+            this.velocity.heading() * 180 / Math.PI,
         );
     }
 
@@ -17,33 +17,35 @@ export class GroundState extends PlayerState {
         // Rotation of the root object now matches the board
         this.player.Rotation = this.board.WorldRotation;
 
-        // Rotation of the body is now offset to match the now flipped shifty. 90 is for the base stance of the body 
-        this.body.Rotation = (this.shiftyAngle * -1) + 90; 
+        // Rotation of the body is now offset to match the now flipped shifty. 90 is for the base stance of the body
+        this.body.Rotation = (this.shiftyAngle * -1) + 90;
 
         // Reset board rotation because it is now handled by the root object
-        this.board.Rotation = 0; 
+        this.board.Rotation = 0;
     }
 
     // #region Update
 
     protected override shiftyUpdate(deltaTime: number): void {
-        this.shiftyTargetAngle = this.inputs.shifty * this.config.shiftyMaxAngle;
+        this.shiftyTargetAngle = this.inputs.shifty *
+            this.config.shiftyMaxAngle;
         this.shiftyAngle = ExtraMath.lerpSafe(
-            this.shiftyAngle, 
-            this.shiftyTargetAngle, 
-            this.config.shiftyLerpSpeed * deltaTime
+            this.shiftyAngle,
+            this.shiftyTargetAngle,
+            this.config.shiftyLerpSpeed * deltaTime,
         );
-        
+
         this.body.Rotation = (this.shiftyAngle * -1) + 90; // Flip for goofy
     }
 
     protected override physicsUpdate(deltaTime: number): void {
         // Apply gravity
-        this.velocity.y += this.config.gravityStrength * deltaTime
+        this.velocity.y += this.config.gravityStrength * deltaTime;
 
         // Rotate
-        this.deltaRotation += (this.inputs.turn - this.deltaRotation) * deltaTime * 10;
-        
+        this.deltaRotation += (this.inputs.turn - this.deltaRotation) *
+            deltaTime * 10;
+
         const radians = (this.board.WorldRotation) * (Math.PI / 180);
 
         // Normal force
@@ -52,15 +54,21 @@ export class GroundState extends PlayerState {
         const projected = direction.projectOnto(forward);
         const normal = projected.subtract(direction);
 
-        const strength = Math.pow((1 - normal.magnitude()), 2) * 0.25 + 1;
-        const normalDirection = projected.subtract(direction).normalize().multiply(strength);
+        const strength = Math.pow(1 - normal.magnitude(), 2) * 0.25 + 1;
+        const normalDirection = projected.subtract(direction).normalize()
+            .multiply(strength);
 
-        this.velocity = this.velocity.add(normalDirection.multiply(deltaTime * this.config.slipStrength));
+        this.velocity = this.velocity.add(
+            normalDirection.multiply(deltaTime * this.config.slipStrength),
+        );
 
         // Friction
-        this.velocity = this.velocity.multiply(1 - this.config.frictionStrength * deltaTime);
+        this.velocity = this.velocity.multiply(
+            1 - this.config.frictionStrength * deltaTime,
+        );
 
-        this.player.Rotation += this.deltaRotation * deltaTime * this.config.rotationSpeed;
+        this.player.Rotation += this.deltaRotation * deltaTime *
+            this.config.rotationSpeed;
 
         // Update position
         this.player.PhysicalPosition.set(

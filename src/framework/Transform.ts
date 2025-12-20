@@ -8,7 +8,9 @@ export interface TransformOptions {
 
 export class Transform {
     protected parent?: Transform;
-    public get isUI(): boolean { return false; }
+    public get isUI(): boolean {
+        return false;
+    }
 
     protected position: Vector2D;
     protected rotation: number; // radians
@@ -22,12 +24,12 @@ export class Transform {
         this.scale = options?.scale || new Vector2D(1, 1);
     }
 
-    setParent(parent: Transform) { 
+    setParent(parent: Transform) {
         this.parent = parent;
     }
 
     //#region Position
-    
+
     public get Position(): Vector2D {
         return this.position.clone();
     }
@@ -60,11 +62,10 @@ export class Transform {
         return this.rotation;
     }
 
-    
     public set Rotation(value: number) {
         this.rotation = value;
     }
-    
+
     public get Forward(): Vector2D {
         return Vector2D.fromAngle(this.rotation);
     }
@@ -113,7 +114,7 @@ export class Transform {
         if (this.parent) {
             return new Vector2D(
                 this.parent.WorldScale.x * this.scale.x,
-                this.parent.WorldScale.y * this.scale.y
+                this.parent.WorldScale.y * this.scale.y,
             );
         } else {
             return this.Scale;
@@ -124,7 +125,7 @@ export class Transform {
         if (this.parent) {
             this.scale = new Vector2D(
                 value.x / this.parent.WorldScale.x,
-                value.y / this.parent.WorldScale.y
+                value.y / this.parent.WorldScale.y,
             );
         } else {
             this.scale = value.clone();

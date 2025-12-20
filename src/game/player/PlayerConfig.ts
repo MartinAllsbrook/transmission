@@ -8,7 +8,7 @@ export interface PlayerConfig {
     frictionStrength: number;
     gravityStrength: number;
     slipStrength: number;
-    
+
     // Rotation
     rotationSpeed: number;
     rotationStrength: number;
@@ -25,14 +25,13 @@ export interface PlayerConfig {
     railCorrectionStrength: number;
 }
 
-
 export const PLAYER_CONFIG: Readonly<PlayerConfig> = {
     startPosition: new Vector2D(128, 128),
 
     frictionStrength: 0.1, // Raising this lowers top speed (max 1)
     gravityStrength: 140, // Raising this value makes the game feel faster
     slipStrength: 325, // Raising this value makes turning more responsive
-    
+
     rotationSpeed: 250,
     rotationStrength: 10,
 

@@ -9,8 +9,8 @@ export class ScoreText extends RichText {
             fontSize: 64,
             fill: "#ffd700",
             fontWeight: "bold",
-        })
-        
+        });
+
         super(parent, content, style);
         this.container.label = "ScoreText";
     }

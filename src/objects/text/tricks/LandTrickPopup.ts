@@ -4,11 +4,14 @@ import { RichText } from "../RichText.ts";
 
 export type TrickExecution = "Poor" | "Okay" | "Good" | "Perfect";
 
-
 export class LandTrickPopup extends RichText {
-    constructor(parent: GameObject, content: TrickExecution, duration: number = 1.25){
+    constructor(
+        parent: GameObject,
+        content: TrickExecution,
+        duration: number = 1.25,
+    ) {
         let color: string;
-        switch(content) {
+        switch (content) {
             case "Poor":
                 color = "#ff0000"; // Red
                 break;
@@ -19,18 +22,23 @@ export class LandTrickPopup extends RichText {
                 color = "#00ff00"; // Green
                 break;
             case "Perfect":
-                color = "#ff00ff"; // Magenta  
+                color = "#ff00ff"; // Magenta
                 break;
             default:
                 color = "#ffffff"; // White
         }
 
-        super(parent, content, new TextStyle({
-            fontSize: 30,
-            fontWeight: "bold",
-            fontStyle: "italic",
-            fill: color,
-        }), { x: 0.5, y: 0.5 } );
+        super(
+            parent,
+            content,
+            new TextStyle({
+                fontSize: 30,
+                fontWeight: "bold",
+                fontStyle: "italic",
+                fill: color,
+            }),
+            { x: 0.5, y: 0.5 },
+        );
 
         setTimeout(() => this.destroy(), duration * 1000);
     }

@@ -14,8 +14,12 @@ import { CircleColliderOptions } from "./colliders/CircleCollider.ts";
 export abstract class GameObject {
     // Settings basically
     public abstract get Name(): string;
-    public get layer(): string { return "default"; }
-    public get isUI(): boolean { return false; }
+    public get layer(): string {
+        return "default";
+    }
+    public get isUI(): boolean {
+        return false;
+    }
 
     protected parent: GameObject | GameRoot;
     protected root: GameRoot;
@@ -32,7 +36,7 @@ export abstract class GameObject {
     constructor(
         parent: GameObject | GameRoot,
         root: GameRoot,
-        transformOptions?: TransformOptions
+        transformOptions?: TransformOptions,
     ) {
         this.parent = parent;
         this.root = root;
@@ -64,7 +68,7 @@ export abstract class GameObject {
         this.syncTransform();
 
         this.update(deltaTime);
-        
+
         for (const child of this.children) {
             child.baseUpdate(deltaTime);
         }
@@ -75,7 +79,6 @@ export abstract class GameObject {
      * @param deltaTime Time in milliseconds since the last frame.
      */
     protected update(_deltaTime: number): void {}
-
 
     public baseReset(): void {
         this.reset();
@@ -95,13 +98,13 @@ export abstract class GameObject {
      */
     private syncTransform() {
         this.container.position.set(
-            this.transform.WorldPosition.x, 
-            this.transform.WorldPosition.y
+            this.transform.WorldPosition.x,
+            this.transform.WorldPosition.y,
         );
         this.container.rotation = this.transform.WorldRotation;
         this.container.scale.set(
-            this.transform.WorldScale.x, 
-            this.transform.WorldScale.y
+            this.transform.WorldScale.x,
+            this.transform.WorldScale.y,
         );
     }
 
@@ -122,7 +125,9 @@ export abstract class GameObject {
         if (index > -1) {
             this.children.splice(index, 1);
         } else {
-            console.warn("Attempted to remove a child that does not exist on this parent.");
+            console.warn(
+                "Attempted to remove a child that does not exist on this parent.",
+            );
         }
     }
 
@@ -159,56 +164,66 @@ export abstract class GameObject {
         makeChild?: boolean;
     }): Promise<Sprite> {
         if (options === undefined) options = {};
-        
+
         const texture = await Assets.load(url);
-        texture.source.scaleMode = options.scaleMode ? options.scaleMode : "nearest";
+        texture.source.scaleMode = options.scaleMode
+            ? options.scaleMode
+            : "nearest";
 
         const sprite = new Sprite(texture);
-        
+
         // Anchor point
-        if (options.anchor) 
+        if (options.anchor) {
             sprite.anchor.set(options.anchor.x, options.anchor.y);
-        else 
+        } else {
             sprite.anchor.set(0.5, 0.5);
-        
+        }
+
         // Scale
-        if (options.scale)
+        if (options.scale) {
             sprite.scale.set(options.scale.x, options.scale.y);
-        
+        }
+
         // Rotation
-        if (options.rotation)
+        if (options.rotation) {
             sprite.rotation = options.rotation * (Math.PI / 180);
+        }
 
         // Position
-        if (options.position)
+        if (options.position) {
             sprite.position.set(options.position.x, options.position.y);
+        }
 
         // Layer
-        if (options.layer) 
+        if (options.layer) {
             LayerManager.getLayer(options.layer)?.attach(sprite);
-        else 
+        } else {
             LayerManager.getLayer(this.layer)?.attach(sprite);
-        
-        // Z-Index
-        if (options.zIndex !== undefined)
-            sprite.zIndex = options.zIndex;
+        }
 
-        if (options.makeChild === undefined || options.makeChild)
+        // Z-Index
+        if (options.zIndex !== undefined) {
+            sprite.zIndex = options.zIndex;
+        }
+
+        if (options.makeChild === undefined || options.makeChild) {
             this.container.addChild(sprite);
+        }
 
         return sprite;
     }
 
     addGraphics(graphics: Container, options?: {
-        layer?: string,
+        layer?: string;
     }): void {
         if (options === undefined) options = {};
 
         // Layer
-        if (options.layer) 
+        if (options.layer) {
             LayerManager.getLayer(options.layer)?.attach(graphics);
-        else 
+        } else {
             LayerManager.getLayer(this.layer)?.attach(graphics);
+        }
 
         graphics.pivot.set(0.5, 0.5);
 

@@ -1,17 +1,22 @@
-import { ParticleContainer, Particle, Assets, IRenderLayer } from 'pixi.js';
-import { Vector2D, GameObject } from "framework";
+import { Assets, IRenderLayer, Particle, ParticleContainer } from "pixi.js";
+import { GameObject, Vector2D } from "framework";
 
 interface SnowParticle {
     particle: Particle;
     phaseOffset: number;
 }
 
-export class SnowParticles extends GameObject{
+export class SnowParticles extends GameObject {
     private particles: SnowParticle[] = [];
     private size: number;
     private layer?: IRenderLayer;
 
-    constructor(parent: GameObject, size: number, position: Vector2D, layer?: IRenderLayer){
+    constructor(
+        parent: GameObject,
+        size: number,
+        position: Vector2D,
+        layer?: IRenderLayer,
+    ) {
         super(parent, position);
         this.size = size;
         this.layer = layer;
@@ -19,7 +24,7 @@ export class SnowParticles extends GameObject{
 
     protected override async createOwnSprites(): Promise<void> {
         this.layer?.attach(this.container);
-        
+
         // Create a particle container with default options
         const container = new ParticleContainer({
             dynamicProperties: {
@@ -29,22 +34,22 @@ export class SnowParticles extends GameObject{
                 color: false, // Static color
             },
         });
-        
+
         // Add particles
         const texture = await Assets.load("/Snowflake.png");
-        
+
         for (let i = 0; i < 100; ++i) {
             const particle = new Particle({
                 texture,
                 x: Math.random() * this.size,
                 y: Math.random() * this.size,
             });
-            
+
             const snowParticle: SnowParticle = {
                 particle,
-                phaseOffset: Math.random() * Math.PI * 2 // Random phase offset between 0 and 2π
+                phaseOffset: Math.random() * Math.PI * 2, // Random phase offset between 0 and 2π
             };
-            
+
             this.particles.push(snowParticle);
 
             container.addParticle(particle);
@@ -58,7 +63,7 @@ export class SnowParticles extends GameObject{
 
     public override update(_deltaTime: number): void {
         const time = Date.now() / 1000;
-        
+
         for (const snowParticle of this.particles) {
             const a = time + snowParticle.phaseOffset;
             snowParticle.particle.x += (Math.cos(a)) * 0.1;

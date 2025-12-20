@@ -8,13 +8,13 @@ import { TricksManager } from "../TricksManager.ts";
 export type StateName = "ground" | "air" | "rail";
 
 export interface SnowboarderInfo {
-    player: Snowboarder, 
-    body: Body, 
-    head: Head, 
-    board: Snowboard,
-    tricksManager: TricksManager,
-    inputs: PlayerInputs,
-    config: PlayerConfig
+    player: Snowboarder;
+    body: Body;
+    head: Head;
+    board: Snowboard;
+    tricksManager: TricksManager;
+    inputs: PlayerInputs;
+    config: PlayerConfig;
 }
 
 export interface SharedStateData {
@@ -40,7 +40,10 @@ export abstract class PlayerState {
     protected deltaHeight: number;
     protected deltaRotation: number;
 
-    constructor(snowboarderInfo: SnowboarderInfo, sharedStateData?: SharedStateData) {
+    constructor(
+        snowboarderInfo: SnowboarderInfo,
+        sharedStateData?: SharedStateData,
+    ) {
         this.player = snowboarderInfo.player;
         this.body = snowboarderInfo.body;
         this.head = snowboarderInfo.head;
@@ -56,7 +59,7 @@ export abstract class PlayerState {
                 shiftyTargetAngle: 0,
                 deltaHeight: 0,
                 deltaRotation: 0,
-            }
+            };
         }
 
         this.velocity = sharedStateData.velocity;
@@ -67,20 +70,19 @@ export abstract class PlayerState {
     }
 
     public abstract enter(): void;
-    
+
     public update(deltaTime: number): void {
         this.shiftyUpdate(deltaTime);
         this.physicsUpdate(deltaTime);
 
         const newState = this.checkTransitions();
         if (newState) this.player.State = newState;
-        
     }
-    
-    protected abstract shiftyUpdate(deltaTime: number): void
-    
-    protected abstract physicsUpdate(deltaTime: number): void 
-    
+
+    protected abstract shiftyUpdate(deltaTime: number): void;
+
+    protected abstract physicsUpdate(deltaTime: number): void;
+
     protected abstract checkTransitions(): StateName | void;
 
     public onCollisionEnter(_other: SATCollider): void {}

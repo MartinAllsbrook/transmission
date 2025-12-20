@@ -4,7 +4,9 @@ import { BitmapFontInstallOptions, BitmapText } from "pixi.js";
 import { BitmapTextManager } from "./BitmapTextManager.ts";
 
 export class BitmapUIText extends UIElement {
-    public override get Name(): string { return "BitmapUIText"; }
+    public override get Name(): string {
+        return "BitmapUIText";
+    }
 
     private text: string = "";
     private textSprite: BitmapText;
@@ -20,17 +22,17 @@ export class BitmapUIText extends UIElement {
         if (!textOptions || !textOptions.style || !textOptions.name) {
             textOptions = {
                 name: "Default",
-                style: {    
+                style: {
                     fontFamily: "Arial",
                     fontSize: 12,
                     fill: "#000000",
-                }
+                },
             };
-        } 
+        }
 
         BitmapTextManager.installFont(textOptions);
 
-        this.textSprite = new BitmapText({...textOptions});
+        this.textSprite = new BitmapText({ ...textOptions });
 
         this.addGraphics(this.textSprite);
     }

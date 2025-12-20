@@ -17,7 +17,7 @@ export class GameRoot {
 
         this.world = new Container();
         this.stage.addChild(this.world);
-        
+
         this.ui = new Container();
         this.stage.addChild(this.ui);
 
@@ -44,19 +44,19 @@ export class GameRoot {
     private syncWorldToCamera() {
         this.world.position.set(
             -this.camera.Transform.WorldPosition.x + globalThis.innerWidth / 2,
-            -this.camera.Transform.WorldPosition.y + globalThis.innerHeight / 2
-        )
+            -this.camera.Transform.WorldPosition.y + globalThis.innerHeight / 2,
+        );
         this.world.rotation = -this.camera.Transform.Rotation;
         this.world.scale.set(
             1 / this.camera.Transform.Scale.x,
-            1 / this.camera.Transform.Scale.y
+            1 / this.camera.Transform.Scale.y,
         );
     }
 
     public setActiveCamera(camera: Camera) {
         this.camera = camera;
     }
-    
+
     public addChild(child: GameObject) {
         this.children.push(child);
     }
@@ -66,7 +66,9 @@ export class GameRoot {
         if (index > -1) {
             this.children.splice(index, 1);
         } else {
-            console.warn("Attempted to remove a child that does not exist on the GameRoot.");
+            console.warn(
+                "Attempted to remove a child that does not exist on the GameRoot.",
+            );
         }
     }
 

@@ -7,7 +7,7 @@ import { Vector2D } from "../Vector2D.ts";
  * The spline passes through the 2nd to 2nd-to-last control points only.
  * Requires a minimum of 4 control points for predictable behavior.
  * The first and last control points define the tangents but the curve doesn't pass through them.
- * 
+ *
  * Tension Parameter:
  * - 0.0: Tight curves, more angular transitions
  * - 0.5: Standard Catmull-Rom spline (recommended)
@@ -25,7 +25,9 @@ export class CatmullRomSpline {
      */
     constructor(controlPoints: Vector2D[] = [], tension: number = 0.5) {
         if (controlPoints.length > 0 && controlPoints.length < 4) {
-            throw new Error("CatmullRomSpline requires at least 4 control points for explicit behavior");
+            throw new Error(
+                "CatmullRomSpline requires at least 4 control points for explicit behavior",
+            );
         }
         this.controlPoints = [...controlPoints];
         this.tension = Math.max(0, Math.min(1, tension)); // Clamp tension between 0 and 1
@@ -46,7 +48,9 @@ export class CatmullRomSpline {
      */
     public popPoint(): boolean {
         if (this.controlPoints.length <= 4) {
-            throw new Error("Cannot remove control point: CatmullRomSpline requires at least 4 control points");
+            throw new Error(
+                "Cannot remove control point: CatmullRomSpline requires at least 4 control points",
+            );
         }
         this.controlPoints.pop();
         return true;
@@ -59,7 +63,9 @@ export class CatmullRomSpline {
      */
     public shiftPoint(): boolean {
         if (this.controlPoints.length <= 4) {
-            throw new Error("Cannot remove control point: CatmullRomSpline requires at least 4 control points");
+            throw new Error(
+                "Cannot remove control point: CatmullRomSpline requires at least 4 control points",
+            );
         }
         this.controlPoints.shift();
         return true;
@@ -84,10 +90,16 @@ export class CatmullRomSpline {
      */
     public removeControlPoint(index: number): boolean {
         if (index < 0 || index >= this.controlPoints.length) {
-            throw new Error(`Invalid index ${index}: must be between 0 and ${this.controlPoints.length - 1}`);
+            throw new Error(
+                `Invalid index ${index}: must be between 0 and ${
+                    this.controlPoints.length - 1
+                }`,
+            );
         }
         if (this.controlPoints.length <= 4) {
-            throw new Error("Cannot remove control point: CatmullRomSpline requires at least 4 control points");
+            throw new Error(
+                "Cannot remove control point: CatmullRomSpline requires at least 4 control points",
+            );
         }
         this.controlPoints.splice(index, 1);
         return true;
@@ -110,7 +122,7 @@ export class CatmullRomSpline {
         if (index >= 0 && index < this.controlPoints.length) {
             return new Vector2D(
                 this.controlPoints[index].x,
-                this.controlPoints[index].y
+                this.controlPoints[index].y,
             );
         }
         return null;
@@ -143,7 +155,9 @@ export class CatmullRomSpline {
      * @returns A copy of all control points
      */
     public getControlPoints(): Vector2D[] {
-        return this.controlPoints.map(point => new Vector2D(point.x, point.y));
+        return this.controlPoints.map((point) =>
+            new Vector2D(point.x, point.y)
+        );
     }
 
     /**
@@ -196,20 +210,31 @@ export class CatmullRomSpline {
         if (this.controlPoints.length < 4) {
             return [];
         }
-        return this.controlPoints.slice(1, -1).map(point => new Vector2D(point.x, point.y));
+        return this.controlPoints.slice(1, -1).map((point) =>
+            new Vector2D(point.x, point.y)
+        );
     }
 
     /**
      * Get the tangent control points (first and last control points)
      * @returns Object with start and end tangent control points
      */
-    public getTangentControlPoints(): { start: Vector2D | null; end: Vector2D | null } {
+    public getTangentControlPoints(): {
+        start: Vector2D | null;
+        end: Vector2D | null;
+    } {
         if (this.controlPoints.length < 4) {
             return { start: null, end: null };
         }
         return {
-            start: new Vector2D(this.controlPoints[0].x, this.controlPoints[0].y),
-            end: new Vector2D(this.controlPoints[this.controlPoints.length - 1].x, this.controlPoints[this.controlPoints.length - 1].y)
+            start: new Vector2D(
+                this.controlPoints[0].x,
+                this.controlPoints[0].y,
+            ),
+            end: new Vector2D(
+                this.controlPoints[this.controlPoints.length - 1].x,
+                this.controlPoints[this.controlPoints.length - 1].y,
+            ),
         };
     }
 
@@ -243,7 +268,10 @@ export class CatmullRomSpline {
      * @returns True if the point was successfully removed, false if invalid or insufficient points
      */
     public tryRemoveControlPoint(index: number): boolean {
-        if (index < 0 || index >= this.controlPoints.length || this.controlPoints.length <= 4) {
+        if (
+            index < 0 || index >= this.controlPoints.length ||
+            this.controlPoints.length <= 4
+        ) {
             return false;
         }
         this.controlPoints.splice(index, 1);
@@ -274,7 +302,7 @@ export class CatmullRomSpline {
         if (segmentIndex >= segmentCount) {
             return new Vector2D(
                 this.controlPoints[this.controlPoints.length - 2].x,
-                this.controlPoints[this.controlPoints.length - 2].y
+                this.controlPoints[this.controlPoints.length - 2].y,
             );
         }
 
@@ -288,7 +316,10 @@ export class CatmullRomSpline {
      * @returns The interpolated point on the segment
      */
     public getPointOnSegment(segmentIndex: number, t: number): Vector2D | null {
-        if (this.controlPoints.length < 4 || segmentIndex < 0 || segmentIndex >= this.controlPoints.length - 3) {
+        if (
+            this.controlPoints.length < 4 || segmentIndex < 0 ||
+            segmentIndex >= this.controlPoints.length - 3
+        ) {
             return null;
         }
 
@@ -303,8 +334,6 @@ export class CatmullRomSpline {
         return this.catmullRomInterpolate(p0, p1, p2, p3, t);
     }
 
-
-
     /**
      * Perform Catmull-Rom interpolation between four points
      * @param p0 The point before the start of the segment
@@ -314,14 +343,22 @@ export class CatmullRomSpline {
      * @param t The interpolation parameter (0.0 to 1.0)
      * @returns The interpolated point
      */
-    private catmullRomInterpolate(p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D, t: number): Vector2D {
+    private catmullRomInterpolate(
+        p0: Vector2D,
+        p1: Vector2D,
+        p2: Vector2D,
+        p3: Vector2D,
+        t: number,
+    ): Vector2D {
         const t2 = t * t;
         const t3 = t2 * t;
 
         // Catmull-Rom basis functions
-        const b0 = -this.tension * t3 + 2 * this.tension * t2 - this.tension * t;
+        const b0 = -this.tension * t3 + 2 * this.tension * t2 -
+            this.tension * t;
         const b1 = (2 - this.tension) * t3 + (this.tension - 3) * t2 + 1;
-        const b2 = (this.tension - 2) * t3 + (3 - 2 * this.tension) * t2 + this.tension * t;
+        const b2 = (this.tension - 2) * t3 + (3 - 2 * this.tension) * t2 +
+            this.tension * t;
         const b3 = this.tension * t3 - this.tension * t2;
 
         const x = b0 * p0.x + b1 * p1.x + b2 * p2.x + b3 * p3.x;
@@ -360,8 +397,14 @@ export class CatmullRomSpline {
      * @param t The parameter value (0.0 to 1.0) along the segment
      * @returns The tangent vector at the specified point
      */
-    public getTangentOnSegment(segmentIndex: number, t: number): Vector2D | null {
-        if (this.controlPoints.length < 4 || segmentIndex < 0 || segmentIndex >= this.controlPoints.length - 3) {
+    public getTangentOnSegment(
+        segmentIndex: number,
+        t: number,
+    ): Vector2D | null {
+        if (
+            this.controlPoints.length < 4 || segmentIndex < 0 ||
+            segmentIndex >= this.controlPoints.length - 3
+        ) {
             return null;
         }
 
@@ -383,13 +426,21 @@ export class CatmullRomSpline {
      * @param t The interpolation parameter (0.0 to 1.0)
      * @returns The tangent vector
      */
-    private catmullRomTangent(p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D, t: number): Vector2D {
+    private catmullRomTangent(
+        p0: Vector2D,
+        p1: Vector2D,
+        p2: Vector2D,
+        p3: Vector2D,
+        t: number,
+    ): Vector2D {
         const t2 = t * t;
 
         // Derivatives of Catmull-Rom basis functions
-        const db0 = -3 * this.tension * t2 + 4 * this.tension * t - this.tension;
+        const db0 = -3 * this.tension * t2 + 4 * this.tension * t -
+            this.tension;
         const db1 = 3 * (2 - this.tension) * t2 + 2 * (this.tension - 3) * t;
-        const db2 = 3 * (this.tension - 2) * t2 + 2 * (3 - 2 * this.tension) * t + this.tension;
+        const db2 = 3 * (this.tension - 2) * t2 +
+            2 * (3 - 2 * this.tension) * t + this.tension;
         const db3 = 3 * this.tension * t2 - 2 * this.tension * t;
 
         const x = db0 * p0.x + db1 * p1.x + db2 * p2.x + db3 * p3.x;
@@ -440,7 +491,7 @@ export class CatmullRomSpline {
         for (let i = 1; i <= resolution; i++) {
             const t = i / resolution;
             const currentPoint = this.getPoint(t);
-            
+
             if (currentPoint) {
                 length += previousPoint.distanceTo(currentPoint);
                 previousPoint = currentPoint;
@@ -456,7 +507,10 @@ export class CatmullRomSpline {
      * @param resolution The resolution for the search (higher = more accurate but slower)
      * @returns An object containing the closest point and its parameter value t
      */
-    public getClosestPoint(targetPoint: Vector2D, resolution: number = 100): { point: Vector2D; t: number } | null {
+    public getClosestPoint(
+        targetPoint: Vector2D,
+        resolution: number = 100,
+    ): { point: Vector2D; t: number } | null {
         if (this.controlPoints.length < 4) {
             return null;
         }
@@ -497,7 +551,7 @@ export class CatmullRomSpline {
     //     if (splinePoints.length > 0) {
     //         // Draw the curve
     //         graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
-            
+
     //         for (let i = 1; i < splinePoints.length; i++) {
     //             graphics.lineTo(splinePoints[i].x, splinePoints[i].y);
     //         }
@@ -508,7 +562,7 @@ export class CatmullRomSpline {
     //     for (let i = 0; i < this.controlPoints.length; i++) {
     //         const controlPoint = this.controlPoints[i];
     //         graphics.circle(controlPoint.x, controlPoint.y, 8);
-            
+
     //         // First and last points are tangent control points (green)
     //         // Middle points are interpolated through (blue)
     //         if (i === 0 || i === this.controlPoints.length - 1) {

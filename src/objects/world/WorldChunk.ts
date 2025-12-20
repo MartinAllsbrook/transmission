@@ -24,11 +24,11 @@ export class WorldChunk extends GameObject {
         this.chunkPosition = chunkPosition;
         this.size = chunkSize;
         this.createChunk();
-        this.container.label = `WorldChunk (${this.chunkPosition.x}, ${this.chunkPosition.y})`;
+        this.container.label =
+            `WorldChunk (${this.chunkPosition.x}, ${this.chunkPosition.y})`;
     }
 
     private createChunk(): void {
-
         if (Math.random() < 0.1) {
             this.createRandomJump();
         }
@@ -40,7 +40,6 @@ export class WorldChunk extends GameObject {
         for (let i = 0; i < 4; i++) {
             this.createRandomObstacle();
         }
-
     }
 
     private createRandomObstacle() {
@@ -53,7 +52,7 @@ export class WorldChunk extends GameObject {
             return;
         }
 
-        new Obstacle(this, new Vector2D(x, y), this.world)
+        new Obstacle(this, new Vector2D(x, y), this.world);
     }
 
     private createRandomJump() {
@@ -72,7 +71,7 @@ export class WorldChunk extends GameObject {
 
     protected override async createOwnSprites(): Promise<void> {
         await Promise.resolve(); // Ensure async context
-        
+
         // Use actual chunk size
         // const width = this.size?.x ?? 64;
         // const height = this.size?.y ?? 64;

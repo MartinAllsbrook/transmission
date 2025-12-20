@@ -1,6 +1,11 @@
 import { SATCollider } from "./SATCollider.ts";
 
-export type CollisionLayer = "default" | "player" | "obstacle" | "jump" | "rail";
+export type CollisionLayer =
+    | "default"
+    | "player"
+    | "obstacle"
+    | "jump"
+    | "rail";
 
 export const LAYERS: CollisionLayer[] = [
     "default",
@@ -13,7 +18,7 @@ export const LAYERS: CollisionLayer[] = [
 // Columns correspond to LAYERS by index.
 const collisionMatrix: boolean[][] = [
     // Default Player Obstacle Jump
-    [false], // Default 
+    [false], // Default
     [false, false], // Player
     [false, true, false], // Obstacle
     [false, true, false, false], // Jump
@@ -58,8 +63,9 @@ export class CollisionManager {
     }
 
     public static update() {
-        if (this.debugging) 
+        if (this.debugging) {
             this.updateDebugShapes();
+        }
 
         this.checkCollisions();
     }
@@ -69,8 +75,12 @@ export class CollisionManager {
             for (let j = i + 1; j < this.colliders.length; j++) {
                 const colliderA = this.colliders[i];
                 const colliderB = this.colliders[j];
-                if (colliderA !== colliderB &&
-                    this.shouldLayersCollide(colliderA.layer, colliderB.layer) &&
+                if (
+                    colliderA !== colliderB &&
+                    this.shouldLayersCollide(
+                        colliderA.layer,
+                        colliderB.layer,
+                    ) &&
                     colliderA.checkCollision(colliderB)
                 ) {
                     colliderA.colliding(colliderB);
@@ -106,10 +116,11 @@ export class CollisionManager {
     public static set Debugging(value: boolean) {
         if (this.debugging === value) return;
 
-        if (value)
+        if (value) {
             this.createDebugShapes();
-        else
+        } else {
             this.removeDebugShapes();
+        }
 
         this.debugging = value;
     }

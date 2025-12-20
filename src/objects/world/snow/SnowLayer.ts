@@ -1,4 +1,4 @@
-import { Vector2D, LayerManager, GameObject } from "framework";
+import { GameObject, LayerManager, Vector2D } from "framework";
 import { SnowParticles } from "./SnowParticles.ts";
 
 export class SnowLayer extends GameObject {
@@ -11,7 +11,7 @@ export class SnowLayer extends GameObject {
 
     private chunks: Map<Vector2D, SnowParticles> = new Map();
 
-    constructor(parent: GameObject, index: number, chunkSize: number){
+    constructor(parent: GameObject, index: number, chunkSize: number) {
         super(parent);
 
         this.index = index;
@@ -19,13 +19,21 @@ export class SnowLayer extends GameObject {
 
         const renderLayer = LayerManager.getLayer(`snowLayer${this.index}`);
 
-        for (let x = -this.radii.x; x <= this.radii.x; x++) {           
+        for (let x = -this.radii.x; x <= this.radii.x; x++) {
             for (let y = -this.radii.y; y <= this.radii.y; y++) {
-                const position = new Vector2D(x * this.chunkSize, y * this.chunkSize);
+                const position = new Vector2D(
+                    x * this.chunkSize,
+                    y * this.chunkSize,
+                );
 
                 this.chunks.set(
-                    new Vector2D(x, y), 
-                    new SnowParticles(this, this.chunkSize, position, renderLayer)
+                    new Vector2D(x, y),
+                    new SnowParticles(
+                        this,
+                        this.chunkSize,
+                        position,
+                        renderLayer,
+                    ),
                 );
             }
         }
@@ -39,38 +47,36 @@ export class SnowLayer extends GameObject {
 
         // console.log(`Chunk Position: (${chunkPosition.x}, ${chunkPosition.y})`);
 
-
         const activeCoords: Vector2D[] = [];
         for (let x = -this.radii.x; x <= this.radii.x; x++) {
             for (let y = -this.radii.y; y <= this.radii.y; y++) {
-                const baseCoord = new Vector2D(x, y)
+                const baseCoord = new Vector2D(x, y);
                 activeCoords.push(chunkPosition.negate().add(baseCoord));
             }
         }
-        
+
         const toRemove = Array.from(this.chunks.keys()).filter((key) => {
             return !activeCoords.some((coord) => {
-                return coord.equals(key)
-            })
+                return coord.equals(key);
+            });
         });
-        
 
         const toAdd = activeCoords.filter((coord) => {
             return !Array.from(this.chunks.keys()).some((key) => {
-                return coord.equals(key)
-            })
+                return coord.equals(key);
+            });
         });
-
 
         // console.log(`
         //     Chunk position: (${chunkPosition.x}, ${chunkPosition.y}), \n
         //     Removing ${toRemove.length}, \n
         //     Adding ${toAdd.length} \n
-        // `); 
-
+        // `);
 
         for (const removeCoord of toRemove) {
-            console.log(`Removing chunk at (${removeCoord.x}, ${removeCoord.y})`);
+            console.log(
+                `Removing chunk at (${removeCoord.x}, ${removeCoord.y})`,
+            );
             const chunk = this.chunks.get(removeCoord);
             chunk?.destroy();
             this.chunks.delete(removeCoord);
@@ -81,8 +87,13 @@ export class SnowLayer extends GameObject {
             const position = addCoord.multiply(this.chunkSize);
 
             this.chunks.set(
-                addCoord, 
-                new SnowParticles(this, this.chunkSize, position, LayerManager.getLayer(`snowLayer${this.index}`))
+                addCoord,
+                new SnowParticles(
+                    this,
+                    this.chunkSize,
+                    position,
+                    LayerManager.getLayer(`snowLayer${this.index}`),
+                ),
             );
         }
 

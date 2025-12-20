@@ -8,8 +8,5 @@ export abstract class UIText extends UIElement {
         transformOptions?: UITransformOptions,
     ) {
         super(parent, root, transformOptions);
-
-
     }
-    
 }

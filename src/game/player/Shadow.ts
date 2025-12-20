@@ -3,8 +3,12 @@ import { Graphics } from "pixi.js";
 import { Player } from "./Player.ts";
 
 export class Shadow extends GameObject {
-    public override get Name(): string { return "Shadow"; }
-    public override get layer(): string { return "shadow"; }
+    public override get Name(): string {
+        return "Shadow";
+    }
+    public override get layer(): string {
+        return "shadow";
+    }
 
     private radius: number = 20;
     private shinkFactor: number = 0.7;
@@ -14,7 +18,7 @@ export class Shadow extends GameObject {
     constructor(
         parent: Player,
         root: GameRoot,
-        transformOptions?: TransformOptions
+        transformOptions?: TransformOptions,
     ) {
         super(parent, root, transformOptions);
 
@@ -25,11 +29,11 @@ export class Shadow extends GameObject {
         let radius = this.radius;
         for (let i = 0; i < 3; i++) {
             const ellipse = new Graphics()
-            .ellipse(0, 0, radius, radius / 2)
-            .fill({
-                color: "#000000", 
-                alpha: 0.15
-            })
+                .ellipse(0, 0, radius, radius / 2)
+                .fill({
+                    color: "#000000",
+                    alpha: 0.15,
+                });
             this.addGraphics(ellipse);
             radius *= this.shinkFactor;
         }

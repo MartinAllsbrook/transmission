@@ -20,13 +20,17 @@ export default class Game extends Component {
     override async componentDidMount() {
         if (typeof window === "undefined") return; // Only run on client side
 
-        this.game = new GameInstance(this.gameContainer!, this.gameOver); 
+        this.game = new GameInstance(this.gameContainer!, this.gameOver);
         await this.game.init();
 
         const debugUI = new DebugStats(this.game.Root, this.game.Root);
 
         const player = new Player(this.game.Root, this.game.Root);
-        const world = new World(this.game.Root, this.game.Root, player.Transform);
+        const world = new World(
+            this.game.Root,
+            this.game.Root,
+            player.Transform,
+        );
         new PlayerTracks(world, this.game.Root, player);
     }
 
@@ -45,7 +49,8 @@ export default class Game extends Component {
                     ? (
                         <div>
                             <GameOverScreen
-                                deathMessage={this.game?.DeathMessage || "You died! (I need to add a proper message here)"}
+                                deathMessage={this.game?.DeathMessage ||
+                                    "You died! (I need to add a proper message here)"}
                                 onRestart={() => {
                                     this.game?.resetGame();
                                 }}
@@ -54,7 +59,6 @@ export default class Game extends Component {
                     )
                     : (
                         <div class="absolute top-0 left-0 z-10 flex flex-col gap-2 p-2">
-
                         </div>
                     )}
 

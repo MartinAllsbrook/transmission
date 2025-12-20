@@ -7,7 +7,7 @@ import { Graphics } from "pixi.js";
 // import Game from "../../islands/Game.tsx";
 
 export interface CircleColliderOptions {
-    layer?: CollisionLayer
+    layer?: CollisionLayer;
     radius?: number;
     position?: Vector2D;
 }
@@ -18,7 +18,7 @@ export class CircleCollider extends SATCollider {
 
     constructor(
         host: GameObject,
-        options: CircleColliderOptions = {}
+        options: CircleColliderOptions = {},
     ) {
         super(host, options.layer, options.position);
 

@@ -13,13 +13,14 @@ export class AirState extends PlayerState {
 
         this.trickManager.enterAir(
             Date.now(),
-            this.board.Transform.WorldRotation, 
-            this.player.Velocity.heading()
+            this.board.Transform.WorldRotation,
+            this.player.Velocity.heading(),
         );
     }
 
     private switchToAirShifty() {
-        this.player.Transform.Rotation = this.body.Transform.WorldRotation - ExtraMath.degToRad(90); // Flip for goofy
+        this.player.Transform.Rotation = this.body.Transform.WorldRotation -
+            ExtraMath.degToRad(90); // Flip for goofy
         this.board.Transform.Rotation = this.player.ShiftyAngle;
         this.body.Transform.Rotation = 0 + ExtraMath.degToRad(90); // Flip for goofy
     }
@@ -34,20 +35,21 @@ export class AirState extends PlayerState {
     }
 
     private shiftyUpdate(deltaTime: number): void {
-        const shiftyTargetAngle = this.player.ShiftyInput.Value * ExtraMath.degToRad(PLAYER_CONFIG.shiftyMaxAngle);
+        const shiftyTargetAngle = this.player.ShiftyInput.Value *
+            ExtraMath.degToRad(PLAYER_CONFIG.shiftyMaxAngle);
         this.player.ShiftyAngle = ExtraMath.lerpSafe(
-            this.player.ShiftyAngle, 
-            shiftyTargetAngle, 
-            PLAYER_CONFIG.shiftyLerpSpeed * deltaTime
+            this.player.ShiftyAngle,
+            shiftyTargetAngle,
+            PLAYER_CONFIG.shiftyLerpSpeed * deltaTime,
         );
-        
+
         this.board.Transform.Rotation = this.player.ShiftyAngle;
     }
 
     private physicsUpdate(deltaTime: number): void {
         this.player.DeltaHeight -= PLAYER_CONFIG.deltaDeltaHeight * deltaTime;
         this.player.Height += this.player.DeltaHeight * deltaTime;
-        
+
         if (this.player.Height < 0 && this.player.DeltaHeight < 0) {
             this.player.Height = 0;
             this.player.DeltaHeight = 0;
@@ -56,8 +58,7 @@ export class AirState extends PlayerState {
         this.player.Transform.Rotation += this.player.RotationSpeed * deltaTime;
 
         // Update position
-        this.player.Transform.Position = 
-            this.player.Transform.Position
+        this.player.Transform.Position = this.player.Transform.Position
             .add(this.player.Velocity.multiply(deltaTime));
     }
 

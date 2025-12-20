@@ -1,5 +1,5 @@
 import { Graphics } from "pixi.js";
-import { GameObject, Parent, LayerManager, Vector2D } from "framework";
+import { GameObject, LayerManager, Parent, Vector2D } from "framework";
 
 export class Shadow extends GameObject {
     private radius: number = 20;
@@ -16,15 +16,15 @@ export class Shadow extends GameObject {
         let radius = this.radius;
         for (let i = 0; i < 3; i++) {
             const ellipse = new Graphics()
-            .ellipse(0, 0, radius, radius / 2)
-            .fill({
-                color: "#000000", 
-                alpha: 0.15
-            })
+                .ellipse(0, 0, radius, radius / 2)
+                .fill({
+                    color: "#000000",
+                    alpha: 0.15,
+                });
             this.container.addChild(ellipse);
             radius *= this.shinkFactor;
         }
-    
+
         return super.createOwnSprites(); // Ensure async context
     }
 

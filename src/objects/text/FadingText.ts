@@ -3,11 +3,17 @@ import { GameObject } from "framework";
 import { RichText } from "./RichText.ts";
 
 export class FadingText extends RichText {
-    private tillFadeStart: number
-    private tillFadeEnd: number
-    private fadeOutTime: number
+    private tillFadeStart: number;
+    private tillFadeEnd: number;
+    private fadeOutTime: number;
 
-    constructor(parent: GameObject, content: string, style: TextStyle = new TextStyle(), tillFadeStart: number = 1, fadeOutTime: number = 1) {
+    constructor(
+        parent: GameObject,
+        content: string,
+        style: TextStyle = new TextStyle(),
+        tillFadeStart: number = 1,
+        fadeOutTime: number = 1,
+    ) {
         super(parent, content, style);
         this.tillFadeStart = tillFadeStart;
         this.tillFadeEnd = fadeOutTime;
@@ -19,7 +25,10 @@ export class FadingText extends RichText {
             this.tillFadeStart -= deltaTime;
         } else {
             this.tillFadeEnd -= deltaTime;
-            this.container.alpha = Math.max(0, this.tillFadeEnd / this.fadeOutTime);
+            this.container.alpha = Math.max(
+                0,
+                this.tillFadeEnd / this.fadeOutTime,
+            );
             if (this.tillFadeEnd <= 0) {
                 this.destroy();
                 return; // Exit early to prevent accessing destroyed properties

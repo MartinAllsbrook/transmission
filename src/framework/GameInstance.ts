@@ -15,7 +15,6 @@ export class GameInstance {
     private deathMessage: string | undefined;
 
     /**
-     * 
      * @param container - the HTML container to attach the PixiJS application to
      */
     constructor(container: HTMLElement, gameOverSignal: Signal<boolean>) {
@@ -27,18 +26,18 @@ export class GameInstance {
         this.app = this.createPixiApp();
         LayerManager.initialize(this.app);
         this.root = new GameRoot(this.app.stage);
-    } 
-    
+    }
+
     private createPixiApp(): Application {
         const app = new Application();
         // deno-lint-ignore no-explicit-any
-        (globalThis as any).__PIXI_APP__ = app; 
+        (globalThis as any).__PIXI_APP__ = app;
         return app;
     }
 
     public async init() {
         await this.initializePixiApp();
-    
+
         this.setupGame();
 
         this.startGameLoop();
@@ -50,7 +49,7 @@ export class GameInstance {
             resizeTo: globalThis.window,
             antialias: true,
             resolution: globalThis.devicePixelRatio || 1,
-            autoDensity: true
+            autoDensity: true,
         });
 
         this.container.appendChild(this.app.canvas);
@@ -81,7 +80,7 @@ export class GameInstance {
     public resetGame() {
         this.deathMessage = undefined;
         this.gameOverSignal.value = false;
-        
+
         this.app?.ticker.start();
         this.root?.reset();
     }

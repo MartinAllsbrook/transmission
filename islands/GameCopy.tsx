@@ -6,7 +6,7 @@ import { Application } from "pixi.js";
 import { RootObject } from "src/objects/RootObject.ts";
 import { GameOverScreen } from "./GameOverScreen.tsx";
 
-import { CollisionManager,  LayerManager} from "framework";
+import { CollisionManager, LayerManager } from "framework";
 
 export default class Game extends Component {
     /** Reference to the game container div */
@@ -34,7 +34,7 @@ export default class Game extends Component {
             Game.app.destroy(true);
         }
     }
-    
+
     /**
      * Initialize the PixiJS game
      */
@@ -52,7 +52,7 @@ export default class Game extends Component {
             resizeTo: globalThis.window,
             antialias: true,
             resolution: globalThis.devicePixelRatio || 1,
-            autoDensity: true
+            autoDensity: true,
         });
 
         // Append the application canvas to the game container
@@ -81,9 +81,11 @@ export default class Game extends Component {
      */
     private startGameLoop() {
         if (!Game.app) throw new Error("PixiJS application not initialized");
-        
+
         // Start the game loop
-        Game.app.ticker.add((ticker) => {this.gameLoop(ticker.deltaMS);});
+        Game.app.ticker.add((ticker) => {
+            this.gameLoop(ticker.deltaMS);
+        });
     }
 
     /**
@@ -93,7 +95,9 @@ export default class Game extends Component {
     private gameLoop(deltaMS: number) {
         const deltaTime = deltaMS / 1000; // Convert ms to s
 
-        if (!Game.app || !Game.rootObject) throw new Error("Game not properly initialized");
+        if (!Game.app || !Game.rootObject) {
+            throw new Error("Game not properly initialized");
+        }
 
         Game.rootObject.update(deltaTime); // This will also update all child gameobjects
         CollisionManager.checkCollisions();
@@ -116,10 +120,10 @@ export default class Game extends Component {
     public static resetGame = () => {
         Game.deathMessage = undefined;
         Game.gameOver.value = false;
-        
+
         this.app?.ticker.start();
         Game.rootObject?.reset();
-    }
+    };
 
     // #endregion
 
@@ -130,10 +134,8 @@ export default class Game extends Component {
             <div>
                 {Game.gameOver.value
                     ? (
-                        
                         <div>
-
-                        {console.log("rendering game over screen")}
+                            {console.log("rendering game over screen")}
                             <GameOverScreen
                                 deathMessage={Game.deathMessage}
                                 onRestart={() => {
@@ -144,7 +146,6 @@ export default class Game extends Component {
                     )
                     : (
                         <div class="absolute top-0 left-0 z-10 flex flex-col gap-2 p-2">
-
                         </div>
                     )}
 

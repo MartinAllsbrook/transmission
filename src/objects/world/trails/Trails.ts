@@ -1,4 +1,4 @@
-import { CatmullRomSpline, Vector2D, GameObject, ExtraMath } from "framework";
+import { CatmullRomSpline, ExtraMath, GameObject, Vector2D } from "framework";
 import { World } from "../World.ts";
 
 export class Trails extends GameObject {
@@ -6,7 +6,10 @@ export class Trails extends GameObject {
     private world: World;
     // private debugGraphics: Graphics;
 
-    constructor(parent: World, startingPoint: Vector2D = new Vector2D(128, 128)) {
+    constructor(
+        parent: World,
+        startingPoint: Vector2D = new Vector2D(128, 128),
+    ) {
         super(parent);
 
         const initialPoints: Vector2D[] = [];
@@ -14,16 +17,22 @@ export class Trails extends GameObject {
         this.world = parent;
 
         // To start we need to initialize 2 points before the starting point
-        initialPoints.push(new Vector2D(startingPoint.x, startingPoint.y - 512));
-        initialPoints.push(new Vector2D(startingPoint.x, startingPoint.y - 512));
+        initialPoints.push(
+            new Vector2D(startingPoint.x, startingPoint.y - 512),
+        );
+        initialPoints.push(
+            new Vector2D(startingPoint.x, startingPoint.y - 512),
+        );
         initialPoints.push(startingPoint);
 
         // Then we should initialize a few points after the starting point
         for (let i = 0; i < 5; i++) {
-            initialPoints.push(this.nextPoint(initialPoints[initialPoints.length - 1]));
+            initialPoints.push(
+                this.nextPoint(initialPoints[initialPoints.length - 1]),
+            );
         }
 
-        // This gives us 8 points to start with. 
+        // This gives us 8 points to start with.
         // The path does not render anything involving the first or last two.
         // This would render 3, 4, 5, and 6
 
@@ -38,17 +47,20 @@ export class Trails extends GameObject {
         const minDistance = 256;
 
         const distance = ExtraMath.normalRandom() * variation + minDistance;
-        
+
         // Map normal distribution (0-1) to angle range (0-180 degrees)
         // 0.5 maps to 90 degrees (straight down), extremes map to left/right
         const normalValue = ExtraMath.normalRandom();
         const angleInDegrees = normalValue * 180; // 0 to 180 degrees
         const angleInRadians = (angleInDegrees * Math.PI) / 180;
-        
+
         // Create direction vector from angle
         // 0° = right (+x), 90° = down (+y), 180° = left (-x)
-        const direction = new Vector2D(Math.cos(angleInRadians), Math.sin(angleInRadians));
-        
+        const direction = new Vector2D(
+            Math.cos(angleInRadians),
+            Math.sin(angleInRadians),
+        );
+
         // Scale by distance and add to last point
         const offset = direction.multiply(distance);
         return lastPoint.add(offset);
@@ -65,7 +77,7 @@ export class Trails extends GameObject {
     }
 
     /**
-     * Extends the trail by adding a new point to the end of the spline. 
+     * Extends the trail by adding a new point to the end of the spline.
      */
     public extendTrail() {
         // Add a new point to the end of the spline
@@ -84,12 +96,12 @@ export class Trails extends GameObject {
     }
 
     /**
-     * Returns the second to last (highest) point in the trail. 
+     * Returns the second to last (highest) point in the trail.
      * This is the third point in the spline because the first is used for tangents, and the second is to far lol.
      * @returns The last point in the trail
      * ### TODO: this is really second to last point, rename
      */
-    public getLastPoint(): Vector2D { 
+    public getLastPoint(): Vector2D {
         const point = this.spline.getControlPoint(2);
 
         if (!point) throw new Error("Not enough control points in spline");
@@ -103,7 +115,9 @@ export class Trails extends GameObject {
      * @returns The first point in the trail
      */
     public getFirstPoint(): Vector2D {
-        const point = this.spline.getControlPoint(this.spline.controlPointCount() - 2);
+        const point = this.spline.getControlPoint(
+            this.spline.controlPointCount() - 2,
+        );
 
         if (!point) throw new Error("Not enough control points in spline");
 
@@ -114,7 +128,9 @@ export class Trails extends GameObject {
      * @returns The last control point in the spline. This is not the last point in the trail.
      */
     private getLastSplinePoint(): Vector2D {
-        const point = this.spline.getControlPoint(this.spline.controlPointCount() - 1);
+        const point = this.spline.getControlPoint(
+            this.spline.controlPointCount() - 1,
+        );
 
         if (!point) throw new Error("Not enough control points in spline");
 

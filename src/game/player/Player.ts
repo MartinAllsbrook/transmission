@@ -1,4 +1,13 @@
-import { BooleanInput, CircleCollider, ExtraMath, GameInstance, GameObject, SATCollider, ValueInput, Vector2D } from "framework";
+import {
+    BooleanInput,
+    CircleCollider,
+    ExtraMath,
+    GameInstance,
+    GameObject,
+    SATCollider,
+    ValueInput,
+    Vector2D,
+} from "framework";
 
 import { Body } from "./Body.ts";
 import { Board } from "./Board.ts";
@@ -9,8 +18,12 @@ import { DebugStats } from "../ui/DebugStats.ts";
 import { TrickManager } from "./TrickManager.ts";
 
 export class Player extends GameObject {
-    public override get Name() { return "Player"; }
-    public override get layer(): string { return "player"; }
+    public override get Name() {
+        return "Player";
+    }
+    public override get layer(): string {
+        return "player";
+    }
 
     // Parts
     private board: Board = new Board(this, this.root);
@@ -21,7 +34,9 @@ export class Player extends GameObject {
     // Inputs
     private jumpInput = new BooleanInput("Jump", [" ", "w", "ArrowUp"]);
     private rotateInput = new ValueInput("Rotate", ["d"], ["a"]);
-    private shiftyInput = new ValueInput("Shifty", ["ArrowLeft"], ["ArrowRight"]);
+    private shiftyInput = new ValueInput("Shifty", ["ArrowLeft"], [
+        "ArrowRight",
+    ]);
 
     // State
     private state: PlayerState = new GroundState(this);
@@ -34,21 +49,37 @@ export class Player extends GameObject {
     private deltaHeight: number = 0;
 
     // Near Miss Collider
-    private nearMissCollider: CircleCollider = new CircleCollider(this, { layer: "player", radius: 60 });
+    private nearMissCollider: CircleCollider = new CircleCollider(this, {
+        layer: "player",
+        radius: 60,
+    });
 
     protected override start(): void {
         this.root.Camera.setParent(this);
     }
-    
+
     protected override update(deltaTime: number): void {
         this.state.update(deltaTime);
 
-        DebugStats.instance.updateStat("position", `(${this.Transform.WorldPosition.x.toFixed(2)}, ${this.Transform.WorldPosition.y.toFixed(2)})`);
-        DebugStats.instance.updateStat("velocity", `(${this.Velocity.x.toFixed(2)}, ${this.Velocity.y.toFixed(2)})`);
-        DebugStats.instance.updateStat("rotation", `${ExtraMath.radToDeg(this.Transform.Rotation).toFixed(2)}°`);
+        DebugStats.instance.updateStat(
+            "position",
+            `(${this.Transform.WorldPosition.x.toFixed(2)}, ${
+                this.Transform.WorldPosition.y.toFixed(2)
+            })`,
+        );
+        DebugStats.instance.updateStat(
+            "velocity",
+            `(${this.Velocity.x.toFixed(2)}, ${this.Velocity.y.toFixed(2)})`,
+        );
+        DebugStats.instance.updateStat(
+            "rotation",
+            `${ExtraMath.radToDeg(this.Transform.Rotation).toFixed(2)}°`,
+        );
         DebugStats.instance.updateStat("height", this.Height.toFixed(2));
 
-        this.Transform.Scale = new Vector2D(1, 1).multiply(1 + (this.height * 0.5));
+        this.Transform.Scale = new Vector2D(1, 1).multiply(
+            1 + (this.height * 0.5),
+        );
     }
 
     protected override reset(): void {
@@ -74,15 +105,15 @@ export class Player extends GameObject {
 
     //#region Near Miss Collision Handling
 
-
-
     //#endregion
 
     //#region Board Collision Handling
 
     public onCollisionEnter(other: SATCollider): void {
         if (other.layer === "obstacle") {
-            GameInstance.instance.endGame("You crashed into an tree, watch out!");
+            GameInstance.instance.endGame(
+                "You crashed into an tree, watch out!",
+            );
         }
 
         this.state.onCollisionEnter(other);

@@ -8,8 +8,8 @@ export class AirState extends PlayerState {
     public override enter(): void {
         this.switchToAirShifty();
         this.tricksManager.trickStart(
-            this.board.WorldRotation, 
-            this.velocity.heading() * 180 / Math.PI
+            this.board.WorldRotation,
+            this.velocity.heading() * 180 / Math.PI,
         );
     }
 
@@ -26,31 +26,33 @@ export class AirState extends PlayerState {
 
         this.tricksManager.trickUpdate(
             deltaTime,
-            this.board.Rotation, 
-            this.velocity.heading() * 180 / Math.PI
+            this.board.Rotation,
+            this.velocity.heading() * 180 / Math.PI,
         );
     }
 
     protected override shiftyUpdate(deltaTime: number): void {
-        this.shiftyTargetAngle = this.inputs.shifty * this.config.shiftyMaxAngle;
+        this.shiftyTargetAngle = this.inputs.shifty *
+            this.config.shiftyMaxAngle;
         this.shiftyAngle = ExtraMath.lerpSafe(
-            this.shiftyAngle, 
-            this.shiftyTargetAngle, 
-            this.config.shiftyLerpSpeed * deltaTime
+            this.shiftyAngle,
+            this.shiftyTargetAngle,
+            this.config.shiftyLerpSpeed * deltaTime,
         );
-        
+
         this.board.Rotation = this.shiftyAngle;
     }
 
     protected override physicsUpdate(deltaTime: number): void {
-        this.deltaHeight -= 16  * deltaTime;
+        this.deltaHeight -= 16 * deltaTime;
         this.player.Height += this.deltaHeight * deltaTime;
-        
+
         if (this.player.Height < 0) {
             this.player.Height = 0;
         }
 
-        this.player.Rotation += this.deltaRotation * deltaTime * this.config.rotationSpeed;
+        this.player.Rotation += this.deltaRotation * deltaTime *
+            this.config.rotationSpeed;
 
         // Update position
         this.player.PhysicalPosition.set(
@@ -62,7 +64,7 @@ export class AirState extends PlayerState {
         if (this.player.Height <= 0) {
             this.player.Height = 0;
             this.deltaHeight = 0;
-            
+
             if (this.overRail) {
                 return "rail";
             } else {

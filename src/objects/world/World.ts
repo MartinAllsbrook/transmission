@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { GameObject, Parent, LayerManager, Vector2D } from "framework";
+import { GameObject, LayerManager, Parent, Vector2D } from "framework";
 
 import { WorldChunk } from "./WorldChunk.ts";
 import { Snowboarder } from "../snowboarder/Snowboarder.ts";
@@ -33,7 +33,9 @@ export class World extends GameObject {
 
         this.trails = new Trails(this);
 
-        LayerManager.getLayer("foreground")?.attach(this.treesContainer.container);
+        LayerManager.getLayer("foreground")?.attach(
+            this.treesContainer.container,
+        );
 
         // TODO: Idk if this is needed
         // Move world origin
@@ -74,8 +76,10 @@ export class World extends GameObject {
     }
 
     private updateTrails() {
-        const upperBound = (this.runsActiveArea.y * this.chunkSize.y) - this.position.y;
-        const lowerBound = (this.runsActiveArea.y * this.chunkSize.y * -1) - this.position.y;
+        const upperBound = (this.runsActiveArea.y * this.chunkSize.y) -
+            this.position.y;
+        const lowerBound = (this.runsActiveArea.y * this.chunkSize.y * -1) -
+            this.position.y;
 
         if (this.trails.getLastPoint().y < lowerBound) {
             this.trails.shortenTrail();
@@ -87,20 +91,30 @@ export class World extends GameObject {
     }
 
     private updateChunks() {
-        for (let x = -this.chunkActiveArea.x; x <= this.chunkActiveArea.x; x++) {
-            for (let y = -this.chunkActiveArea.y; y <= this.chunkActiveArea.y; y++) {
+        for (
+            let x = -this.chunkActiveArea.x;
+            x <= this.chunkActiveArea.x;
+            x++
+        ) {
+            for (
+                let y = -this.chunkActiveArea.y;
+                y <= this.chunkActiveArea.y;
+                y++
+            ) {
                 const chunkCoord = new Vector2D(
                     this.chunkPosition.x + x,
                     this.chunkPosition.y + y,
                 );
 
-                const existingChunk = this.treesContainer.children.find((child) => {
-                    if (child instanceof WorldChunk) {
-                        return child.chunkPosition.x === chunkCoord.x &&
-                            child.chunkPosition.y === chunkCoord.y;
-                    }
-                    return false;
-                });
+                const existingChunk = this.treesContainer.children.find(
+                    (child) => {
+                        if (child instanceof WorldChunk) {
+                            return child.chunkPosition.x === chunkCoord.x &&
+                                child.chunkPosition.y === chunkCoord.y;
+                        }
+                        return false;
+                    },
+                );
 
                 if (!existingChunk) {
                     const chunkWorldPosition = new Vector2D(
@@ -143,6 +157,5 @@ export class World extends GameObject {
         console.log("Resetting world");
         this.trails.destroy();
         this.trails = new Trails(this);
-
     }
 }

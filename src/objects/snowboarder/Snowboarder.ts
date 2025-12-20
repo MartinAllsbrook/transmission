@@ -1,5 +1,5 @@
 import { GameObject, Parent } from "../../framework/GameObject.ts";
-import { Vector2D, LayerManager, SATCollider, InputManager } from "framework";
+import { InputManager, LayerManager, SATCollider, Vector2D } from "framework";
 
 import { Snowboard } from "./Snowboard.ts";
 import { Body } from "./Body.ts";
@@ -10,7 +10,7 @@ import { GroundState } from "./states/GroundState.ts";
 import { AirState } from "./states/AirState.ts";
 import { RailState } from "./states/RailState.ts";
 import { LandingParticles } from "./particles/LandingParticles.ts";
-  
+
 export interface PlayerConfig {
     // Initialization
     startPosition: Vector2D;
@@ -19,7 +19,7 @@ export interface PlayerConfig {
     frictionStrength: number;
     gravityStrength: number;
     slipStrength: number;
-    
+
     // Rotation
     rotationSpeed: number;
     rotationStrength: number;
@@ -49,7 +49,7 @@ export class Snowboarder extends GameObject {
         frictionStrength: 0.1, // Raising this lowers top speed (max 1)
         gravityStrength: 140, // Raising this value makes the game feel faster
         slipStrength: 325, // Raising this value makes turning more responsive
-        
+
         rotationSpeed: 250,
         rotationStrength: 10,
 
@@ -66,10 +66,10 @@ export class Snowboarder extends GameObject {
         turn: 0,
         jump: false,
         shifty: 0,
-    }
+    };
 
     private state: PlayerState;
-        
+
     private physicalPosition: Vector2D = this.config.startPosition.clone();
     private height: number = 0;
 
@@ -102,7 +102,7 @@ export class Snowboarder extends GameObject {
         });
 
         const landingParticles = new LandingParticles(this);
-        
+
         setTimeout(() => {
             landingParticles.playParticles(4);
         }, 2000);
@@ -169,7 +169,10 @@ export class Snowboarder extends GameObject {
     public override update(deltaTime: number): void {
         this.state.update(deltaTime);
 
-        this.scale = new Vector2D(1 + this.height * 0.15, 1 + this.height * 0.15);
+        this.scale = new Vector2D(
+            1 + this.height * 0.15,
+            1 + this.height * 0.15,
+        );
         this.shadow.setEffects(this.height, this.snowboard.WorldRotation);
 
         super.update(deltaTime);

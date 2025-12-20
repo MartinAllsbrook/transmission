@@ -245,7 +245,10 @@ export class BezierSpline {
      * @param precision The number of sample points to check along the curve (higher = more accurate)
      * @returns The Euclidean distance between the target point and the closest point on the spline
      */
-    public getDistanceToPoint(targetPoint: Vector2D, precision: number = 100): number {
+    public getDistanceToPoint(
+        targetPoint: Vector2D,
+        precision: number = 100,
+    ): number {
         const closest = this.getClosestPoint(targetPoint, precision);
         const dx = closest.point.x - targetPoint.x;
         const dy = closest.point.y - targetPoint.y;
@@ -294,7 +297,10 @@ export class BezierSpline {
         return new BezierSpline([p0, p1]);
     }
 
-    public static createCubicFromPoints(start: SplinePoint, end: SplinePoint): BezierSpline {
+    public static createCubicFromPoints(
+        start: SplinePoint,
+        end: SplinePoint,
+    ): BezierSpline {
         return new BezierSpline([
             start.Position,
             start.HandleOut,
@@ -313,7 +319,7 @@ export class BezierSpline {
 
     //     // Draw the curve
     //     graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
-        
+
     //     for (let i = 1; i < splinePoints.length; i++) {
     //         graphics.lineTo(splinePoints[i].x, splinePoints[i].y);
     //     }

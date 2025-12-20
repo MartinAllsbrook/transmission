@@ -4,8 +4,12 @@ import { Text } from "pixi.js";
 import { Vector2D } from "../../../framework/math/Vector2D.ts";
 
 export class TrickFeedbackText extends GameObject {
-    public override get Name(): string { return "TrickFeedbackText"; }
-    public override get layer(): string { return "ui"; }
+    public override get Name(): string {
+        return "TrickFeedbackText";
+    }
+    public override get layer(): string {
+        return "ui";
+    }
 
     private textElement: Text;
 
@@ -21,7 +25,7 @@ export class TrickFeedbackText extends GameObject {
             position: new Vector2D(0, -50),
         });
 
-        this.textElement = new Text()
+        this.textElement = new Text();
         this.textElement.text = text;
         this.textElement.anchor.set(0.5);
         this.textElement.style.fontFamily = "Arial";
@@ -34,7 +38,10 @@ export class TrickFeedbackText extends GameObject {
     }
 
     protected override update(deltaTime: number): void {
-        this.Transform.Position = new Vector2D(0, -50 - (200 * (this.timeAlive / this.lifetime)));
+        this.Transform.Position = new Vector2D(
+            0,
+            -50 - (200 * (this.timeAlive / this.lifetime)),
+        );
         this.textElement.alpha = 1 - (this.timeAlive / this.lifetime);
 
         this.timeAlive += deltaTime;

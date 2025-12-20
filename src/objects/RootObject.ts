@@ -7,7 +7,7 @@ import { Snow } from "./world/snow/Snow.ts";
 export class RootObject extends GameObject {
     private player: Snowboarder;
     private world: World;
-    
+
     public static offset: Vector2D = new Vector2D(
         globalThis.innerWidth / 2,
         globalThis.innerHeight / 2.618,
@@ -16,7 +16,10 @@ export class RootObject extends GameObject {
     constructor(parent: Parent) {
         super(
             parent,
-            new Vector2D(globalThis.innerWidth / 2, globalThis.innerHeight / 2.618),
+            new Vector2D(
+                globalThis.innerWidth / 2,
+                globalThis.innerHeight / 2.618,
+            ),
         );
 
         TextManager.initialize(this);

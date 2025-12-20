@@ -11,11 +11,11 @@ export class UpdatingText extends GameObject {
 
     constructor(
         parent: GameObject,
-        title: string, 
-        text: string, 
+        title: string,
+        text: string,
         color: string = "#000000",
         size: number = 4,
-        position: Vector2D = new Vector2D(32, 0)
+        position: Vector2D = new Vector2D(32, 0),
     ) {
         super(parent);
         this.title = title;
@@ -25,15 +25,13 @@ export class UpdatingText extends GameObject {
         this.position = position;
 
         BitmapFont.install({
-            name: "Arial", 
+            name: "Arial",
             style: {
                 fontFamily: "Arial",
                 fontSize: 8 * this.textSize,
                 fill: this.color,
-            }
+            },
         });
-
-        
     }
 
     protected override async createOwnSprites(): Promise<void> {
@@ -44,13 +42,13 @@ export class UpdatingText extends GameObject {
         header.style.fontFamily = "Arial";
         header.style.fontSize = 8 * this.textSize / 1.618;
         header.style.fill = this.color;
-        
-        const textSprite = new BitmapText({ 
-            style: { 
+
+        const textSprite = new BitmapText({
+            style: {
                 fontFamily: "Arial",
                 fontSize: 8 * this.textSize,
                 fill: this.color,
-            } 
+            },
         });
 
         this.container.addChild(header);
@@ -68,6 +66,5 @@ export class UpdatingText extends GameObject {
         if (this.textSprite) {
             this.textSprite.text = this.text;
         }
-
     }
-}   
+}

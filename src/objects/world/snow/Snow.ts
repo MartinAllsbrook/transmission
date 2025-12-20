@@ -5,12 +5,12 @@ import { SnowLayer } from "./SnowLayer.ts";
 
 export class Snow extends GameObject {
     private chunkSize: number = 800;
-    private layers: SnowLayer[] = []; 
+    private layers: SnowLayer[] = [];
     private world: World;
 
-    constructor(parent: RootObject, world: World){
+    constructor(parent: RootObject, world: World) {
         super(parent);
-    
+
         this.world = world;
 
         for (let layer = 0; layer < 3; layer++) {
@@ -22,7 +22,9 @@ export class Snow extends GameObject {
         super.update(_deltaTime);
 
         for (let layer = 0; layer < this.layers.length; layer++) {
-            this.layers[layer].Position = this.world.Position.multiply(1 + (layer + 1) * 0.12);
+            this.layers[layer].Position = this.world.Position.multiply(
+                1 + (layer + 1) * 0.12,
+            );
         }
     }
 }

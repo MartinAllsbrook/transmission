@@ -93,7 +93,7 @@ export class CatmullRomSplineOld {
         if (index >= 0 && index < this.controlPoints.length) {
             return new Vector2D(
                 this.controlPoints[index].x,
-                this.controlPoints[index].y
+                this.controlPoints[index].y,
             );
         }
         return null;
@@ -126,7 +126,9 @@ export class CatmullRomSplineOld {
      * @returns A copy of all control points
      */
     public getControlPoints(): Vector2D[] {
-        return this.controlPoints.map(point => new Vector2D(point.x, point.y));
+        return this.controlPoints.map((point) =>
+            new Vector2D(point.x, point.y)
+        );
     }
 
     /**
@@ -167,7 +169,11 @@ export class CatmullRomSplineOld {
 
         // For splines with only 2 points, use linear interpolation
         if (this.controlPoints.length === 2) {
-            return Vector2D.lerp(this.controlPoints[0], this.controlPoints[1], t);
+            return Vector2D.lerp(
+                this.controlPoints[0],
+                this.controlPoints[1],
+                t,
+            );
         }
 
         // Calculate which segment we're in
@@ -180,7 +186,7 @@ export class CatmullRomSplineOld {
         if (segmentIndex >= segmentCount) {
             return new Vector2D(
                 this.controlPoints[this.controlPoints.length - 1].x,
-                this.controlPoints[this.controlPoints.length - 1].y
+                this.controlPoints[this.controlPoints.length - 1].y,
             );
         }
 
@@ -237,14 +243,22 @@ export class CatmullRomSplineOld {
      * @param t The interpolation parameter (0.0 to 1.0)
      * @returns The interpolated point
      */
-    private catmullRomInterpolate(p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D, t: number): Vector2D {
+    private catmullRomInterpolate(
+        p0: Vector2D,
+        p1: Vector2D,
+        p2: Vector2D,
+        p3: Vector2D,
+        t: number,
+    ): Vector2D {
         const t2 = t * t;
         const t3 = t2 * t;
 
         // Catmull-Rom basis functions
-        const b0 = -this.tension * t3 + 2 * this.tension * t2 - this.tension * t;
+        const b0 = -this.tension * t3 + 2 * this.tension * t2 -
+            this.tension * t;
         const b1 = (2 - this.tension) * t3 + (this.tension - 3) * t2 + 1;
-        const b2 = (this.tension - 2) * t3 + (3 - 2 * this.tension) * t2 + this.tension * t;
+        const b2 = (this.tension - 2) * t3 + (3 - 2 * this.tension) * t2 +
+            this.tension * t;
         const b3 = this.tension * t3 - this.tension * t2;
 
         const x = b0 * p0.x + b1 * p1.x + b2 * p2.x + b3 * p3.x;
@@ -265,7 +279,8 @@ export class CatmullRomSplineOld {
 
         // For splines with only 2 points, tangent is the direction vector
         if (this.controlPoints.length === 2) {
-            return this.controlPoints[1].subtract(this.controlPoints[0]).normalize();
+            return this.controlPoints[1].subtract(this.controlPoints[0])
+                .normalize();
         }
 
         // Calculate which segment we're in
@@ -288,7 +303,10 @@ export class CatmullRomSplineOld {
      * @param t The parameter value (0.0 to 1.0) along the segment
      * @returns The tangent vector at the specified point
      */
-    public getTangentOnSegment(segmentIndex: number, t: number): Vector2D | null {
+    public getTangentOnSegment(
+        segmentIndex: number,
+        t: number,
+    ): Vector2D | null {
         if (segmentIndex < 0 || segmentIndex >= this.controlPoints.length - 1) {
             return null;
         }
@@ -311,13 +329,21 @@ export class CatmullRomSplineOld {
      * @param t The interpolation parameter (0.0 to 1.0)
      * @returns The tangent vector
      */
-    private catmullRomTangent(p0: Vector2D, p1: Vector2D, p2: Vector2D, p3: Vector2D, t: number): Vector2D {
+    private catmullRomTangent(
+        p0: Vector2D,
+        p1: Vector2D,
+        p2: Vector2D,
+        p3: Vector2D,
+        t: number,
+    ): Vector2D {
         const t2 = t * t;
 
         // Derivatives of Catmull-Rom basis functions
-        const db0 = -3 * this.tension * t2 + 4 * this.tension * t - this.tension;
+        const db0 = -3 * this.tension * t2 + 4 * this.tension * t -
+            this.tension;
         const db1 = 3 * (2 - this.tension) * t2 + 2 * (this.tension - 3) * t;
-        const db2 = 3 * (this.tension - 2) * t2 + 2 * (3 - 2 * this.tension) * t + this.tension;
+        const db2 = 3 * (this.tension - 2) * t2 +
+            2 * (3 - 2 * this.tension) * t + this.tension;
         const db3 = 3 * this.tension * t2 - 2 * this.tension * t;
 
         const x = db0 * p0.x + db1 * p1.x + db2 * p2.x + db3 * p3.x;
@@ -368,7 +394,7 @@ export class CatmullRomSplineOld {
         for (let i = 1; i <= resolution; i++) {
             const t = i / resolution;
             const currentPoint = this.getPoint(t);
-            
+
             if (currentPoint) {
                 length += previousPoint.distanceTo(currentPoint);
                 previousPoint = currentPoint;
@@ -384,7 +410,10 @@ export class CatmullRomSplineOld {
      * @param resolution The resolution for the search (higher = more accurate but slower)
      * @returns An object containing the closest point and its parameter value t
      */
-    public getClosestPoint(targetPoint: Vector2D, resolution: number = 100): { point: Vector2D; t: number } | null {
+    public getClosestPoint(
+        targetPoint: Vector2D,
+        resolution: number = 100,
+    ): { point: Vector2D; t: number } | null {
         if (this.controlPoints.length < 2) {
             return null;
         }
@@ -420,7 +449,7 @@ export class CatmullRomSplineOld {
 
     //     // Draw the curve
     //     graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
-        
+
     //     for (let i = 1; i < splinePoints.length; i++) {
     //         graphics.lineTo(splinePoints[i].x, splinePoints[i].y);
     //     }
@@ -432,7 +461,6 @@ export class CatmullRomSplineOld {
     //     }
 
     //     return graphics;
-
 
     //     // // Draw control point markers
     //     // for (const point of controlPoints) {

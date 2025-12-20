@@ -10,8 +10,9 @@ export class LayerManager {
     };
 
     public static initialize(app: Application) {
-        for (const layerName in LayerManager.layers)
+        for (const layerName in LayerManager.layers) {
             app.stage.addChild(LayerManager.layers[layerName]);
+        }
     }
 
     public static getLayer(name: string): RenderLayer {

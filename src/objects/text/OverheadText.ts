@@ -1,20 +1,20 @@
 import { Text, TextStyle } from "pixi.js";
-import { GameObject, Parent, Vector2D, LayerManager } from "framework";
+import { GameObject, LayerManager, Parent, Vector2D } from "framework";
 
-export class OverheadText  extends GameObject {
+export class OverheadText extends GameObject {
     private text: string;
     private color: string;
     private textSize: number;
     private lifetime: number;
     constructor(
-        parent: Parent, 
-        text: string, 
+        parent: Parent,
+        text: string,
         color: string = "#000000",
-        size: number = 4, 
-        lifetime: number = 4
+        size: number = 4,
+        lifetime: number = 4,
     ) {
         super(parent);
-        
+
         this.position.set(new Vector2D(0, -32));
 
         this.text = text;
@@ -43,7 +43,6 @@ export class OverheadText  extends GameObject {
         this.container.addChild(textSprite);
         this.container.label = "TextPopup";
     }
-
 
     public override update(deltaTime: number): void {
         this.position.y -= 16 * deltaTime;

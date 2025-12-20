@@ -1,4 +1,10 @@
-import { Vector2D, GameObject, LayerManager, TransformOptions, GameRoot } from "framework";
+import {
+    GameObject,
+    GameRoot,
+    LayerManager,
+    TransformOptions,
+    Vector2D,
+} from "framework";
 import { Container, Graphics } from "pixi.js";
 import { Player } from "./Player.ts";
 
@@ -14,8 +20,12 @@ interface TrailPoint {
 }
 
 export class PlayerTracks extends GameObject {
-    public override get Name(): string { return "SnowboarderTrail"; }
-    public override get layer(): string { return "trail"; }
+    public override get Name(): string {
+        return "SnowboarderTrail";
+    }
+    public override get layer(): string {
+        return "trail";
+    }
 
     private player: Player;
 
@@ -39,12 +49,11 @@ export class PlayerTracks extends GameObject {
     }
 
     protected override update(_deltaTime: number): void {
-
         if (this.player.InAir) return;
 
         this.addTrailPoint(
             this.player.Transform.WorldPosition,
-            this.player.Transform.WorldRight
+            this.player.Transform.WorldRight,
         );
     }
 

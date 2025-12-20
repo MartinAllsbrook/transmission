@@ -36,24 +36,24 @@ export abstract class Input<T> {
      * @param key The key that was released.
      */
     abstract onKeyUp(key: string): void;
-    
+
     /**
      * Subscribes a listener to value changes.
      * @param listener A function to be called when the input's value changes.
      * @returns A function to unsubscribe the listener.
-    */
+     */
     public subscribe(listener: (newValue: T) => void): () => void {
-       this.listeners.push(listener);
-       // Return unsubscribe function
-       return () => {
-           this.listeners = this.listeners.filter((l) => l !== listener);
+        this.listeners.push(listener);
+        // Return unsubscribe function
+        return () => {
+            this.listeners = this.listeners.filter((l) => l !== listener);
         };
     }
-    
+
     /**
      * Notifies all subscribed listeners of a value change.
-    */
-   private notifyListeners() {
+     */
+    private notifyListeners() {
         for (const listener of this.listeners) {
             listener(this.value);
         }
@@ -69,7 +69,7 @@ export abstract class Input<T> {
             this.notifyListeners();
         }
     }
-    
+
     /**
      * @returns The current value of the input.
      */

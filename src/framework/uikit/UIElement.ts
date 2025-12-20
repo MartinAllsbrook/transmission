@@ -3,15 +3,19 @@ import { Graphics } from "pixi.js";
 import { UITransform, UITransformOptions } from "../UITransform.ts";
 
 export abstract class UIElement extends GameObject {
-    public override get layer() { return "ui"; }
-    public override get isUI() { return true; }
+    public override get layer() {
+        return "ui";
+    }
+    public override get isUI() {
+        return true;
+    }
 
     protected uiTransform: UITransform;
 
     constructor(
         parent: GameObject | GameRoot,
         root: GameRoot,
-        transformOptions?: UITransformOptions
+        transformOptions?: UITransformOptions,
     ) {
         super(parent, root, transformOptions);
 
@@ -19,7 +23,10 @@ export abstract class UIElement extends GameObject {
     }
 
     protected override createTransform(options: TransformOptions): Transform {
-        const transform = new UITransform(this.parent.Transform, options as UITransformOptions);
+        const transform = new UITransform(
+            this.parent.Transform,
+            options as UITransformOptions,
+        );
         return transform;
     }
 

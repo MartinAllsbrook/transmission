@@ -16,7 +16,7 @@ export abstract class SATCollider {
     // Hosting
     protected position: Vector2D;
     protected host: GameObject;
-    
+
     /** Set of colliders this collider is currently colliding with */
     private currentlyColliding: Set<SATCollider> = new Set();
 
@@ -55,7 +55,7 @@ export abstract class SATCollider {
         if (this.debugShape) {
             this.debugShape.destroy();
             this.debugShape = null;
-        } 
+        }
     }
 
     /**
@@ -148,7 +148,7 @@ export abstract class SATCollider {
 
     destroy(): void {
         CollisionManager.removeCollider(this);
-        
+
         if (this.debugShape) {
             this.debugShape.destroy();
             this.debugShape = null;

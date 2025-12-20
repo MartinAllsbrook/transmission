@@ -4,24 +4,39 @@ import { TrickDisplay } from "../objects/text/tricks/TrickDisplay.ts";
 import { UpdatingText } from "../objects/text/UpdatingText.ts";
 import { RootObject } from "../objects/RootObject.ts";
 
-export class TextManager{
+export class TextManager {
     private static root: RootObject;
-    
+
     public static initialize(root: RootObject) {
         this.root = root;
-
     }
 
     public static createScoreFadeoutText(points: number) {
         TextManager.createFadeoutText(`+${points}`, "#CCAC00", 4, 3);
     }
 
-    public static createFadeoutText(text: string, color: string, size: number, lifetime: number) {
-        const _object = new OverheadText(this.root, text, color, size, lifetime);
+    public static createFadeoutText(
+        text: string,
+        color: string,
+        size: number,
+        lifetime: number,
+    ) {
+        const _object = new OverheadText(
+            this.root,
+            text,
+            color,
+            size,
+            lifetime,
+        );
         // Object will automatically call createSprite() via queueMicrotask
     }
 
-    public static createUpdatingText(title: string, text: string, color: string, size: number): UpdatingText {
+    public static createUpdatingText(
+        title: string,
+        text: string,
+        color: string,
+        size: number,
+    ): UpdatingText {
         const object = new UpdatingText(this.root, title, text, color, size);
         return object;
         // Object will automatically call createSprite() via queueMicrotask

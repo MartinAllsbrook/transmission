@@ -2,7 +2,9 @@ import { CatmullRomSpline, ExtraMath, GameObject, Vector2D } from "framework";
 import { Graphics } from "pixi.js";
 
 export class Trail extends GameObject {
-    public override get Name() { return "Trail"; }
+    public override get Name() {
+        return "Trail";
+    }
 
     private debugGraphics: Graphics | null = null;
 
@@ -50,7 +52,10 @@ export class Trail extends GameObject {
         return closest ? position.distanceTo(closest.point) : Infinity;
     }
 
-    public getClosestPoint(position: Vector2D, sampleCount: number): { point: Vector2D; t: number } | null {
+    public getClosestPoint(
+        position: Vector2D,
+        sampleCount: number,
+    ): { point: Vector2D; t: number } | null {
         return this.spline.getClosestPoint(position, sampleCount);
     }
 
@@ -60,24 +65,27 @@ export class Trail extends GameObject {
         const minDistance = 256;
 
         const distance = ExtraMath.normalRandom() * variation + minDistance;
-        
+
         // Map normal distribution (0-1) to angle range (0-180 degrees)
         // 0.5 maps to 90 degrees (straight down), extremes map to left/right
         const normalValue = ExtraMath.normalRandom();
         const angleInDegrees = normalValue * 180; // 0 to 180 degrees
         const angleInRadians = (angleInDegrees * Math.PI) / 180;
-        
+
         // Create direction vector from angle
         // 0° = right (+x), 90° = down (+y), 180° = left (-x)
-        const direction = new Vector2D(Math.cos(angleInRadians), Math.sin(angleInRadians));
-        
+        const direction = new Vector2D(
+            Math.cos(angleInRadians),
+            Math.sin(angleInRadians),
+        );
+
         // Scale by distance and add to last point
         const offset = direction.multiply(distance);
         return lastPoint.add(offset);
     }
 
     /**
-     * Extends the trail by adding a new point to the end of the spline. 
+     * Extends the trail by adding a new point to the end of the spline.
      */
     public extendTrail() {
         // Add a new point to the end of the spline
@@ -96,12 +104,12 @@ export class Trail extends GameObject {
     }
 
     /**
-     * Returns the second to last (highest) point in the trail. 
+     * Returns the second to last (highest) point in the trail.
      * This is the third point in the spline because the first is used for tangents, and the second is to far lol.
      * @returns The last point in the trail
      * ### TODO: this is really second to last point, rename
      */
-    public getLastPoint(): Vector2D { 
+    public getLastPoint(): Vector2D {
         const point = this.spline.getControlPoint(2);
 
         if (!point) throw new Error("Not enough control points in spline");
@@ -115,7 +123,9 @@ export class Trail extends GameObject {
      * @returns The first point in the trail
      */
     public getFirstPoint(): Vector2D {
-        const point = this.spline.getControlPoint(this.spline.controlPointCount() - 2);
+        const point = this.spline.getControlPoint(
+            this.spline.controlPointCount() - 2,
+        );
 
         if (!point) throw new Error("Not enough control points in spline");
 
@@ -126,13 +136,15 @@ export class Trail extends GameObject {
      * @returns The last control point in the spline. This is not the last point in the trail.
      */
     private getLastSplinePoint(): Vector2D {
-        const point = this.spline.getControlPoint(this.spline.controlPointCount() - 1);
+        const point = this.spline.getControlPoint(
+            this.spline.controlPointCount() - 1,
+        );
 
         if (!point) throw new Error("Not enough control points in spline");
 
         return point;
     }
-    
+
     /**
      * This method doesn't do anything yet LMAO
      */

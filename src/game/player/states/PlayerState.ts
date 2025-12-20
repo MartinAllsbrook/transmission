@@ -21,17 +21,29 @@ export abstract class PlayerState {
 
         // Get components
         this.body = player.getChildrenByName("Body")[0] as Body;
-        if (!this.body) throw new Error("PlayerState: Player is missing Body component");
+        if (!this.body) {
+            throw new Error("PlayerState: Player is missing Body component");
+        }
         this.head = this.body.getChildrenByName("Head")[0] as Head;
-        if (!this.head) throw new Error("PlayerState: Body is missing Head component");
+        if (!this.head) {
+            throw new Error("PlayerState: Body is missing Head component");
+        }
         this.board = player.getChildrenByName("Board")[0] as Board;
-        if (!this.board) throw new Error("PlayerState: Player is missing Board component");
-        this.trickManager = player.getChildrenByName("TrickManager")[0] as TrickManager;
-        if (!this.trickManager) throw new Error("PlayerState: Player is missing TrickManager component");
+        if (!this.board) {
+            throw new Error("PlayerState: Player is missing Board component");
+        }
+        this.trickManager = player.getChildrenByName(
+            "TrickManager",
+        )[0] as TrickManager;
+        if (!this.trickManager) {
+            throw new Error(
+                "PlayerState: Player is missing TrickManager component",
+            );
+        }
     }
 
     public enter(): void {}
-    
+
     public update(_deltaTime: number): void {}
 
     protected checkTransitions(): void {}

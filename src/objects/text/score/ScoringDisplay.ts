@@ -1,20 +1,25 @@
 import { TextStyle } from "pixi.js";
-import { Vector2D, GameObject, LayerManager } from "framework";
+import { GameObject, LayerManager, Vector2D } from "framework";
 
 import { RootObject } from "../../RootObject.ts";
 import { ScoreText } from "./ScoreText.ts";
 import { FadingText } from "../FadingText.ts";
 
 export class ScoringDisplay extends GameObject {
-    
     private padding: Vector2D;
 
     private score: ScoreText;
     private points: FadingText[] = [];
 
     constructor(root: RootObject, padding: Vector2D = new Vector2D(128, 64)) {
-        const scrrenSize = new Vector2D(globalThis.innerWidth, globalThis.innerHeight);
-        const position = new Vector2D(-scrrenSize.x / 2 + padding.x, scrrenSize.y / 2 - padding.y); // Bottom-left corner
+        const scrrenSize = new Vector2D(
+            globalThis.innerWidth,
+            globalThis.innerHeight,
+        );
+        const position = new Vector2D(
+            -scrrenSize.x / 2 + padding.x,
+            scrrenSize.y / 2 - padding.y,
+        ); // Bottom-left corner
 
         super(root, position);
         this.padding = padding;
@@ -23,7 +28,6 @@ export class ScoringDisplay extends GameObject {
         this.container.label = "ScoreDisplay";
 
         LayerManager.getLayer("ui")?.attach(this.container);
-
     }
 
     public addScore(points: number, score: string) {
@@ -34,15 +38,23 @@ export class ScoringDisplay extends GameObject {
     private pushPointText(points: number) {
         const size = 48;
 
-        const pointText = new FadingText(this, `+${points}`, new TextStyle({
-            fontSize: size,
-            fill: "#ffd700",
-            fontWeight: "bold",
-        }), 2, 2);
+        const pointText = new FadingText(
+            this,
+            `+${points}`,
+            new TextStyle({
+                fontSize: size,
+                fill: "#ffd700",
+                fontWeight: "bold",
+            }),
+            2,
+            2,
+        );
         pointText.Position = new Vector2D(0, -this.score.container.height);
 
         for (const existingText of this.points) {
-            existingText.Position = existingText.Position.add(new Vector2D(0,  -size));
+            existingText.Position = existingText.Position.add(
+                new Vector2D(0, -size),
+            );
         }
 
         this.points.push(pointText);
