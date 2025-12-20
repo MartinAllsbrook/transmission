@@ -3,6 +3,7 @@ import { Body } from "../Body.ts";
 import { Head } from "../Head.ts";
 import { Board } from "../Board.ts";
 import { Player } from "../Player.ts";
+import { TrickManager } from "../TrickManager.ts";
 
 export type StateName = "ground" | "air" | "rail";
 
@@ -13,6 +14,7 @@ export abstract class PlayerState {
     protected body: Body;
     protected head: Head;
     protected board: Board;
+    protected trickManager: TrickManager;
 
     constructor(player: Player) {
         this.player = player;
@@ -24,6 +26,8 @@ export abstract class PlayerState {
         if (!this.head) throw new Error("PlayerState: Body is missing Head component");
         this.board = player.getChildrenByName("Board")[0] as Board;
         if (!this.board) throw new Error("PlayerState: Player is missing Board component");
+        this.trickManager = player.getChildrenByName("TrickManager")[0] as TrickManager;
+        if (!this.trickManager) throw new Error("PlayerState: Player is missing TrickManager component");
     }
 
     public enter(): void {}

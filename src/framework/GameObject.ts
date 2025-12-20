@@ -59,13 +59,15 @@ export abstract class GameObject {
     protected start(): void {}
 
     public baseUpdate(deltaTime: number): void {
+        if (this.destroyed) return;
+
+        this.syncTransform();
+
         this.update(deltaTime);
         
         for (const child of this.children) {
             child.baseUpdate(deltaTime);
         }
-        
-        this.syncTransform();
     }
 
     /**
