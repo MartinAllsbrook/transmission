@@ -12,6 +12,12 @@ export class GroundState extends PlayerState {
 
     public override enter(): void {
         this.switchToGroundShifty();
+
+        this.trickManager.enterGround(
+            Date.now(),
+            this.board.Transform.WorldRotation, 
+            this.player.Velocity.heading()
+        );
     }
 
     private switchToGroundShifty() {

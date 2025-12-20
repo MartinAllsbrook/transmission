@@ -8,12 +8,14 @@ export class AirState extends PlayerState {
         return "air";
     }
 
-    private enterAirTime: number = 0;
-
     public override enter(): void {
         this.switchToAirShifty();
 
-        this.enterAirTime = Date.now();
+        this.trickManager.enterAir(
+            Date.now(),
+            this.board.Transform.WorldRotation, 
+            this.player.Velocity.heading()
+        );
     }
 
     private switchToAirShifty() {
@@ -68,9 +70,6 @@ export class AirState extends PlayerState {
             this.player.Height = 0;
             this.player.DeltaHeight = 0;
 
-            const airTime = (Date.now() - this.enterAirTime) / 1000;
-            this.trickManager.trick(`${airTime.toFixed(2)}s Air!`);
-            
             this.player.changeState(new GroundState(this.player));
         }
     }

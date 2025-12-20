@@ -18,7 +18,7 @@ export class TrickFeedbackText extends GameObject {
         text: string,
     ) {
         super(parent, root, {
-            position: new Vector2D(0, -100),
+            position: new Vector2D(0, -50),
         });
 
         this.textElement = new Text()
@@ -34,7 +34,7 @@ export class TrickFeedbackText extends GameObject {
     }
 
     protected override update(deltaTime: number): void {
-        this.Transform.Position = new Vector2D(0, -100 - (50 * (this.timeAlive / this.lifetime)));
+        this.Transform.Position = new Vector2D(0, -50 - (200 * (this.timeAlive / this.lifetime)));
         this.textElement.alpha = 1 - (this.timeAlive / this.lifetime);
 
         this.timeAlive += deltaTime;
