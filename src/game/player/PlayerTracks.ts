@@ -30,7 +30,7 @@ export class PlayerTracks extends GameObject {
     private player: Player;
 
     private trailSegments: TrailSegment[] = [];
-    private priviousTrailPoint: TrailPoint | null = null;
+    private previousTrailPoint: TrailPoint | null = null;
     public maxPoints: number = 250;
 
     constructor(
@@ -58,9 +58,9 @@ export class PlayerTracks extends GameObject {
     }
 
     private addTrailPoint(position: Vector2D, direction: Vector2D) {
-        if (this.priviousTrailPoint) {
+        if (this.previousTrailPoint) {
             const distance = position.distanceTo(
-                this.priviousTrailPoint.position,
+                this.previousTrailPoint.position,
             );
 
             const segmentSpacing = 2; // Distance between trail segments
@@ -73,12 +73,12 @@ export class PlayerTracks extends GameObject {
                 // for (let i = 1; i <= numSegments; i++) {
                 //     const t = i / Math.ceil(distance / segmentSpacing);
                 //     const interpolatedPosition = Vector2D.lerp(
-                //         this.priviousTrailPoint.position,
+                //         this.previousTrailPoint.position,
                 //         position,
                 //         t,
                 //     );
                 //     const interpolatedDirection = Vector2D.lerp(
-                //         this.priviousTrailPoint.direction,
+                //         this.previousTrailPoint.direction,
                 //         direction,
                 //         t,
                 //     ).normalize(); // Normalize to maintain unit direction
@@ -90,7 +90,7 @@ export class PlayerTracks extends GameObject {
                 // }
                 // Add the final segment at the exact current position
                 this.addTrailSegment(position, direction);
-                this.priviousTrailPoint = {
+                this.previousTrailPoint = {
                     position: position.clone(),
                     direction: direction.clone(),
                 };
@@ -100,14 +100,14 @@ export class PlayerTracks extends GameObject {
             }
 
             // Always update the previous trail point to the current position
-            // this.priviousTrailPoint = {
+            // this.previousTrailPoint = {
             //     position: position.clone(),
             //     direction: direction.clone(),
             // };
         } else {
             // First trail point
             this.addTrailSegment(position, direction);
-            this.priviousTrailPoint = {
+            this.previousTrailPoint = {
                 position: position.clone(),
                 direction: direction.clone(),
             };
@@ -147,6 +147,6 @@ export class PlayerTracks extends GameObject {
         }
 
         LayerManager.getLayer(this.layer).attach(graphics);
-        this.addGraphics(graphics);
+        this.addGraphics(graphics, { position });
     }
 }

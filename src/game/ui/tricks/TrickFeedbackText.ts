@@ -62,4 +62,9 @@ export class TrickFeedbackText extends GameObject {
         this.trickManager.removeDisplay(this);
         super.destroy();
     }
+
+    public updateText(newText: string): void {
+        this.timeAlive = 0; // Reset time alive to keep it visible longer
+        this.textElement.text = newText;
+    }
 }

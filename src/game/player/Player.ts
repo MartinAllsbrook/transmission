@@ -50,7 +50,7 @@ export class Player extends GameObject {
     // Near Miss Collider
     private nearMissCollider: CircleCollider = new CircleCollider(this, {
         layer: "player",
-        radius: 60,
+        radius: 35,
     });
 
     private world?: World;
@@ -59,7 +59,12 @@ export class Player extends GameObject {
         this.root.Camera.setParent(this);
 
         this.world = GameInstance.instance.Root.getChildrenByName("World")[0] as World;
-        console.log(this.world);
+
+        this.nearMissCollider.onCollisionEnter((other: SATCollider) => {
+            if (other.layer === "obstacle") {
+                this.trickManager.nearMiss();
+            }
+        });
     }
 
     protected override update(deltaTime: number): void {
@@ -71,7 +76,7 @@ export class Player extends GameObject {
             );
             DebugStats.instance.updateStat("distanceToTrail", distanceToTrail.toFixed(2));
             
-            this.trickManager.treeInfo(distanceToTrail, 0);
+            this.trickManager.treeInfo(distanceToTrail, this.Velocity.magnitude(), deltaTime);
         }
 
         DebugStats.instance.updateStat("position", `(${this.Transform.WorldPosition.x.toFixed(2)}, ${this.Transform.WorldPosition.y.toFixed(2)})`);

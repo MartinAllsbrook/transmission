@@ -11,18 +11,26 @@ export class TrickManager extends GameObject {
 
     // private testText: TrickFeedbackText = new TrickFeedbackText(this, this.root, "Test Trick!");
 
-    // Values for tracking the current trick
+    private tricksShown: TrickFeedbackText[] = [];
+    
+    // Air Trick Tracking
     private enterAirTime: number = 0;
     private enterAirAngle: number = 0;
     private enterAirHeading: number = 0;
 
     private enterAirSwitch: boolean = false;
     private enterAirSlip: number = 0;
-
-    private inTrees: boolean = false;
+    
+    
+    // Tree Run Tracking
+    private treeRunTrick: TrickFeedbackText | null = null;
     private enterTreesTime: number = 0;
-
-    private tricksShown: TrickFeedbackText[] = [];
+    private treeRunDistance: number = 0;
+    
+    // Near Miss Tracking
+    private nearMissTrick: TrickFeedbackText | null = null;
+    private nearMissCount: number = 0;
+    private nearMissTimeout: number = 0;
 
     constructor(
         parent: GameObject,
@@ -116,21 +124,54 @@ export class TrickManager extends GameObject {
         this.enterAirHeading = 0;
     }
 
-    public treeInfo(distanceToTrail: number, numTreesNearby: number): void {
-        if (this.inTrees) {
-            if (distanceToTrail < 200) {
-                const timeInTrees = Date.now() - this.enterTreesTime;
-                if (timeInTrees >= 1000) {
-                    this.trick("Tree Run");
-                }
+    public nearMiss(): void {
+        if (this.nearMissTrick) {
+            this.nearMissCount += 1;
+            this.nearMissTrick.updateText("Near Miss! x" + this.nearMissCount);
 
-                this.inTrees = false;
+            clearTimeout(this.nearMissTimeout);
+            this.nearMissTimeout = setTimeout(() => {
+                this.nearMissTrick = null;
+                this.nearMissCount = 0;
+            }, 3000);
+
+            return;
+        }
+
+        this.nearMissTrick = this.trick("Near Miss!");
+        this.nearMissCount = 1;
+
+        this.nearMissTimeout = setTimeout(() => {
+            this.nearMissTrick = null;
+            this.nearMissCount = 0;
+        }, 3000);
+    }
+
+    public treeInfo(distanceToTrail: number, speed: number, deltaTime: number): void {
+        if (this.treeRunTrick) {
+            // Check if player has exited the trees
+            if (distanceToTrail < 200 || speed < 75) {
+                this.treeRunTrick = null;
+                this.treeRunDistance = 0;
+
+                return;
             }
-        } else {
-            if (distanceToTrail > 250) {
-                this.inTrees = true;
-                this.enterTreesTime = Date.now();
-            }
+
+            // Main tree run logic
+            // const time = (Date.now() - this.enterTreesTime) / 1000;
+            // if (time > 0.1) {
+            //     this.treeRunTrick.updateText(`Tree Run! ${time.toFixed(1)}s`);
+            // }
+
+            this.treeRunDistance += speed * deltaTime
+            this.treeRunTrick.updateText(`Tree Run! ${(this.treeRunDistance / 100).toFixed(1)}m`);
+            return;
+        }
+
+        // Check if player is entering the trees
+        if (distanceToTrail > 250 && speed > 80) {
+            this.treeRunTrick = this.trick("Tree Run!");
+            this.enterTreesTime = Date.now();
         }
     }
 
@@ -171,9 +212,9 @@ export class TrickManager extends GameObject {
         new TrickPrecisionText(this, this.root, precision, text);
     }
 
-    private trick(text: string): void {
+    private trick(text: string): TrickFeedbackText {
         const height = this.tricksShown.length * 30;
-        new TrickFeedbackText(this, this.root, text, new Vector2D(50, height));
+        return new TrickFeedbackText(this, this.root, text, new Vector2D(150, height));
     }
 
     //#endregion
@@ -193,7 +234,7 @@ export class TrickManager extends GameObject {
         // Reposition remaining displays
         for (let i = 0; i < this.tricksShown.length; i++) {
             const trickDisplay = this.tricksShown[i];
-            trickDisplay.Transform.Position = new Vector2D(50, i * 30);
+            trickDisplay.Transform.Position = new Vector2D(150, i * 30);
         }
     }
 
