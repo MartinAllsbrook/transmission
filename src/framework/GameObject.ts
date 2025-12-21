@@ -215,6 +215,8 @@ export abstract class GameObject {
 
     addGraphics(graphics: Container, options?: {
         layer?: string;
+        pivot?: Vector2D;
+        position?: Vector2D;
     }): void {
         if (options === undefined) options = {};
 
@@ -225,7 +227,17 @@ export abstract class GameObject {
             LayerManager.getLayer(this.layer)?.attach(graphics);
         }
 
-        graphics.pivot.set(0.5, 0.5);
+        // Pivot
+        if (options.pivot)
+            graphics.pivot.set(options.pivot.x, options.pivot.y);
+        else
+            graphics.pivot.set(0.5, 0.5);
+
+        // Position
+        if (options.position)
+            graphics.position.set(options.position.x, options.position.y);
+        else
+            graphics.position.set(0, 0);
 
         this.container.addChild(graphics);
     }
@@ -276,6 +288,10 @@ export abstract class GameObject {
      */
     public get Root(): GameRoot {
         return this.root;
+    }
+
+    protected get Container(): Container {
+        return this.container;
     }
 
     //#endregion

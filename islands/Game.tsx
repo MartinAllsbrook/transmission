@@ -62,7 +62,7 @@ export default class Game extends Component {
                         </div>
                     )}
 
-                <div ref={(el) => this.gameContainer = el || undefined}></div>
+                <div ref={el => { this.gameContainer = el || undefined; }}></div>
             </div>
         );
     }

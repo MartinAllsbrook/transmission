@@ -19,6 +19,11 @@ export class TrickManager extends GameObject {
     private enterAirSwitch: boolean = false;
     private enterAirSlip: number = 0;
 
+    private inTrees: boolean = false;
+    private enterTreesTime: number = 0;
+
+    private tricksShown: TrickFeedbackText[] = [];
+
     constructor(
         parent: GameObject,
         root: GameRoot,
@@ -111,6 +116,26 @@ export class TrickManager extends GameObject {
         this.enterAirHeading = 0;
     }
 
+    public treeInfo(distanceToTrail: number, numTreesNearby: number): void {
+        if (this.inTrees) {
+            if (distanceToTrail < 200) {
+                const timeInTrees = Date.now() - this.enterTreesTime;
+                if (timeInTrees >= 1000) {
+                    this.trick("Tree Run");
+                }
+
+                this.inTrees = false;
+            }
+        } else {
+            if (distanceToTrail > 250) {
+                this.inTrees = true;
+                this.enterTreesTime = Date.now();
+            }
+        }
+    }
+
+    //#region Helper Functions
+
     private isSwitch(boardRotation: number, heading: number): boolean {
         return Math.abs(
             ExtraMath.angleDifference(boardRotation % 360, heading),
@@ -138,11 +163,39 @@ export class TrickManager extends GameObject {
         }
     }
 
+    //#endregion
+
+    //#region Display Functions
+
     private precision(precision: TrickPrecision, text: string): void {
         new TrickPrecisionText(this, this.root, precision, text);
     }
 
     private trick(text: string): void {
-        new TrickFeedbackText(this, this.root, text);
+        const height = this.tricksShown.length * 30;
+        new TrickFeedbackText(this, this.root, text, new Vector2D(50, height));
     }
+
+    //#endregion
+
+    // #region Display Management
+
+    public addDisplay(display: TrickFeedbackText): void {
+        this.tricksShown.push(display);
+    }
+
+    public removeDisplay(display: TrickFeedbackText): void {
+        const index = this.tricksShown.indexOf(display);
+        if (index !== -1) {
+            this.tricksShown.splice(index, 1);
+        }
+
+        // Reposition remaining displays
+        for (let i = 0; i < this.tricksShown.length; i++) {
+            const trickDisplay = this.tricksShown[i];
+            trickDisplay.Transform.Position = new Vector2D(50, i * 30);
+        }
+    }
+
+    // #endregion
 }

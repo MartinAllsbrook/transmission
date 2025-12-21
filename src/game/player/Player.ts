@@ -16,6 +16,7 @@ import { GroundState } from "./states/GroundState.ts";
 import { Shadow } from "./Shadow.ts";
 import { DebugStats } from "../ui/DebugStats.ts";
 import { TrickManager } from "./TrickManager.ts";
+import { World } from "../../objects/world/World.ts";
 
 export class Player extends GameObject {
     public override get Name() {
@@ -32,11 +33,9 @@ export class Player extends GameObject {
     private trickManager: TrickManager = new TrickManager(this, this.root);
 
     // Inputs
-    private jumpInput = new BooleanInput("Jump", [" ", "w", "ArrowUp"]);
-    private rotateInput = new ValueInput("Rotate", ["d"], ["a"]);
-    private shiftyInput = new ValueInput("Shifty", ["ArrowLeft"], [
-        "ArrowRight",
-    ]);
+    private jumpInput = new BooleanInput("Jump", [" ", "w", "W", "ArrowUp"]);
+    private rotateInput = new ValueInput("Rotate", ["d", "D"], ["a", "A"]);
+    private shiftyInput = new ValueInput("Shifty", ["ArrowLeft"], ["ArrowRight",]);
 
     // State
     private state: PlayerState = new GroundState(this);
@@ -54,27 +53,30 @@ export class Player extends GameObject {
         radius: 60,
     });
 
+    private world?: World;
+
     protected override start(): void {
         this.root.Camera.setParent(this);
+
+        this.world = GameInstance.instance.Root.getChildrenByName("World")[0] as World;
+        console.log(this.world);
     }
 
     protected override update(deltaTime: number): void {
         this.state.update(deltaTime);
+        
+        if (this.world) {
+            const distanceToTrail = this.world.distanceToTrail(
+                this.Transform.WorldPosition,
+            );
+            DebugStats.instance.updateStat("distanceToTrail", distanceToTrail.toFixed(2));
+            
+            this.trickManager.treeInfo(distanceToTrail, 0);
+        }
 
-        DebugStats.instance.updateStat(
-            "position",
-            `(${this.Transform.WorldPosition.x.toFixed(2)}, ${
-                this.Transform.WorldPosition.y.toFixed(2)
-            })`,
-        );
-        DebugStats.instance.updateStat(
-            "velocity",
-            `(${this.Velocity.x.toFixed(2)}, ${this.Velocity.y.toFixed(2)})`,
-        );
-        DebugStats.instance.updateStat(
-            "rotation",
-            `${ExtraMath.radToDeg(this.Transform.Rotation).toFixed(2)}°`,
-        );
+        DebugStats.instance.updateStat("position", `(${this.Transform.WorldPosition.x.toFixed(2)}, ${this.Transform.WorldPosition.y.toFixed(2)})`);
+        DebugStats.instance.updateStat("velocity", `(${this.Velocity.x.toFixed(2)}, ${this.Velocity.y.toFixed(2)})`);
+        DebugStats.instance.updateStat("rotation", `${ExtraMath.radToDeg(this.Transform.Rotation).toFixed(2)}°`);
         DebugStats.instance.updateStat("height", this.Height.toFixed(2));
 
         this.Transform.Scale = new Vector2D(1, 1).multiply(

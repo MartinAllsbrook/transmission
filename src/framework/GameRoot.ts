@@ -61,6 +61,10 @@ export class GameRoot {
         this.children.push(child);
     }
 
+    public getChildrenByName(string: string): GameObject[] {
+        return this.children.filter((child) => child.Name === string);
+    }
+
     public removeChild(child: GameObject) {
         const index = this.children.indexOf(child);
         if (index > -1) {

@@ -1,7 +1,8 @@
 import { GameObject } from "../../../framework/GameObject.ts";
 import { GameRoot } from "../../../framework/GameRoot.ts";
-import { Text } from "pixi.js";
+import { Graphics, Text } from "pixi.js";
 import { Vector2D } from "../../../framework/math/Vector2D.ts";
+import { TrickManager } from "../../player/TrickManager.ts";
 
 export class TrickFeedbackText extends GameObject {
     public override get Name(): string {
@@ -11,42 +12,54 @@ export class TrickFeedbackText extends GameObject {
         return "ui";
     }
 
+    private trickManager: TrickManager;
+
     private textElement: Text;
 
     private timeAlive: number = 0;
-    private lifetime: number = 2; // seconds
+    private lifetime: number = 3; // seconds
+
+    private boxSize: Vector2D = new Vector2D(256, 24);
 
     constructor(
-        parent: GameRoot | GameObject,
+        parent: TrickManager,
         root: GameRoot,
         text: string,
+        position: Vector2D,
     ) {
-        super(parent, root, {
-            position: new Vector2D(0, -50),
-        });
+        super(parent, root, { position });
+
+        this.trickManager = parent;
+        this.trickManager.addDisplay(this);
 
         this.textElement = new Text();
         this.textElement.text = text;
         this.textElement.anchor.set(0.5);
         this.textElement.style.fontFamily = "Arial";
-        this.textElement.style.fontSize = 48;
-        this.textElement.style.fill = "#FFFF00";
+        this.textElement.style.fontSize = 18;
+        this.textElement.style.fill = "#000000";
         this.textElement.style.fontWeight = "bold";
-        this.addGraphics(this.textElement);
 
-        this.textElement.text = text;
+        const background = new Graphics();
+        background.rect(0, 0, this.boxSize.X, this.boxSize.Y);
+        background.fill({ color: 0xFFF000 });
+
+        this.addGraphics(background, { pivot: new Vector2D(0, 0) });
+        this.addGraphics(this.textElement, { pivot: new Vector2D(0, 0), position: new Vector2D(this.boxSize.X / 2, this.boxSize.Y / 2) });
     }
 
     protected override update(deltaTime: number): void {
-        this.Transform.Position = new Vector2D(
-            0,
-            -50 - (200 * (this.timeAlive / this.lifetime)),
-        );
-        this.textElement.alpha = 1 - (this.timeAlive / this.lifetime);
+        this.Container.alpha = Math.min(1, (1 - (this.timeAlive / this.lifetime)) * 3);
+        
 
         this.timeAlive += deltaTime;
         if (this.timeAlive >= this.lifetime) {
             this.destroy();
         }
+    }
+
+    public override destroy(): void {
+        this.trickManager.removeDisplay(this);
+        super.destroy();
     }
 }

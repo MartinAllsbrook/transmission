@@ -12,6 +12,7 @@ export class DebugStats extends UIElement {
     private velocityText: BitmapUIText;
     private rotationText: BitmapUIText;
     private heightText: BitmapUIText;
+    private distanceToTrailText: BitmapUIText;
 
     constructor(
         parent: UIElement | GameRoot,
@@ -55,10 +56,14 @@ export class DebugStats extends UIElement {
             size: new Vector2D(200, 14),
             position: new Vector2D(0, 42),
         });
+        this.distanceToTrailText = new BitmapUIText(this, this.root, {}, {
+            size: new Vector2D(200, 14),
+            position: new Vector2D(0, 56),
+        });
     }
 
     public updateStat(
-        statName: "position" | "velocity" | "rotation" | "height",
+        statName: "position" | "velocity" | "rotation" | "height" | "distanceToTrail",
         value: string,
     ): void {
         switch (statName) {
@@ -74,6 +79,9 @@ export class DebugStats extends UIElement {
             case "height":
                 this.heightText.updateText(`Height: ${value}`);
                 break;
+            case "distanceToTrail":
+                this.distanceToTrailText.updateText(`Distance to Trail: ${value}`);
+                break;
         }
     }
 
@@ -82,5 +90,6 @@ export class DebugStats extends UIElement {
         this.velocityText.updateText("Velocity: (0, 0)");
         this.rotationText.updateText("Rotation: 0°");
         this.heightText.updateText("Height: 0");
+        this.distanceToTrailText.updateText("Distance to Trail: 0");
     }
 }
