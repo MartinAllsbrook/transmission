@@ -67,7 +67,7 @@ export class Trails extends GameObject {
     }
 
     public getDistanceToTrail(position: Vector2D): number {
-        const closest = this.spline.getClosestPoint(position, 20);
+        const closest = this.spline.getClosestPoint(position);
         return closest ? position.distanceTo(closest.point) : Infinity;
     }
 

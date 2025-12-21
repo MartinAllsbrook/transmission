@@ -67,7 +67,7 @@ export class Chunk extends GameObject {
 
         const end = Date.now();
         const time = end - start;
-        // console.log(`Chunk generated in ${time} ms with ${treePoints.length} trees. (${(time / treePoints.length).toFixed(2)} ms/tree)`);
+        console.log(`Chunk generated in ${time} ms with ${treePoints.length} trees. (${(time / treePoints.length).toFixed(2)} ms/tree)`);
 
         const graphics = new Graphics();
 

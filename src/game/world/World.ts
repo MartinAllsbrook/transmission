@@ -49,7 +49,7 @@ export class World extends GameObject {
     }
 
     public closestPointOnTrail(position: Vector2D): Vector2D | null {
-        const closest = this.trail.getClosestPoint(position, 20);
+        const closest = this.trail.getClosestPoint(position);
         return closest ? closest.point : null;
     }
 

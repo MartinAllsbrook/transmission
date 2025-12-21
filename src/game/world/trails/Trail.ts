@@ -13,7 +13,7 @@ export class Trail extends GameObject {
         new Vector2D(0, -512),
         new Vector2D(0, 0),
         new Vector2D(0, 512),
-    ]);
+    ], 150);
 
     protected override start(): void {
         // Initialize a few points after the starting points
@@ -31,7 +31,7 @@ export class Trail extends GameObject {
             new Vector2D(0, -512),
             new Vector2D(0, 0),
             new Vector2D(0, 512),
-        ]);
+        ], 150);
 
         // Initialize a few points after the starting points
         for (let i = 0; i < 4; i++) {
@@ -48,15 +48,14 @@ export class Trail extends GameObject {
      * @returns - The distance to the trail.
      */
     public getDistanceToTrail(position: Vector2D): number {
-        const closest = this.spline.getClosestPoint(position, 20);
+        const closest = this.spline.getClosestPoint(position);
         return closest ? position.distanceTo(closest.point) : Infinity;
     }
 
     public getClosestPoint(
         position: Vector2D,
-        sampleCount: number,
     ): { point: Vector2D; t: number } | null {
-        return this.spline.getClosestPoint(position, sampleCount);
+        return this.spline.getClosestPoint(position);
     }
 
     private generateNextPoint(lastPoint: Vector2D): Vector2D {
@@ -153,7 +152,11 @@ export class Trail extends GameObject {
             this.debugGraphics.destroy();
         }
 
-        const splinePoints = this.spline.samplePoints(100);
+        const splinePoints = this.spline.getCachedSamplePoints();
+
+        if (!splinePoints) {
+            return;
+        }
 
         const graphics = new Graphics();
 

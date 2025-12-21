@@ -17,19 +17,25 @@ export class CatmullRomSpline {
     private controlPoints: Vector2D[];
     private tension: number;
 
+    private isCacheValid: boolean = false;
+    private cachedSamplePoints: Vector2D[] | null = null;
+
+    private cacheResolution: number = 100;
+
     /**
      * Create a new CatmullRomSpline instance
      * @param controlPoints An array of Vector2D points (minimum 4 required)
      * @param tension The tension parameter (0.0 = tight curves, 0.5 = standard Catmull-Rom, 1.0 = loose curves)
      *                Controls the influence of tangent control points on curve smoothness.
      */
-    constructor(controlPoints: Vector2D[] = [], tension: number = 0.5) {
+    constructor(controlPoints: Vector2D[] = [], cacheResolution = 100, tension: number = 0.5) {
         if (controlPoints.length > 0 && controlPoints.length < 4) {
             throw new Error(
                 "CatmullRomSpline requires at least 4 control points for explicit behavior",
             );
         }
         this.controlPoints = [...controlPoints];
+        this.cacheResolution = cacheResolution;
         this.tension = Math.max(0, Math.min(1, tension)); // Clamp tension between 0 and 1
     }
 
@@ -39,6 +45,8 @@ export class CatmullRomSpline {
      */
     public addControlPoint(point: Vector2D): void {
         this.controlPoints.push(new Vector2D(point.x, point.y));
+
+        this.isCacheValid = false;
     }
 
     /**
@@ -53,6 +61,8 @@ export class CatmullRomSpline {
             );
         }
         this.controlPoints.pop();
+
+        this.isCacheValid = false;
         return true;
     }
 
@@ -68,6 +78,8 @@ export class CatmullRomSpline {
             );
         }
         this.controlPoints.shift();
+
+        this.isCacheValid = false;
         return true;
     }
 
@@ -80,6 +92,8 @@ export class CatmullRomSpline {
         if (index >= 0 && index <= this.controlPoints.length) {
             this.controlPoints.splice(index, 0, new Vector2D(point.x, point.y));
         }
+
+        this.isCacheValid = false;
     }
 
     /**
@@ -102,7 +116,25 @@ export class CatmullRomSpline {
             );
         }
         this.controlPoints.splice(index, 1);
+
+        this.isCacheValid = false;
         return true;
+    }
+    
+    /**
+     * Update a control point at the specified index
+     * @param index The index of the control point to update
+     * @param point The new position for the control point
+     * @returns True if the point was successfully updated, false if the index is invalid
+     */
+    public updateControlPoint(index: number, point: Vector2D): boolean {
+        if (index >= 0 && index < this.controlPoints.length) {
+            this.controlPoints[index] = new Vector2D(point.x, point.y);
+            return true;
+        }
+
+        this.isCacheValid = false;
+        return false;
     }
 
     /**
@@ -110,6 +142,14 @@ export class CatmullRomSpline {
      * @returns The number of control points.
      */
     public controlPointCount(): number {
+        return this.controlPoints.length;
+    }
+
+    /**
+     * Get the number of control points in the spline
+     * @returns The number of control points
+     */
+    public getControlPointCount(): number {
         return this.controlPoints.length;
     }
 
@@ -126,28 +166,6 @@ export class CatmullRomSpline {
             );
         }
         return null;
-    }
-
-    /**
-     * Update a control point at the specified index
-     * @param index The index of the control point to update
-     * @param point The new position for the control point
-     * @returns True if the point was successfully updated, false if the index is invalid
-     */
-    public updateControlPoint(index: number, point: Vector2D): boolean {
-        if (index >= 0 && index < this.controlPoints.length) {
-            this.controlPoints[index] = new Vector2D(point.x, point.y);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get the number of control points in the spline
-     * @returns The number of control points
-     */
-    public getControlPointCount(): number {
-        return this.controlPoints.length;
     }
 
     /**
@@ -168,6 +186,8 @@ export class CatmullRomSpline {
      */
     public setTension(tension: number): void {
         this.tension = Math.max(0, Math.min(1, tension));
+
+        this.isCacheValid = false;
     }
 
     /**
@@ -184,6 +204,8 @@ export class CatmullRomSpline {
      */
     public clear(): void {
         this.controlPoints = [];
+
+        this.isCacheValid = false;
     }
 
     /**
@@ -247,6 +269,8 @@ export class CatmullRomSpline {
             return false;
         }
         this.controlPoints.pop();
+        
+        this.isCacheValid = false;
         return true;
     }
 
@@ -259,6 +283,8 @@ export class CatmullRomSpline {
             return false;
         }
         this.controlPoints.shift();
+
+        this.isCacheValid = false;
         return true;
     }
 
@@ -275,8 +301,12 @@ export class CatmullRomSpline {
             return false;
         }
         this.controlPoints.splice(index, 1);
+
+        this.isCacheValid = false;
         return true;
     }
+
+    //#region Interpolation
 
     /**
      * Calculate a point on the Catmull-Rom spline
@@ -307,6 +337,22 @@ export class CatmullRomSpline {
         }
 
         return this.getPointOnSegment(segmentIndex, localT);
+    }
+
+    private refreshCache(): void {
+        const samples: Vector2D[] = [];
+        const resolution = this.cacheResolution;
+
+        for (let i = 0; i <= resolution; i++) {
+            const t = i / resolution;
+            const point = this.getPoint(t);
+            if (point) {
+                samples.push(point);
+            }
+        }
+
+        this.isCacheValid = true;
+        this.cachedSamplePoints = samples;
     }
 
     /**
@@ -472,11 +518,19 @@ export class CatmullRomSpline {
     }
 
     /**
+     * Returns the cached sample points along the spline, or null if not cached.
+     * @returns The cached array of sampled points, or null if not available.
+     */
+    public getCachedSamplePoints(): Vector2D[] | null {
+        return this.cachedSamplePoints;
+    }
+
+    /**
      * Calculate the approximate length of the interpolated portion of the spline
      * @param resolution The number of segments to use for approximation (higher = more accurate)
      * @returns The approximate length of the spline
      */
-    public getLength(resolution: number = 100): number {
+    public getLength(resolution?: number): number {
         if (this.controlPoints.length < 4) {
             return 0;
         }
@@ -488,11 +542,28 @@ export class CatmullRomSpline {
             return 0;
         }
 
-        for (let i = 1; i <= resolution; i++) {
-            const t = i / resolution;
-            const currentPoint = this.getPoint(t);
+        // Old (less efficient) method: sample at fixed intervals
+        if (resolution) {
+            for (let i = 1; i <= resolution; i++) {
+                const t = i / resolution;
+                const currentPoint = this.getPoint(t);
+    
+                if (currentPoint) {
+                    length += previousPoint.distanceTo(currentPoint);
+                    previousPoint = currentPoint;
+                }
+            }
+        // New (more efficient) method: use cached samples
+        } else {
+            if (!this.isCacheValid || !this.cachedSamplePoints) {
+                this.refreshCache();
+            }
 
-            if (currentPoint) {
+            const samples = this.cachedSamplePoints!;
+            const sampleCount = samples.length;
+
+            for (let i = 1; i < sampleCount; i++) {
+                const currentPoint = samples[i];
                 length += previousPoint.distanceTo(currentPoint);
                 previousPoint = currentPoint;
             }
@@ -509,7 +580,7 @@ export class CatmullRomSpline {
      */
     public getClosestPoint(
         targetPoint: Vector2D,
-        resolution: number = 100,
+        resolution?: number,
     ): { point: Vector2D; t: number } | null {
         if (this.controlPoints.length < 4) {
             return null;
@@ -519,59 +590,44 @@ export class CatmullRomSpline {
         let closestDistance = Infinity;
         let closestT = 0;
 
-        for (let i = 0; i <= resolution; i++) {
-            const t = i / resolution;
-            const splinePoint = this.getPoint(t);
+        // Old (less efficient) method: sample at fixed intervals
+        if (resolution) {
+            for (let i = 0; i <= resolution; i++) {
+                const t = i / resolution;
+                const splinePoint = this.getPoint(t);
+    
+                if (splinePoint) {
+                    const distance = targetPoint.distanceTo(splinePoint);
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestPoint = splinePoint;
+                        closestT = t;
+                    }
+                }
+            }
+        // New (more efficient) method: use cached samples
+        } else {
+            if (!this.isCacheValid || !this.cachedSamplePoints) {
+                this.refreshCache();
+            }
 
-            if (splinePoint) {
+            const samples = this.cachedSamplePoints!;
+            const sampleCount = samples.length;
+
+            for (let i = 0; i < sampleCount; i++) {
+                const splinePoint = samples[i];
                 const distance = targetPoint.distanceTo(splinePoint);
                 if (distance < closestDistance) {
                     closestDistance = distance;
                     closestPoint = splinePoint;
-                    closestT = t;
+                    closestT = i / (sampleCount - 1);
                 }
             }
+
         }
 
         return closestPoint ? { point: closestPoint, t: closestT } : null;
     }
 
-    // public drawDebug(world: World): Graphics {
-    //     // Draw the spline using PixiJS
-    //     const graphics = new Graphics();
-    //     world.addVisual(graphics);
-
-    //     if (this.controlPoints.length < 4) {
-    //         return graphics; // Nothing to draw
-    //     }
-
-    //     // Get points along the interpolated spline
-    //     const splinePoints = this.samplePoints(50);
-
-    //     if (splinePoints.length > 0) {
-    //         // Draw the curve
-    //         graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
-
-    //         for (let i = 1; i < splinePoints.length; i++) {
-    //             graphics.lineTo(splinePoints[i].x, splinePoints[i].y);
-    //         }
-    //         graphics.stroke({width: 4, color: 0xff0000}); // Red line, 4px width
-    //     }
-
-    //     // Draw all control points (green for tangent points, blue for interpolated points)
-    //     for (let i = 0; i < this.controlPoints.length; i++) {
-    //         const controlPoint = this.controlPoints[i];
-    //         graphics.circle(controlPoint.x, controlPoint.y, 8);
-
-    //         // First and last points are tangent control points (green)
-    //         // Middle points are interpolated through (blue)
-    //         if (i === 0 || i === this.controlPoints.length - 1) {
-    //             graphics.fill({color: 0x00ff00}); // Green for tangent control points
-    //         } else {
-    //             graphics.fill({color: 0x0000ff}); // Blue for interpolated points
-    //         }
-    //     }
-
-    //     return graphics;
-    // }
+    //#endregion
 }
