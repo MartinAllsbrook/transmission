@@ -14,7 +14,8 @@ export class TrickFeedbackText extends GameObject {
 
     private trickManager: TrickManager;
 
-    private textElement: Text;
+    private trickNameText: Text;
+    private scoreText: Text;
 
     private timeAlive: number = 0;
     private lifetime: number = 3; // seconds
@@ -24,7 +25,8 @@ export class TrickFeedbackText extends GameObject {
     constructor(
         parent: TrickManager,
         root: GameRoot,
-        text: string,
+        trick: string, 
+        score: number,
         position: Vector2D,
     ) {
         super(parent, root, { position });
@@ -32,20 +34,25 @@ export class TrickFeedbackText extends GameObject {
         this.trickManager = parent;
         this.trickManager.addDisplay(this);
 
-        this.textElement = new Text();
-        this.textElement.text = text;
-        this.textElement.anchor.set(0.5);
-        this.textElement.style.fontFamily = "Arial";
-        this.textElement.style.fontSize = 18;
-        this.textElement.style.fill = "#000000";
-        this.textElement.style.fontWeight = "bold";
+        this.trickNameText = this.createText();
+        this.trickNameText.text = trick;
+        this.trickNameText.anchor.set(0, 0.5);
+
+        this.scoreText = this.createText();
+        this.scoreText.text = `+${score.toFixed(0)}`;
+        this.scoreText.anchor.set(1, 0.5);
+        this.scoreText.style.fontStyle = "italic";
+        this.scoreText.position = new Vector2D(this.boxSize.X - 8, this.boxSize.Y / 2);
+
+
 
         const background = new Graphics();
         background.rect(0, 0, this.boxSize.X, this.boxSize.Y);
         background.fill({ color: 0xFFF000 });
 
         this.addGraphics(background, { pivot: new Vector2D(0, 0) });
-        this.addGraphics(this.textElement, { pivot: new Vector2D(0, 0), position: new Vector2D(this.boxSize.X / 2, this.boxSize.Y / 2) });
+        this.addGraphics(this.trickNameText, { pivot: new Vector2D(0, 0), position: new Vector2D(8, this.boxSize.Y / 2) });
+        this.addGraphics(this.scoreText, { pivot: new Vector2D(1, 0), position: new Vector2D(this.boxSize.X - 8, this.boxSize.Y / 2) });
     }
 
     protected override update(deltaTime: number): void {
@@ -63,8 +70,19 @@ export class TrickFeedbackText extends GameObject {
         super.destroy();
     }
 
-    public updateText(newText: string): void {
+    public updateText(trick: string, score: number): void {
         this.timeAlive = 0; // Reset time alive to keep it visible longer
-        this.textElement.text = newText;
+        this.trickNameText.text = trick;
+        this.scoreText.text = `+${score.toFixed(0)}`;
+    }
+
+    private createText(): Text {
+        const text = new Text();
+        text.style.fontFamily = "Arial";
+        text.style.fontSize = 18;
+        text.style.fill = "#000000";
+        text.style.fontWeight = "bold";
+
+        return text;
     }
 }
