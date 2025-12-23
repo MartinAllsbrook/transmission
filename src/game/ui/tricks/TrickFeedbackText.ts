@@ -17,6 +17,8 @@ export class TrickFeedbackText extends GameObject {
     private trickNameText: Text;
     private scoreText: Text;
 
+    private score: number = 0;
+
     private timeAlive: number = 0;
     private lifetime: number = 3; // seconds
 
@@ -70,10 +72,12 @@ export class TrickFeedbackText extends GameObject {
         super.destroy();
     }
 
-    public updateText(trick: string, score: number): void {
+    public updateText(trick: string, additionalScore: number): void {
         this.timeAlive = 0; // Reset time alive to keep it visible longer
         this.trickNameText.text = trick;
-        this.scoreText.text = `+${score.toFixed(0)}`;
+
+        this.score += additionalScore;
+        this.scoreText.text = `+${this.score.toFixed(0)}`;
     }
 
     private createText(): Text {
@@ -84,5 +88,9 @@ export class TrickFeedbackText extends GameObject {
         text.style.fontWeight = "bold";
 
         return text;
+    }
+
+    public get Score(): number {
+        return this.score;
     }
 }

@@ -1,6 +1,7 @@
 import { ExtraMath, GameObject, GameRoot, Vector2D } from "framework";
 import { TrickFeedbackText } from "../ui/tricks/TrickFeedbackText.ts";
 import { TrickPrecisionText } from "../ui/tricks/TrickPrecisionText.ts";
+import { ScoreDisplay } from "../ui/tricks/ScoreDisplay.ts";
 
 type TrickPrecision = "Perfect" | "Great" | "Good" | "Okay" | "Poor";
 
@@ -12,6 +13,8 @@ export class TrickManager extends GameObject {
     // private testText: TrickFeedbackText = new TrickFeedbackText(this, this.root, "Test Trick!");
 
     private tricksShown: TrickFeedbackText[] = [];
+
+    private scoreDisplay: ScoreDisplay = new ScoreDisplay(this, this.root);
     
     // Air Trick Tracking
     private enterAirTime: number = 0;
@@ -129,7 +132,7 @@ export class TrickManager extends GameObject {
 
         if (this.nearMissTrick) {
             this.nearMissCount += 1;
-            this.nearMissTrick.updateText("Near Miss! x" + this.nearMissCount, nearMissScore * this.nearMissCount);
+            this.updateTrick(this.nearMissTrick, "Near Miss! x" + this.nearMissCount, nearMissScore * this.nearMissCount);
 
             clearTimeout(this.nearMissTimeout);
             this.nearMissTimeout = setTimeout(() => {
@@ -168,7 +171,7 @@ export class TrickManager extends GameObject {
             this.treeRunDistance += speed * deltaTime
             const distanceMeeters = this.treeRunDistance / 100;
             const score = Math.floor((distanceMeeters * 10)) * 5;
-            this.treeRunTrick.updateText(`Tree Run! ${distanceMeeters.toFixed(1)}m`, score);
+            this.updateTrick(this.treeRunTrick, `Tree Run! ${distanceMeeters.toFixed(1)}m`, score);
             return;
         }
 
@@ -218,7 +221,17 @@ export class TrickManager extends GameObject {
 
     private trick(trick: string, score: number): TrickFeedbackText {
         const height = this.tricksShown.length * 30;
+
+        this.scoreDisplay.addScore(score);
+
         return new TrickFeedbackText(this, this.root, trick, score, new Vector2D(150, height));
+    }
+
+    private updateTrick(trickDisplay: TrickFeedbackText, trick: string, score: number): void {
+        const scoreDifference = score - trickDisplay.Score
+        
+        this.scoreDisplay.addScore(scoreDifference);
+        trickDisplay.updateText(trick, scoreDifference);
     }
 
     //#endregion
