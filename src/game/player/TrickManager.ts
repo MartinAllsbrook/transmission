@@ -2,8 +2,15 @@ import { ExtraMath, GameObject, GameRoot, Vector2D } from "framework";
 import { TrickFeedbackText } from "../ui/tricks/TrickFeedbackText.ts";
 import { TrickPrecisionText } from "../ui/tricks/TrickPrecisionText.ts";
 import { ScoreDisplay } from "../ui/tricks/ScoreDisplay.ts";
+import { ComboDisplay } from "../ui/tricks/ComboDisplay.ts";
 
 type TrickPrecision = "Perfect" | "Great" | "Good" | "Okay" | "Poor";
+
+interface TrickRewards {
+    time: number,
+    score: number,
+    multiplier: number,
+}
 
 export class TrickManager extends GameObject {
     public override get Name() {
@@ -15,6 +22,15 @@ export class TrickManager extends GameObject {
     private tricksShown: TrickFeedbackText[] = [];
 
     private scoreDisplay: ScoreDisplay = new ScoreDisplay(this, this.root);
+    private comboDisplay: ComboDisplay = new ComboDisplay(this, this.root, this.scoreDisplay);
+
+    // Current combo
+    private combo?: {
+        startTime: number;
+        lifetime: number;
+        multiplier: number;
+        score: number;
+    } 
     
     // Air Trick Tracking
     private enterAirTime: number = 0;
@@ -23,7 +39,6 @@ export class TrickManager extends GameObject {
 
     private enterAirSwitch: boolean = false;
     private enterAirSlip: number = 0;
-    
     
     // Tree Run Tracking
     private treeRunTrick: TrickFeedbackText | null = null;
@@ -42,9 +57,17 @@ export class TrickManager extends GameObject {
         super(parent, root);
     }
 
-    protected override update(_deltaTime: number): void {
+    protected override update(deltaTime: number): void {
         this.Transform.WorldRotation = 0;
         this.Transform.WorldScale = new Vector2D(1, 1);
+
+        if (this.combo) {
+            this.combo.lifetime -= deltaTime;
+
+            if (this.combo.lifetime < 0) {
+                this.combo = undefined
+            }
+        }
     }
 
     public enterAir(time: number, angle: number, heading: number): void {
@@ -119,7 +142,11 @@ export class TrickManager extends GameObject {
         }
 
         this.precision(this.determinePrecision(slip), " Landing");
-        this.trick(trickText, (spin * 2) * (airtime / 1000) + (this.enterAirSwitch ? 30 : 0) + 10);
+        this.trick(trickText, {
+            score: (spin * 2) * (airtime / 1000) + (this.enterAirSwitch ? 30 : 0) + 10, 
+            multiplier: 1,
+            time: Infinity
+        });
 
         // Reset values
         this.enterAirTime = 0;
@@ -128,11 +155,14 @@ export class TrickManager extends GameObject {
     }
 
     public nearMiss(): void {
-        const nearMissScore = 50
 
         if (this.nearMissTrick) {
             this.nearMissCount += 1;
-            this.updateTrick(this.nearMissTrick, "Near Miss! x" + this.nearMissCount, nearMissScore * this.nearMissCount);
+            this.updateTrick(this.nearMissTrick, "Near Miss! x" + this.nearMissCount, {
+                score: 50 * this.nearMissCount,
+                multiplier: 0.1,
+                time: Infinity,
+            });
 
             clearTimeout(this.nearMissTimeout);
             this.nearMissTimeout = setTimeout(() => {
@@ -143,7 +173,12 @@ export class TrickManager extends GameObject {
             return;
         }
 
-        this.nearMissTrick = this.trick("Near Miss!", nearMissScore);
+        this.nearMissTrick = this.trick("Near Miss!", {
+            score: 50,
+            multiplier: 0.1,
+            time: Infinity, 
+        });
+
         this.nearMissCount = 1;
 
         this.nearMissTimeout = setTimeout(() => {
@@ -170,14 +205,22 @@ export class TrickManager extends GameObject {
 
             this.treeRunDistance += speed * deltaTime
             const distanceMeeters = this.treeRunDistance / 100;
-            const score = Math.floor((distanceMeeters * 10)) * 5;
-            this.updateTrick(this.treeRunTrick, `Tree Run! ${distanceMeeters.toFixed(1)}m`, score);
+            const score = Math.floor((distanceMeeters * 10)) * 2;
+            this.updateTrick(this.treeRunTrick, `Tree Run! ${distanceMeeters.toFixed(1)}m`, {
+                score,
+                multiplier: 0.001,
+                time: Infinity
+            });
             return;
         }
 
         // Check if player is entering the trees
         if (distanceToTrail > 250 && speed > 80) {
-            this.treeRunTrick = this.trick("Tree Run!", 0);
+            this.treeRunTrick = this.trick("Tree Run!", {
+                score: 0,
+                multiplier: 0,
+                time: Infinity
+            });
             this.enterTreesTime = Date.now();
         }
     }
@@ -219,19 +262,19 @@ export class TrickManager extends GameObject {
         new TrickPrecisionText(this, this.root, precision, text);
     }
 
-    private trick(trick: string, score: number): TrickFeedbackText {
+    private trick(text: string, rewards: TrickRewards): TrickFeedbackText {
+        this.comboDisplay.addScore(rewards.score, rewards.multiplier, rewards.time)
+        
         const height = this.tricksShown.length * 30;
-
-        this.scoreDisplay.addScore(score);
-
-        return new TrickFeedbackText(this, this.root, trick, score, new Vector2D(150, height));
+        return new TrickFeedbackText(this, this.root, text, rewards.score, new Vector2D(150, height));
     }
 
-    private updateTrick(trickDisplay: TrickFeedbackText, trick: string, score: number): void {
-        const scoreDifference = score - trickDisplay.Score
+    private updateTrick(trickDisplay: TrickFeedbackText, text: string, rewards: TrickRewards): void {
+        const scoreDifference = rewards.score - trickDisplay.Score
         
-        this.scoreDisplay.addScore(scoreDifference);
-        trickDisplay.updateText(trick, scoreDifference);
+        this.comboDisplay.addScore(scoreDifference, rewards.multiplier, rewards.time)
+
+        trickDisplay.updateText(text, scoreDifference);
     }
 
     //#endregion

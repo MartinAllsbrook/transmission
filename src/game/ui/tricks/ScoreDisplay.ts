@@ -1,6 +1,7 @@
 import { GameObject, GameRoot, Vector2D } from "framework";
 import { TrickManager } from "../../player/TrickManager.ts";
 import { Text } from "pixi.js";
+import { AddScoreText } from "./AddScoreText.ts";
 
 export class ScoreDisplay extends GameObject {
     public override get Name() {
@@ -11,7 +12,7 @@ export class ScoreDisplay extends GameObject {
     }
 
     private score: number = 0;
-
+    
     private scoreText: Text;
 
     constructor(
@@ -36,6 +37,8 @@ export class ScoreDisplay extends GameObject {
     }
 
     public addScore(amount: number): void {
+        new AddScoreText(this, this.root, amount)
+
         this.score += amount;
         this.scoreText.text = `Score: ${this.score.toFixed(0)}`;
     }
@@ -46,4 +49,6 @@ export class ScoreDisplay extends GameObject {
 
         super.reset();
     }
+
+    
 }
