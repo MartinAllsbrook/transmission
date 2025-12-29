@@ -17,8 +17,8 @@ export class AirState extends PlayerState {
             this.player.Velocity.heading(),
         );
 
-        console.log("Enter air with rotation: " + ExtraMath.radToDeg(this.board.Transform.WorldRotation).toFixed(2));
-        console.log("Enter air with heading: " + ExtraMath.radToDeg(this.player.Velocity.heading()).toFixed(2));
+        // console.log("Enter air with rotation: " + ExtraMath.radToDeg(this.board.Transform.WorldRotation).toFixed(2));
+        // console.log("Enter air with heading: " + ExtraMath.radToDeg(this.player.Velocity.heading()).toFixed(2));
     }
 
     private switchToAirShifty() {

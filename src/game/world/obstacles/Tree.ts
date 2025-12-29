@@ -6,6 +6,10 @@ export class Tree extends GameObject {
         return "Tree";
     }
 
+    public override get layer(): string {
+        return "trees";
+    }
+
     protected override start(): void {
         this.loadSprite("obsticales/Tree.png", {
             anchor: new Vector2D(0.5, 0.925),

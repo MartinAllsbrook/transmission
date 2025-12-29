@@ -26,7 +26,7 @@ const collisionMatrix: boolean[][] = [
 ];
 
 export class CollisionManager {
-    private static debugging: boolean = true;
+    private static debugging: boolean = false;
     private static colliders: SATCollider[] = [];
 
     public static addCollider(collider: SATCollider) {

@@ -69,16 +69,17 @@ export class Chunk extends GameObject {
         const time = end - start;
         // console.log(`Chunk generated in ${time} ms with ${treePoints.length} trees. (${(time / treePoints.length).toFixed(2)} ms/tree)`);
 
-        const graphics = new Graphics();
+        // Debug graphics
+        // const graphics = new Graphics();
 
-        graphics.rect(0, 0, this.chunkSize, this.chunkSize);
-        graphics.stroke({
-            color: 0xff00ff,
-            alpha: 0.5,
-            width: 2,
-        });
+        // graphics.rect(0, 0, this.chunkSize, this.chunkSize);
+        // graphics.stroke({
+        //     color: 0xff00ff,
+        //     alpha: 0.5,
+        //     width: 2,
+        // });
 
-        this.addGraphics(graphics);
+        // this.addGraphics(graphics);
     }
 
     private createRandomObstacle() {

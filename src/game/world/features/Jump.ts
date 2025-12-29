@@ -6,6 +6,10 @@ export class Jump extends GameObject {
         return "Jump";
     }
 
+    public override get layer(): string {
+        return "snow";
+    }
+
     protected override start(): void {
         this.loadSprite("/jumps/SkiJump.png", {
             anchor: new Vector2D(0.5, 0.925),

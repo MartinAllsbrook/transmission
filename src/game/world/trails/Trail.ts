@@ -158,19 +158,20 @@ export class Trail extends GameObject {
             return;
         }
 
-        const graphics = new Graphics();
+        // Debug Graphics
+        // const graphics = new Graphics();
 
-        graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
-        for (const point of splinePoints) {
-            graphics.lineTo(point.x, point.y);
-        }
+        // graphics.moveTo(splinePoints[0].x, splinePoints[0].y);
+        // for (const point of splinePoints) {
+        //     graphics.lineTo(point.x, point.y);
+        // }
 
-        graphics.stroke({
-            width: 10,
-            color: 0x00ff00,
-        });
+        // graphics.stroke({
+        //     width: 10,
+        //     color: 0x00ff00,
+        // });
 
-        this.debugGraphics = graphics;
-        this.addGraphics(graphics);
+        // this.debugGraphics = graphics;
+        // this.addGraphics(graphics);
     }
 }

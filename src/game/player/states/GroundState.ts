@@ -19,8 +19,8 @@ export class GroundState extends PlayerState {
             this.player.Velocity.heading(),
         );
 
-        console.log("Enter ground with rotation: " + ExtraMath.radToDeg(this.board.Transform.WorldRotation).toFixed(2));
-        console.log("Enter ground with heading: " + ExtraMath.radToDeg(this.player.Velocity.heading()).toFixed(2));
+        // console.log("Enter ground with rotation: " + ExtraMath.radToDeg(this.board.Transform.WorldRotation).toFixed(2));
+        // console.log("Enter ground with heading: " + ExtraMath.radToDeg(this.player.Velocity.heading()).toFixed(2));
     }
 
     private switchToGroundShifty() {
