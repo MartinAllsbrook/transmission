@@ -25,15 +25,16 @@ export class TrickManager extends GameObject {
     private comboDisplay: ComboDisplay = new ComboDisplay(this, this.root, this.scoreDisplay);
 
     // Current combo
-    private combo?: {
-        startTime: number;
-        lifetime: number;
-        multiplier: number;
-        score: number;
-    } 
+    // private combo?: {
+    //     startTime: number;
+    //     lifetime: number;
+    //     multiplier: number;
+    //     score: number;
+    // } 
     
     // Air Trick Tracking
     private enterAirTime: number = 0;
+    private enterAirRotation: number = 0;
     private enterAirAngle: number = 0;
     private enterAirHeading: number = 0;
 
@@ -61,13 +62,13 @@ export class TrickManager extends GameObject {
         this.Transform.WorldRotation = 0;
         this.Transform.WorldScale = new Vector2D(1, 1);
 
-        if (this.combo) {
-            this.combo.lifetime -= deltaTime;
+        // if (this.combo) {
+        //     this.combo.lifetime -= deltaTime;
 
-            if (this.combo.lifetime < 0) {
-                this.combo = undefined
-            }
-        }
+        //     if (this.combo.lifetime < 0) {
+        //         this.combo = undefined
+        //     }
+        // }
     }
 
     public enterAir(time: number, angle: number, heading: number): void {
@@ -75,6 +76,8 @@ export class TrickManager extends GameObject {
         heading = ExtraMath.radToDeg(heading);
 
         this.enterAirTime = time;
+        this.enterAirRotation = Math.floor(angle / 180) * 180 + heading; // Heading (accounting for number of full board rotations)
+
         this.enterAirAngle = angle;
         this.enterAirHeading = heading;
 
@@ -95,7 +98,7 @@ export class TrickManager extends GameObject {
         heading = ExtraMath.radToDeg(heading);
 
         const airtime = time - this.enterAirTime;
-        const rotation = ExtraMath.angleDifference(angle, this.enterAirAngle);
+        const rotation = ExtraMath.angleDifference(angle, this.enterAirHeading);
 
         const _isSwitch = this.isSwitch(angle, heading);
         const slip = this.calculateSlip(angle, heading);

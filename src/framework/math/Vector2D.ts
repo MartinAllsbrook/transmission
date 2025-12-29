@@ -247,6 +247,10 @@ export class Vector2D {
 
     // #endregion
 
+    public toFixed(decimalPlaces: number): string {
+        return `(${this.x.toFixed(decimalPlaces)}, ${this.y.toFixed(decimalPlaces)})`;
+    }
+
     public get X(): number {
         return this.x;
     }

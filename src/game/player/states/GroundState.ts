@@ -18,6 +18,9 @@ export class GroundState extends PlayerState {
             this.board.Transform.WorldRotation,
             this.player.Velocity.heading(),
         );
+
+        console.log("Enter ground with rotation: " + ExtraMath.radToDeg(this.board.Transform.WorldRotation).toFixed(2));
+        console.log("Enter ground with heading: " + ExtraMath.radToDeg(this.player.Velocity.heading()).toFixed(2));
     }
 
     private switchToGroundShifty() {
@@ -42,7 +45,7 @@ export class GroundState extends PlayerState {
         this.player.ShiftyAngle = ExtraMath.lerpSafe(
             this.player.ShiftyAngle,
             shiftyTargetAngle,
-            PLAYER_CONFIG.shiftyLerpSpeed * deltaTime,
+            PLAYER_CONFIG.shiftyStrength * deltaTime,
         );
 
         this.body.Transform.Rotation = (this.player.ShiftyAngle * -1) +
@@ -59,8 +62,14 @@ export class GroundState extends PlayerState {
         );
 
         // Rotate
-        this.player.RotationSpeed = this.player.RotationInput.Value *
-            ExtraMath.degToRad(PLAYER_CONFIG.rotationSpeed);
+        
+        const targetRotationSpeed = this.player.RotationInput.Value * ExtraMath.degToRad(PLAYER_CONFIG.maxRotationSpeed);
+        this.player.RotationSpeed = ExtraMath.lerpSafe(
+            this.player.RotationSpeed,
+            targetRotationSpeed,
+            PLAYER_CONFIG.rotationStrength * deltaTime,
+        );
+        this.player.Transform.Rotation += this.player.RotationSpeed * deltaTime;
 
         // Normal force
         const forward = Vector2D.fromAngle(
@@ -82,8 +91,6 @@ export class GroundState extends PlayerState {
         this.player.Velocity = this.player.Velocity.multiply(
             1 - PLAYER_CONFIG.frictionStrength * deltaTime,
         );
-
-        this.player.Transform.Rotation += this.player.RotationSpeed * deltaTime;
 
         // Update position
         this.player.Transform.Position = this.player.Transform.Position

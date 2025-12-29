@@ -11,18 +11,19 @@ export class Shadow extends GameObject {
     }
 
     private radius: number = 20;
-    private shinkFactor: number = 0.7;
+    private shrinkFactor: number = 0.7;
 
     player: Player;
 
     constructor(
-        parent: Player,
+        parent: GameObject,
+        player: Player,
         root: GameRoot,
         transformOptions?: TransformOptions,
     ) {
         super(parent, root, transformOptions);
 
-        this.player = parent;
+        this.player = player;
     }
 
     protected override start() {
@@ -35,7 +36,7 @@ export class Shadow extends GameObject {
                     alpha: 0.15,
                 });
             this.addGraphics(ellipse);
-            radius *= this.shinkFactor;
+            radius *= this.shrinkFactor;
         }
     }
 

@@ -16,11 +16,13 @@ export class AirState extends PlayerState {
             this.board.Transform.WorldRotation,
             this.player.Velocity.heading(),
         );
+
+        console.log("Enter air with rotation: " + ExtraMath.radToDeg(this.board.Transform.WorldRotation).toFixed(2));
+        console.log("Enter air with heading: " + ExtraMath.radToDeg(this.player.Velocity.heading()).toFixed(2));
     }
 
     private switchToAirShifty() {
-        this.player.Transform.Rotation = this.body.Transform.WorldRotation -
-            ExtraMath.degToRad(90); // Flip for goofy
+        this.player.Transform.Rotation = this.body.Transform.WorldRotation -ExtraMath.degToRad(90); // Flip for goofy
         this.board.Transform.Rotation = this.player.ShiftyAngle;
         this.body.Transform.Rotation = 0 + ExtraMath.degToRad(90); // Flip for goofy
     }
@@ -40,7 +42,7 @@ export class AirState extends PlayerState {
         this.player.ShiftyAngle = ExtraMath.lerpSafe(
             this.player.ShiftyAngle,
             shiftyTargetAngle,
-            PLAYER_CONFIG.shiftyLerpSpeed * deltaTime,
+            PLAYER_CONFIG.shiftyStrength * deltaTime,
         );
 
         this.board.Transform.Rotation = this.player.ShiftyAngle;

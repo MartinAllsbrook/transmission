@@ -29,13 +29,13 @@ export class Player extends GameObject {
     // Parts
     private board: Board = new Board(this, this.root);
     private body: Body = new Body(this, this.root);
-    private shadow: Shadow = new Shadow(this, this.root);
+    private shadow: Shadow = new Shadow(this.board, this, this.root);
     private trickManager: TrickManager = new TrickManager(this, this.root);
 
     // Inputs
     private jumpInput = new BooleanInput("Jump", [" ", "w", "W", "ArrowUp"]);
     private rotateInput = new ValueInput("Rotate", ["d", "D"], ["a", "A"]);
-    private shiftyInput = new ValueInput("Shifty", ["ArrowLeft"], ["ArrowRight",]);
+    private shiftyInput = new ValueInput("Shifty", ["ArrowLeft", "j", "J"], ["ArrowRight", "l", "L"]);
 
     // State
     private state: PlayerState = new GroundState(this);
