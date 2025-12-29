@@ -6,7 +6,7 @@ export class Board extends GameObject {
         return "Board";
     }
     public override get layer(): string {
-        return "player";
+        return "player1";
     }
 
     protected override start(): void {

@@ -46,6 +46,10 @@ export interface PlayerConfig {
      * Raising this value makes the base height of jumps higher.
      */
     jumpStrength: number;
+    /**
+     * How much a ski jump boosts the player
+     */
+    jumpBoost: number;
 
     /**
      * The furthest the player can "twist" their body during a shifty in degrees.
@@ -72,8 +76,9 @@ export const PLAYER_CONFIG: Readonly<PlayerConfig> = {
     maxRotationSpeed: 250,
     rotationStrength: 10,
 
-    deltaDeltaHeight: 4,
-    jumpStrength: 4,
+    deltaDeltaHeight: 5.5,
+    jumpStrength: 1.4,
+    jumpBoost: 0.0055,
 
     // Shifty
     shiftyStrength: 5, // Higher is snappier

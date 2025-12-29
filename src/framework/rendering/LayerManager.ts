@@ -4,9 +4,11 @@ export class LayerManager {
     public static layers: Record<string, RenderLayer> = {
         snow: new RenderLayer(),
         trail: new RenderLayer(),
-        shadow: new RenderLayer(),
         default: new RenderLayer(),
-        player: new RenderLayer(),
+        shadow: new RenderLayer(),
+        player1: new RenderLayer(),
+        player2: new RenderLayer(),
+        player3: new RenderLayer(),
         trees: new RenderLayer(),
         ui: new RenderLayer(),
     };

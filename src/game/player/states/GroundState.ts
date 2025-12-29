@@ -104,7 +104,7 @@ export class GroundState extends PlayerState {
     private checkJump(): void {
         if (this.player.JumpInput.Value) {
             console.log("Jumped");
-            this.player.DeltaHeight = 1; // Small delta height to indicate we are in the air
+            this.player.DeltaHeight += PLAYER_CONFIG.jumpStrength;
             this.player.changeState(new AirState(this.player));
         }
     }
@@ -115,7 +115,9 @@ export class GroundState extends PlayerState {
 
     public override onCollisionEnter(other: SATCollider): void {
         if (other.layer === "jump") {
-            this.player.Height = 0.5;
+            const boost = this.player.Velocity.magnitude() * PLAYER_CONFIG.jumpBoost;
+            this.player.DeltaHeight += boost;
+            console.log("Jump ramp! Boosting height by " + boost.toFixed(2));
         }
     }
 
@@ -124,6 +126,12 @@ export class GroundState extends PlayerState {
             this.player.changeState(new AirState(this.player));
         }
     }
+
+    //#endregion
+
+    //#region Jumping 
+
+
 
     //#endregion
 }

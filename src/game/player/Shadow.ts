@@ -30,7 +30,7 @@ export class Shadow extends GameObject {
         let radius = this.radius;
         for (let i = 0; i < 3; i++) {
             const ellipse = new Graphics()
-                .ellipse(0, 0, radius, radius / 2)
+                .ellipse(0, 0, radius, radius / 2.25)
                 .fill({
                     color: "#000000",
                     alpha: 0.15,
@@ -43,6 +43,6 @@ export class Shadow extends GameObject {
     protected override update(_deltaTime: number): void {
         const height = this.player.Height;
 
-        this.Transform.Scale = new Vector2D(1, 1).multiply(1 + (height * 0.25));
+        this.Transform.Scale = new Vector2D(1, 1).multiply(1 + (height * 0.35));
     }
 }

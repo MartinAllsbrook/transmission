@@ -23,7 +23,7 @@ export class Player extends GameObject {
         return "Player";
     }
     public override get layer(): string {
-        return "player";
+        return "player1";
     }
 
     // Parts
