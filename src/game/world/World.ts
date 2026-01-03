@@ -7,6 +7,7 @@ import {
 } from "framework";
 import { Chunk } from "./Chunk.ts";
 import { Trail } from "./trails/Trail.ts";
+import { Snow } from "./snow/Snow.ts";
 
 export class World extends GameObject {
     public override get Name() {
@@ -20,6 +21,7 @@ export class World extends GameObject {
     private chunks: Map<string, Chunk> = new Map();
 
     private trail: Trail = new Trail(this, this.root);
+    private snow: Snow;
 
     private chunksActiveDistance: number = 1;
     private runsActiveDistance: number = 2;
@@ -33,6 +35,7 @@ export class World extends GameObject {
         super(parent, root, transformOptions);
 
         this.playerTransform = playerTransform;
+        this.snow = new Snow(this, this.root, this.playerTransform)
     }
 
     protected override start(): void {

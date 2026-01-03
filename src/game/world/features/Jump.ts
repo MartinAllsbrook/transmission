@@ -7,7 +7,7 @@ export class Jump extends GameObject {
     }
 
     public override get layer(): string {
-        return "snow";
+        return "default";
     }
 
     protected override start(): void {

@@ -2,7 +2,6 @@ import { Application, RenderLayer } from "pixi.js";
 
 export class LayerManager {
     public static layers: Record<string, RenderLayer> = {
-        snow: new RenderLayer(),
         trail: new RenderLayer(),
         default: new RenderLayer(),
         shadow: new RenderLayer(),
@@ -10,6 +9,7 @@ export class LayerManager {
         player2: new RenderLayer(),
         player3: new RenderLayer(),
         trees: new RenderLayer(),
+        snow: new RenderLayer(),
         ui: new RenderLayer(),
     };
 
